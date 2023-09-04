@@ -13,7 +13,7 @@ const HorizontalLogo = () => {
       {isDarkMode || activetopbarBg !== 'white' ? (
         <>
           <img src={Logo} alt="" width="25" height="25" />
-          <span style={{ color: 'white', 'font-size': '16px', fontWeight: 'bold' }}>PEMA</span>
+          <span style={{ color: 'white', fontSize: '16px', fontWeight: 'bold' }}>PEMA</span>
         </>
       ) : (
         <>
