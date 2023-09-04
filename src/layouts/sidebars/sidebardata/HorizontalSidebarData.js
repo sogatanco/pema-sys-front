@@ -11,10 +11,10 @@ const SidebarData = [
     icon: <MaterialIcon icon="speed" />,
     collapisble: true,
   },
-  { caption: 'Basic Menu' },
+  { caption: 'Starter Kit' },
   {
-    title: 'Basic Menu',
-    href: '/',
+    title: 'Starter Kit',
+    href: '/starterkit',
     id: 2,
     icon: <MaterialIcon icon="grid_view" />,
     ddType: 'two-column',

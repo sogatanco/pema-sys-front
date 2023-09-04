@@ -70,6 +70,16 @@ const Timeline = () => {
               Setting
             </NavLink>
           </NavItem>
+          <NavItem>
+            <NavLink
+              className={activeTab === '4' ? 'active bg-transparent' : 'cursor-pointer text-muted'}
+              onClick={() => {
+                toggle('4');
+              }}
+            >
+              Account
+            </NavLink>
+          </NavItem>
         </Nav>
         <TabContent activeTab={activeTab}>
           <TabPane tabId="1">
@@ -272,34 +282,84 @@ const Timeline = () => {
                 <div className="p-4">
                   <Form>
                     <FormGroup>
-                      <Label>Full Name</Label>
-                      <Input type="text" placeholder="Shaina Agrawal" />
+                      <Label>Firstname</Label>
+                      <Input type="text" placeholder="Shaina" />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label>Lastname</Label>
+                      <Input type="text" placeholder="Agrawal" />
                     </FormGroup>
                     <FormGroup>
                       <Label>Email</Label>
                       <Input type="email" placeholder="Jognsmith@cool.com" />
                     </FormGroup>
+                    <Col md="6">
+                      <Label>Gender</Label>
+                      <FormGroup>
+                        <FormGroup check inline>
+                          <Input id="male" type="radio" name="customcheck1" />
+                          <Label check htmlFor="male">
+                            Male
+                          </Label>
+                        </FormGroup>
+                        <FormGroup check inline>
+                          <Input id="female" type="radio" name="customcheck1" />
+                          <Label check htmlFor="female">
+                            Female
+                          </Label>
+                        </FormGroup>
+                      </FormGroup>
+                    </Col>
+                    <FormGroup>
+                      <Label>Religion</Label>
+                      <Input type="select" name="Select Category">
+                        <option>Islam</option>
+                        <option>Kristen Protestas</option>
+                        <option>Kristen Katolik</option>
+                        <option>Hindu</option>
+                        <option>Buddha</option>
+                        <option>Khonghucu</option>
+                      </Input>
+                    </FormGroup>
+                    <FormGroup>
+                      <Label>Date of Birth</Label>
+                      <Input type="date" placeholder="DOB Here" />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label>Birthday Place</Label>
+                      <Input type="text" placeholder="Amazon" />
+                    </FormGroup>
+                    <FormGroup>
+                      <Label>Marital Status</Label>
+                      <Input type="select" name="Select Category">
+                        <option>Married</option>
+                        <option>Unmarried</option>
+                      </Input>
+                    </FormGroup>
+                    <FormGroup>
+                      <Label>Phone Number</Label>
+                      <Input type="text" placeholder="0852 3000 4000" />
+                    </FormGroup>
+                    <Button color="primary">Update Profile</Button>
+                  </Form>
+                </div>
+              </Col>
+            </Row>
+          </TabPane>
+          <TabPane tabId="4">
+            <Row>
+              <Col sm="12">
+                <div className="p-4">
+                  <Form>
                     <FormGroup>
                       <Label>Password</Label>
                       <Input type="password" placeholder="Password" />
                     </FormGroup>
                     <FormGroup>
-                      <Label>Phone No</Label>
-                      <Input type="text" placeholder="123 456 1020" />
+                      <Label>Confirm Password</Label>
+                      <Input type="password" placeholder="Confirm Password" />
                     </FormGroup>
-                    <FormGroup>
-                      <Label>Message</Label>
-                      <Input type="textarea" />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label>Select Country</Label>
-                      <Input type="select">
-                        <option>USA</option>
-                        <option>India</option>
-                        <option>America</option>
-                      </Input>
-                    </FormGroup>
-                    <Button color="primary">Update Profile</Button>
+                    <Button color="primary">Change Password</Button>
                   </Form>
                 </div>
               </Col>

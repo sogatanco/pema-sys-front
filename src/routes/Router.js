@@ -5,6 +5,8 @@ import Loadable from '../layouts/loader/Loadable';
 
 const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/BlankLayout')));
+const StarterKit = Loadable(lazy(() => import('../pages/Starterkit')));
+const ProfilePage = Loadable(lazy(() => import('../pages/profile')));
 /***** Pages ****/
 
 const Dashboard2 = Loadable(lazy(() => import('../views/dashboards/Dashboard2')));
@@ -28,6 +30,8 @@ const ThemeRoutes = [
     element: <FullLayout />,
     children: [
       { path: '/', name: 'Home', exact: true, element: <Dashboard2 /> },
+      { path: '/starterkit', name: 'Starterkit', exact: true, element: <StarterKit /> },
+      { path: '/profile', name: 'Profile', exact: true, element: <ProfilePage /> },
       { path: '/casl', name: 'casl', exact: true, element: <CASL /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
