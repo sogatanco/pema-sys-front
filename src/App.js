@@ -16,6 +16,7 @@ const App = () => {
         className={`${direction ? 'rtl' : 'ltr'} ${isMode ? 'dark' : ''}`}
         dir={direction ? 'rtl' : 'ltr'}
       >
+    {/* sdgsdg */}
         <ThemeSelector />
         {routing}
       </div>
