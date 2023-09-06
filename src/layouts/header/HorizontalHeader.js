@@ -12,7 +12,7 @@ import {
 import * as Icon from 'react-feather';
 import { Bell, MessageSquare } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
 import MessageDD from './MessageDD';
 import NotificationDD from './NotificationDD';
@@ -29,7 +29,7 @@ const HorizontalHeader = () => {
   const isDarkMode = useSelector((state) => state.customizer.isDark);
   const topbarColor = useSelector((state) => state.customizer.topbarBg);
   const isMobileSidebar = useSelector((state) => state.customizer.isMobileSidebar);
-  // const dispatch = useDispatch();
+  const toggleDispatch = useDispatch();
   const { dispatch } = useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ const HorizontalHeader = () => {
           <Button
             color={topbarColor}
             className="d-sm-block d-lg-none"
-            onClick={() => dispatch(ToggleMobileSidebar())}
+            onClick={() => toggleDispatch(ToggleMobileSidebar())}
           >
             <i className={`bi ${isMobileSidebar ? 'bi-x' : 'bi-list'}`} />
           </Button>
