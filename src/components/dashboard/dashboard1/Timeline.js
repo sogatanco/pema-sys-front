@@ -9,11 +9,11 @@ import {
   Nav,
   NavItem,
   NavLink,
-  Progress,
   Form,
   FormGroup,
   Label,
   Input,
+  Badge,
 } from 'reactstrap';
 import './Timeline.scss';
 
@@ -29,6 +29,10 @@ import time4 from '../../../assets/images/bg/bg4.jpg';
 
 const Timeline = () => {
   const [activeTab, setActiveTab] = useState('1');
+  const [isBInfoEdit, setIsBInfoEdit] = useState(false);
+  const [isIdentityEdit, setIsIdentityEdit] = useState(false);
+
+  // const isBasicDataEdit = false;
 
   const toggle = (tab) => {
     if (activeTab !== tab) {
@@ -57,7 +61,7 @@ const Timeline = () => {
                 toggle('2');
               }}
             >
-              Profile
+              Personal
             </NavLink>
           </NavItem>
           <NavItem>
@@ -67,7 +71,7 @@ const Timeline = () => {
                 toggle('3');
               }}
             >
-              Setting
+              Family
             </NavLink>
           </NavItem>
           <NavItem>
@@ -214,64 +218,404 @@ const Timeline = () => {
             <Row>
               <Col sm="12">
                 <div className="p-4">
-                  <Row>
-                    <Col md="3" xs="6" className="border-end">
-                      <strong>Full Name</strong>
-                      <br />
-                      <p className="text-muted">Johnathan Deo</p>
-                    </Col>
-                    <Col md="3" xs="6" className="border-end">
-                      <strong>Mobile</strong>
-                      <br />
-                      <p className="text-muted">(123) 456 7890</p>
-                    </Col>
-                    <Col md="3" xs="6" className="border-end">
-                      <strong>Email</strong>
-                      <br />
-                      <p className="text-muted">johnathan@admin.com</p>
-                    </Col>
-                    <Col md="3" xs="6" className="border-end">
-                      <strong>Location</strong>
-                      <br />
-                      <p className="text-muted">London</p>
-                    </Col>
-                  </Row>
-                  <p className="mt-4">
-                    Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim
-                    justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu
-                    pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum semper
-                    nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu,
-                    consequat vitae, eleifend ac, enim.
-                  </p>
-                  <p>
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                    Ipsum has been the industry&apos;s standard dummy text ever since the 1500s,
-                    when an unknown printer took a galley of type and scrambled it to make a type
-                    specimen book. It has survived not only five centuries
-                  </p>
-                  <p>
-                    It was popularised in the 1960s with the release of Letraset sheets containing
-                    Lorem Ipsum passages, and more recently with desktop publishing software like
-                    Aldus PageMaker including versions of Lorem Ipsum.
-                  </p>
-                  <h4 className="font-medium mt-4">Skill Set</h4>
+                  <div className="d-flex justify-content-between mb-0">
+                    <div className="d-flex flex-column mb-n2">
+                      <h4 className="font-medium mb-n1">Basic Info</h4>
+                      <small className="text-muted">
+                        Your email address is your identity on PEMA Systems is used to log in.
+                      </small>
+                    </div>
+                    {!isBInfoEdit && (
+                      <div>
+                        <Button
+                          className="btn"
+                          outline
+                          size="sm"
+                          color="secondary"
+                          onClick={() => setIsBInfoEdit(true)}
+                        >
+                          edit
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                   <hr />
-                  <h5 className="mt-4">
-                    Wordpress <span className="float-end">80%</span>
-                  </h5>
-                  <Progress value={2 * 5} />
-                  <h5 className="mt-4">
-                    HTML 5 <span className="float-end">90%</span>
-                  </h5>
-                  <Progress color="success" value="25" />
-                  <h5 className="mt-4">
-                    jQuery <span className="float-end">50%</span>
-                  </h5>
-                  <Progress color="info" value={50} />
-                  <h5 className="mt-4">
-                    Photoshop <span className="float-end">70%</span>
-                  </h5>
-                  <Progress color="warning" value={75} />
+                  {isBInfoEdit ? (
+                    <Form>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Firstname
+                          </Label>
+                          <Col sm="9">
+                            <Input type="text" placeholder="Shaina" />
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Lastname
+                          </Label>
+                          <Col sm="9">
+                            <Input type="text" placeholder="Agrawal" />
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Email
+                          </Label>
+                          <Col sm="9">
+                            <Input type="email" placeholder="Jognsmith@cool.com" />
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Gender
+                          </Label>
+                          <Col sm="9">
+                            <FormGroup>
+                              <FormGroup check inline>
+                                <Input id="male" type="radio" name="customcheck1" />
+                                <Label check htmlFor="male">
+                                  Male
+                                </Label>
+                              </FormGroup>
+                              <FormGroup check inline>
+                                <Input id="female" type="radio" name="customcheck1" />
+                                <Label check htmlFor="female">
+                                  Female
+                                </Label>
+                              </FormGroup>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Religion
+                          </Label>
+                          <Col sm="9">
+                            <Input type="select" name="Select Category">
+                              <option>Islam</option>
+                              <option>Kristen Protestas</option>
+                              <option>Kristen Katolik</option>
+                              <option>Hindu</option>
+                              <option>Buddha</option>
+                              <option>Khonghucu</option>
+                            </Input>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Date of Birth
+                          </Label>
+                          <Col sm="9">
+                            <Input type="date" placeholder="DOB Here" />
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Birthday Place
+                          </Label>
+                          <Col sm="9">
+                            <Input type="text" placeholder="Amazon" />
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Marital Status
+                          </Label>
+                          <Col sm="9">
+                            <Input type="select" name="Select Category">
+                              <option>Single</option>
+                              <option>Married</option>
+                              <option>Widow</option>
+                              <option>Widower</option>
+                            </Input>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Phone Number
+                          </Label>
+                          <Col sm="9">
+                            <Input type="text" placeholder="0852 3000 4000" />
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <div className="d-flex justify-content-end button-group mt-4">
+                        <Button
+                          color="secondary"
+                          outline
+                          size="sm"
+                          onClick={() => setIsBInfoEdit(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button color="primary" size="sm">
+                          Request change data
+                        </Button>
+                      </div>
+                    </Form>
+                  ) : (
+                    <div className="">
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Firstname
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>Shaina</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Lastname
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>Agrawal</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Email
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>Jognsmith@cool.com</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Gender
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>Male</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Religion
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>Islam</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Date of Birth
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>21 Jul 1994</span>
+                            <Badge color="light" className="ms-3 text-muted">
+                              29 years old
+                            </Badge>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Birthday Place
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>Amazon</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Marital Status
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>Merried</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            <span>Phone Number</span>
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>0852 4000 5000</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                    </div>
+                  )}
+                </div>
+                <div className="p-4">
+                  <div className="d-flex justify-content-between mb-0">
+                    <h4 className="font-medium">Identity & Address</h4>
+                    {!isIdentityEdit && (
+                      <div>
+                        <Button
+                          className="btn"
+                          outline
+                          size="sm"
+                          color="secondary"
+                          onClick={() => setIsIdentityEdit(true)}
+                        >
+                          edit
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  <hr />
+                  {isIdentityEdit ? (
+                    <Form>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            ID Type
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <Input type="select" name="Select ID Type">
+                              <option>KTP</option>
+                              <option>Passport</option>
+                            </Input>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            ID Number
+                          </Label>
+                          <Col sm="9">
+                            <Input type="text" placeholder="1110202020202020" />
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Postal Code
+                          </Label>
+                          <Col sm="9">
+                            <Input type="text" placeholder="" />
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Citizen ID Address
+                          </Label>
+                          <Col sm="9">
+                            <Input type="textarea" rows="3" />
+                            <Col sm="9" className="mt-1">
+                              <Input type="checkbox" id="check1" />
+                              <Label check className="form-label" htmlFor="check1">
+                                &nbsp; Use as residential address
+                              </Label>
+                            </Col>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Recidential Address
+                          </Label>
+                          <Col sm="9">
+                            <Input type="textarea" rows="3" />
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <div className="d-flex justify-content-end button-group mt-4">
+                        <Button
+                          color="secondary"
+                          outline
+                          size="sm"
+                          onClick={() => setIsIdentityEdit(false)}
+                        >
+                          Cancel
+                        </Button>
+                        <Button color="primary" size="sm">
+                          Request change data
+                        </Button>
+                      </div>
+                    </Form>
+                  ) : (
+                    <div className="">
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            ID Type
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>KTP</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            ID Number
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>1110202020202020</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Postal Code
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>234765</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Citizen ID Address
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>First address</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                      <FormGroup>
+                        <Row>
+                          <Label sm="3" className="text-muted">
+                            Recidential Address
+                          </Label>
+                          <Col sm="9" className="d-flex align-items-center">
+                            <span>Second address</span>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                    </div>
+                  )}
                 </div>
               </Col>
             </Row>
@@ -280,68 +624,12 @@ const Timeline = () => {
             <Row>
               <Col sm="12">
                 <div className="p-4">
-                  <Form>
-                    <FormGroup>
-                      <Label>Firstname</Label>
-                      <Input type="text" placeholder="Shaina" />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label>Lastname</Label>
-                      <Input type="text" placeholder="Agrawal" />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label>Email</Label>
-                      <Input type="email" placeholder="Jognsmith@cool.com" />
-                    </FormGroup>
-                    <Col md="6">
-                      <Label>Gender</Label>
-                      <FormGroup>
-                        <FormGroup check inline>
-                          <Input id="male" type="radio" name="customcheck1" />
-                          <Label check htmlFor="male">
-                            Male
-                          </Label>
-                        </FormGroup>
-                        <FormGroup check inline>
-                          <Input id="female" type="radio" name="customcheck1" />
-                          <Label check htmlFor="female">
-                            Female
-                          </Label>
-                        </FormGroup>
-                      </FormGroup>
-                    </Col>
-                    <FormGroup>
-                      <Label>Religion</Label>
-                      <Input type="select" name="Select Category">
-                        <option>Islam</option>
-                        <option>Kristen Protestas</option>
-                        <option>Kristen Katolik</option>
-                        <option>Hindu</option>
-                        <option>Buddha</option>
-                        <option>Khonghucu</option>
-                      </Input>
-                    </FormGroup>
-                    <FormGroup>
-                      <Label>Date of Birth</Label>
-                      <Input type="date" placeholder="DOB Here" />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label>Birthday Place</Label>
-                      <Input type="text" placeholder="Amazon" />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label>Marital Status</Label>
-                      <Input type="select" name="Select Category">
-                        <option>Married</option>
-                        <option>Unmarried</option>
-                      </Input>
-                    </FormGroup>
-                    <FormGroup>
-                      <Label>Phone Number</Label>
-                      <Input type="text" placeholder="0852 3000 4000" />
-                    </FormGroup>
-                    <Button color="primary">Update Profile</Button>
-                  </Form>
+                  <div className="d-flex justify-content-between mb-0">
+                    <div className="d-flex flex-column mb-n2">
+                      <h4 className="font-medium mb-n1">Family</h4>
+                    </div>
+                  </div>
+                  <hr />
                 </div>
               </Col>
             </Row>

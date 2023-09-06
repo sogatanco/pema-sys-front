@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Navbar,
   Nav,
@@ -11,7 +11,8 @@ import {
 } from 'reactstrap';
 import * as Icon from 'react-feather';
 import { Bell, MessageSquare } from 'react-feather';
-import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
 import MessageDD from './MessageDD';
 import NotificationDD from './NotificationDD';
@@ -22,12 +23,21 @@ import { ToggleMobileSidebar } from '../../store/customizer/CustomizerSlice';
 import ProfileDD from './ProfileDD';
 
 import HorizontalLogo from '../logo/HorizontalLogo';
+import { AuthContext } from '../../context/AuthContext';
 
 const HorizontalHeader = () => {
   const isDarkMode = useSelector((state) => state.customizer.isDark);
   const topbarColor = useSelector((state) => state.customizer.topbarBg);
   const isMobileSidebar = useSelector((state) => state.customizer.isMobileSidebar);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+  const { dispatch } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch({ type: 'LOGOUT' });
+    navigate('/auth/login');
+  };
 
   return (
     <Navbar
@@ -127,7 +137,7 @@ const HorizontalHeader = () => {
               <ProfileDD />
 
               <div className="p-2 px-3">
-                <Button color="danger" size="sm">
+                <Button color="danger" size="sm" onClick={handleLogout}>
                   Logout
                 </Button>
               </div>

@@ -9,6 +9,7 @@ const App = () => {
   const routing = useRoutes(Themeroutes);
   const direction = useSelector((state) => state.customizer.isRTL);
   const isMode = useSelector((state) => state.customizer.isDark);
+
   return (
     <Suspense fallback={<Loader />}>
       <div

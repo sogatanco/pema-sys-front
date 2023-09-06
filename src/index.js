@@ -3,6 +3,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import { AuthContextProvider } from './context/AuthContext';
 // eslint-disable-next-line import/no-named-as-default
 import reportWebVitals from './reportWebVitals';
 import { store } from './store/Store';
@@ -14,9 +15,11 @@ const root = createRoot(container);
 
 root.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <AuthContextProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </AuthContextProvider>
   </Provider>,
 );
 

@@ -4,7 +4,7 @@
   "homepage": "/",
   "private": true,
   "dependencies": {
-     "@blueprintjs/core": "^5.0.1",
+    "@blueprintjs/core": "^5.0.1",
     "@casl/ability": "^6.5.0",
     "@casl/react": "^3.1.0",
     "@material/react-material-icon": "^0.15.0",
