@@ -8,6 +8,16 @@ const SidebarData = [
     id: 1,
     // suffix: '4',
     // suffixColor: 'bg-info',
+    icon: <MaterialIcon icon="home" />,
+    collapisble: true,
+  },
+  { caption: 'Projects' },
+  {
+    title: 'Projects',
+    href: '/projects',
+    id: 2,
+    // suffix: '4',
+    // suffixColor: 'bg-info',
     icon: <MaterialIcon icon="speed" />,
     collapisble: true,
   },
@@ -15,25 +25,10 @@ const SidebarData = [
   {
     title: 'Starter Kit',
     href: '/starterkit',
-    id: 2,
+    id: 3,
     icon: <MaterialIcon icon="grid_view" />,
     ddType: 'two-column',
     collapisble: true,
-  },
-  { caption: 'Dropdown Menu' },
-  {
-    title: 'Dropdown Menu',
-    href: '/',
-    icon: <MaterialIcon icon="feed" />,
-    id: 4,
-    collapisble: true,
-    children: [
-      {
-        title: 'Basic Forms',
-        href: '/',
-        icon: <MaterialIcon icon="radio_button_checked" />,
-      },
-    ],
   },
 ];
 

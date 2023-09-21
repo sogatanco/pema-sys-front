@@ -8,9 +8,12 @@ const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/BlankLayout')));
 const StarterKit = Loadable(lazy(() => import('../pages/Starterkit')));
 const ProfilePage = Loadable(lazy(() => import('../pages/profile')));
+const ProjectPage = Loadable(lazy(() => import('../pages/projects')));
+const ProjectDetail = Loadable(lazy(() => import('../pages/projects/ProjectDetail')));
 /***** Pages ****/
 
 const Dashboard2 = Loadable(lazy(() => import('../views/dashboards/Dashboard2')));
+const Unauthorized = Loadable(lazy(() => import('../pages/auth/Unauthorized')));
 
 /***** CASL Access Control ****/
 // const CASL = Loadable(lazy(() => import('../views/apps/accessControlCASL/AccessControl')));
@@ -23,8 +26,13 @@ const Dashboard2 = Loadable(lazy(() => import('../views/dashboards/Dashboard2'))
 // const RecoverPassword = Loadable(lazy(() => import('../views/auth/RecoverPassword')));
 
 const ROLES = {
+  SuperAdmin: 'Super Admin',
   Admin: 'Admin',
-  Employe: 'Employe',
+  Director: 'Director',
+  Manager: 'Manager',
+  Supervisor: 'Supervisor',
+  Staff: 'Staff',
+  Employee: 'Employee',
 };
 
 /*****Routes******/
@@ -32,7 +40,7 @@ const ThemeRoutes = [
   // PROTECTED ROUTES
   {
     path: '/',
-    element: <RequireAuth allowedRoles={[ROLES.Admin, ROLES.Employe]} />,
+    element: <RequireAuth allowedRoles={[ROLES.Employee]} />,
     children: [
       {
         path: '/',
@@ -53,6 +61,16 @@ const ThemeRoutes = [
             name: 'Starterkit',
             element: <StarterKit />,
           },
+          {
+            path: 'projects',
+            name: 'Projects',
+            element: <ProjectPage />,
+          },
+          {
+            path: 'projects/details/:projectId',
+            name: 'Project Details',
+            element: <ProjectDetail />,
+          },
         ],
       },
     ],
@@ -72,6 +90,20 @@ const ThemeRoutes = [
     ],
   },
   // LOGIN ROUTE
+
+  // Unauthorized
+  {
+    path: '/',
+    element: <BlankLayout />,
+    children: [
+      {
+        path: 'unauthorized',
+        name: 'Unauthorized',
+        element: <Unauthorized />,
+      },
+    ],
+  },
+  // Unauthorized
 ];
 
 export default ThemeRoutes;

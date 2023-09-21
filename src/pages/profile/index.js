@@ -1,8 +1,8 @@
 import { Row, Col } from 'reactstrap';
 import React from 'react';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
-import ProfileCard from '../../components/dashboard/dashboard1/ProfileCard';
-import Timeline from '../../components/dashboard/dashboard1/Timeline';
+import Timeline from './Timeline';
+import ProfileCard from './ProfileCard';
 
 const index = () => {
   return (

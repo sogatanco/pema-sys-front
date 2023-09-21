@@ -9,7 +9,11 @@
       "node": {
         "extensions": [".js", ".jsx", ".mdx"]
       }
-    }
+    },
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020
   },
   "extends": [
     "airbnb",

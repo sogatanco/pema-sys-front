@@ -32,8 +32,6 @@ const Timeline = () => {
   const [isBInfoEdit, setIsBInfoEdit] = useState(false);
   const [isIdentityEdit, setIsIdentityEdit] = useState(false);
 
-  // const isBasicDataEdit = false;
-
   const toggle = (tab) => {
     if (activeTab !== tab) {
       setActiveTab(tab);
