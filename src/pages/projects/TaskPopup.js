@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Input, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import PropTypes from 'prop-types';
 import './TaskPopup.scss';
 import MaterialIcon from '@material/react-material-icon';
 import ActionMenu from '../../components/actionMenu/ActionMenu';
 import user1 from '../../assets/images/users/user1.jpg';
+import useAxios from '../../hooks/useAxios';
 
 const actionMenu = {
   isOpen: false,
@@ -14,17 +15,32 @@ const handleChange = () => {
   console.log('hello');
 };
 
-const TaskPopup = ({ modal, toggle, taskId }) => {
+const TaskPopup = ({ modal, toggle, task }) => {
+  const [history, setHistory] = useState(undefined);
+
+  const api = useAxios();
+
+  useEffect(() => {
+    async function fetchHistory() {
+      await api
+        .get(`/task/history/${task?.task_id}`)
+        .then((res) => setHistory(res.data.data))
+        .then((err) => console.log(err));
+    }
+
+    fetchHistory();
+  }, [task]);
+
   return (
     <Modal isOpen={modal} toggle={toggle.bind(null)} size="xl" fade={false}>
-      <ModalHeader toggle={toggle.bind(null)}>Task Info {taskId}</ModalHeader>
+      <ModalHeader toggle={toggle.bind(null)}>Task Info</ModalHeader>
       <ModalBody>
         <div className="popup-body">
           <div className="left">
             <div className="top">
               <div className="created-at">
                 <h6>Created at</h6>
-                <span>12/10/2023, 08:45</span>
+                <span>{task?.created_at}</span>
               </div>
               <div className="due-date">
                 <h6>Due Date</h6>
@@ -32,14 +48,14 @@ const TaskPopup = ({ modal, toggle, taskId }) => {
               </div>
             </div>
             <div className="bottom">
-              <Input type="text" value="Task title" onChange={handleChange} />
+              <Input type="text" value={task?.task_title} onChange={handleChange} />
               <Input
                 type="textarea"
                 name=""
                 id=""
                 cols="5"
                 rows="6"
-                value="Task description"
+                value={task?.task_desc || undefined}
                 onChange={handleChange}
               />
             </div>
@@ -57,13 +73,20 @@ const TaskPopup = ({ modal, toggle, taskId }) => {
               <ActionMenu data={actionMenu} />
             </div>
             <div className="bottom">
-              <div className="history-item">
-                <div className="comment-name">
-                  <span>Si Fulan</span>
-                  <span>Your task approved</span>
+              {history?.map((h) => (
+                <div key={h.approval_id} className="history-item">
+                  <div className="comment-name">
+                    <span>
+                      {h.status === 0
+                        ? `${h.employe_id} created this task`
+                        : h.status === 1
+                        ? `${h.employe_id} change task to In Progress`
+                        : `${h.employe_id} change task to Done`}
+                    </span>
+                  </div>
+                  <small>today</small>
                 </div>
-                <small>Today</small>
-              </div>
+              ))}
               <div className="comment-item">
                 <div className="comment-user">
                   <img src={user1} className="rounded-circle" alt="avatar" width="35" height="35" />
@@ -104,7 +127,7 @@ const TaskPopup = ({ modal, toggle, taskId }) => {
 TaskPopup.propTypes = {
   modal: PropTypes.bool,
   toggle: PropTypes.any,
-  taskId: PropTypes.number,
+  task: PropTypes.any,
 };
 
 export default TaskPopup;

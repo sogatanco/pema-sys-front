@@ -18,7 +18,7 @@ const BoardToDo = () => {
   useEffect(() => {
     async function fetchTodo() {
       await api
-        .get(`/task/todo/${projectId}`)
+        .get(`/task/${projectId}`)
         .then((res) => setData(res.data.tasks))
         .catch((err) => console.log(err));
     }

@@ -10,15 +10,15 @@ import TaskPopup from './TaskPopup';
 const BoardTask = ({ data }) => {
   const [modal, setModal] = useState(false);
   const [addSubtaskOpen, setAddSubtaskOpen] = useState(false);
-  const [taskId, setTaskId] = useState(undefined);
+  const [task, setTask] = useState(undefined);
 
   const toggle = () => {
     setModal(!modal);
   };
 
-  const openPopup = (selectedId) => {
+  const openPopup = (selectedTask) => {
     setModal(true);
-    setTaskId(selectedId);
+    setTask(selectedTask);
   };
 
   return (
@@ -32,7 +32,7 @@ const BoardTask = ({ data }) => {
               </div>
               <MaterialIcon icon="more_horiz" className="board-action" />
             </div>
-            <div className="board-body" onClick={() => openPopup(td.task_id)}>
+            <div className="board-body" onClick={() => openPopup(td)}>
               <div className="task-title">{td.task_title}</div>
               <div className="task-bottom">
                 <small className="text-muted">{td.subtasks.length} Subtask</small>
@@ -47,7 +47,7 @@ const BoardTask = ({ data }) => {
             </div>
             {td.subtasks.length >= 1 &&
               td.subtasks.map((st) => (
-                <div key={st.task_id} className="board-body subtask">
+                <div key={st.task_id} className="board-body subtask" onClick={() => openPopup(st)}>
                   <div className="task-title">{st.task_title}</div>
                   <div className="task-action">
                     <MaterialIcon icon="done" />
@@ -143,7 +143,7 @@ const BoardTask = ({ data }) => {
           </div>
         ))}
       </div>
-      <TaskPopup {...{ modal, toggle, taskId }} />
+      <TaskPopup {...{ modal, toggle, task }} />
     </>
   );
 };
