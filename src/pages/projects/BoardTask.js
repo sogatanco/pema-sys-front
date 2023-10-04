@@ -88,7 +88,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
               <div className="d-flex" style={{ height: 'max-content' }}>
                 <Badge color="info">#{i + 1}</Badge>
               </div>
-              {td.status === 0 || td.status === 1 ? (
+              {parseInt(td.status, 10) === 0 || parseInt(td.status, 10) === 1 ? (
                 updating && taskIdActive === td.task_id ? (
                   <div className="d-flex align-items-center gap-1">
                     <Spinner size="sm" color="success" />
@@ -110,13 +110,13 @@ const BoardTask = ({ data, projectId, refetch }) => {
                     <ActionMenu
                       menuOptions={menuOptions}
                       taskId={td.task_id}
-                      status={td.status}
+                      status={parseInt(td.status, 10)}
                       action={handleTaskStatus}
                     />
                   </div>
                 )
               ) : (
-                td.status === 2 && (
+                parseInt(td.status, 10) === 2 && (
                   <Badge color="light" className="text-dark">
                     <i className="bi-clock mr-4" style={{ fontSize: '12px' }}></i>
                     &nbsp; Review
@@ -145,7 +145,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
                   </div>
                 </div>
               ))}
-            {td.status !== 3 && (
+            {parseInt(td.status, 10) !== 3 && (
               <div className="board-footer">
                 {addSubtaskOpen === td.task_id ? (
                   <TaskForm

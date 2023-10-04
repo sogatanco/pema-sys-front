@@ -1,6 +1,6 @@
 import MaterialIcon from '@material/react-material-icon';
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, Label, Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
+import { Button, Input, Label, Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
@@ -16,6 +16,7 @@ const TaskForm = (props) => {
   const [modal, setModal] = useState(false);
   const [assignedEmployees, setAssignedEmployees] = useState();
   const [listEmployee, setListEmploye] = useState();
+  const [files, setFiles] = useState();
 
   const animatedComponents = makeAnimated();
 
@@ -64,10 +65,13 @@ const TaskForm = (props) => {
     setLoading(true);
     task.project_id = projectId;
     task.task_pic = assignedEmployees;
+    // eslint-disable-next-line prefer-destructuring
+    task.files = files;
 
     if (type === 2) {
       task.task_parent = taskId;
     }
+
     await api
       .post('/task', task)
       .then((res) => console.log(res))
@@ -77,9 +81,11 @@ const TaskForm = (props) => {
     closeForm();
   };
 
+  console.log(files);
+
   return (
     <>
-      <Form onSubmit={taskSubmit} style={{ width: '100%' }}>
+      <form onSubmit={taskSubmit} style={{ width: '100%' }} encType="multipart/form-data">
         <div className="new-task">
           <div className="body">
             <div className="input">
@@ -102,7 +108,7 @@ const TaskForm = (props) => {
                 <Label for="attach">
                   <MaterialIcon icon="attach_file" className="btn-icon" />
                 </Label>
-                <input type="file" id="attach" hidden />
+                <input type="file" id="attach" hidden onChange={(e) => setFiles(e.target.files)} />
               </div>
               <div className="duedate">
                 <span className="datepicker-toggle">
@@ -141,7 +147,7 @@ const TaskForm = (props) => {
             </div>
           </div>
         </div>
-      </Form>
+      </form>
       <Modal isOpen={modal} toggle={toggle.bind(null)} size="md" fade={false} centered>
         <ModalHeader toggle={toggle.bind(null)}>Assigne Employee</ModalHeader>
         <ModalBody>
