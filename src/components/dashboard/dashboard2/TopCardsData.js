@@ -10,7 +10,7 @@ const TopCardsData = ({ bg, icon, title, subtitle }) => {
             <i className={`fs-2 bi bi-${icon}`} />
           </span>
           <div className="ms-3">
-            <h2 className="mb-1 fw-normal">${title}</h2>
+            <h2 className="mb-1 fw-normal">{title}</h2>
             <CardSubtitle className="fs-6 text-muted">{subtitle}</CardSubtitle>
           </div>
         </div>

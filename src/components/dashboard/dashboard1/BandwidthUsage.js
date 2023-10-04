@@ -28,9 +28,9 @@ const BandwidthUsage = () => {
       },
     },
     stroke: {
-      curve: "smooth",
+      curve: 'smooth',
       width: 3,
-      colors: "rgba(255, 255, 255, 0.5)",
+      colors: 'rgba(255, 255, 255, 0.5)',
     },
     yaxis: {
       show: false,
@@ -60,8 +60,8 @@ const BandwidthUsage = () => {
             </h1>
           </div>
           <div>
-            <h4 className="text-dark-white">Bandwidth usage</h4>
-            <h6 className="text-dark-white">March 2022</h6>
+            <h4 className="text-dark-white">Project</h4>
+            <h6 className="text-dark-white">2023</h6>
           </div>
         </div>
         <Row>

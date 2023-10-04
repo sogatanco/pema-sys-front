@@ -1,0 +1,123 @@
+.popup-body {
+  width: 100%;
+  height: 500px;
+  display: flex;
+
+  .left {
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+    gap: 20px;
+    border: 1px solid #ecebeb;
+    border-radius: 10px;
+    overflow-y: auto;
+
+    .top {
+      display: flex;
+      height: 50px;
+      justify-content: space-between;
+
+      .date {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        span {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .bottom {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .attach {
+      ul,
+      li {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .right {
+    width: 55%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    gap: 10px;
+
+    .top {
+      width: 100%;
+      height: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .status {
+        display: flex;
+        height: 35px;
+        gap: 20px;
+      }
+    }
+
+    .bottom {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      background-color: rgb(236, 235, 235);
+      border-radius: 5px;
+      gap: 10px;
+      overflow-y: auto;
+      font-size: 13px;
+
+      .history-item {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .comment-item {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .comment-user {
+          width: 100%;
+          display: flex;
+          gap: 10px;
+
+          .comment-teks {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 3px 10px;
+            border-radius: 0 10px 10px 10px;
+            background-color: rgb(252, 252, 252);
+
+            .comment-time {
+              display: flex;
+              justify-content: end;
+            }
+          }
+        }
+      }
+    }
+
+    .input-comment {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+
+      button {
+        display: flex;
+        gap: 3px;
+      }
+    }
+  }
+}

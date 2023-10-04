@@ -8,32 +8,40 @@ const SidebarData = [
     id: 1,
     // suffix: '4',
     // suffixColor: 'bg-info',
-    icon: <MaterialIcon icon="speed" />,
+    icon: <MaterialIcon icon="home" />,
     collapisble: true,
+  },
+  
+  { caption: 'Activity' },
+  {
+    title: 'Activity',
+    href: '/activity',
+    id: 2,
+    icon: <MaterialIcon icon="engineering" />,
+    ddType: 'two-column',
+    collapisble: true,
+    children: [
+      {
+        title: 'Project',
+        href: '/projects',
+        icon: <MaterialIcon icon="work_history" />,
+      },
+      {
+        title: 'Daily Activity',
+        href: '/daily',
+        icon: <MaterialIcon icon="event" />,
+      },
+     
+    ],
   },
   { caption: 'Starter Kit' },
   {
     title: 'Starter Kit',
     href: '/starterkit',
-    id: 2,
+    id: 3,
     icon: <MaterialIcon icon="grid_view" />,
     ddType: 'two-column',
     collapisble: true,
-  },
-  { caption: 'Dropdown Menu' },
-  {
-    title: 'Dropdown Menu',
-    href: '/',
-    icon: <MaterialIcon icon="feed" />,
-    id: 4,
-    collapisble: true,
-    children: [
-      {
-        title: 'Basic Forms',
-        href: '/',
-        icon: <MaterialIcon icon="radio_button_checked" />,
-      },
-    ],
   },
 ];
 

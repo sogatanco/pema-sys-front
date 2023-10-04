@@ -7,13 +7,13 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".mdx"
-        ]
+        "extensions": [".js", ".jsx", ".mdx"]
       }
-    }
+    },
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020
   },
   "extends": [
     "airbnb",
@@ -21,11 +21,7 @@
     "plugin:jsx-a11y/recommended",
     "plugin:react-hooks/recommended"
   ],
-  "plugins": [
-    "prettier",
-    "react",
-    "react-hooks"
-  ],
+  "plugins": ["prettier", "react", "react-hooks"],
   "parser": "",
   "rules": {
     "comma-dangle": "off",
@@ -39,14 +35,14 @@
     "no-param-reassign": 0,
     "react/no-danger": "off",
     "arrow-body-style": "off",
-    "spaced-comment":"off",
+    "spaced-comment": "off",
     "react/self-closing-comp": "off",
     "react-hooks/exhaustive-deps": "off",
     "react/forbid-prop-types": "off",
     "react/jsx-filename-extension": "off",
     "react/jsx-props-no-spreading": "off",
     "react/require-default-props": "off",
-    "react/jsx-no-bind":"off",
+    "react/jsx-no-bind": "off",
     "no-nested-ternary": "off",
     "react/react-in-jsx-scope": "off",
     "react/destructuring-assignment": "off"

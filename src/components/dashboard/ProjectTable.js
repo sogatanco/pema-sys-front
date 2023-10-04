@@ -63,7 +63,7 @@ const ProjectTables = () => {
             Overview of the projects
           </CardSubtitle>
 
-          <Table className="no-wrap mt-3 align-middle" responsive borderless>
+          <Table className="no-wrap mt-3 align-middle" hover responsive borderless>
             <thead>
               <tr>
                 <th>Team Lead</th>

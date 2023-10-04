@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import {
   Alert,
   Button,
@@ -10,17 +10,23 @@ import {
   Card,
   CardBody,
   Input,
+  Spinner,
 } from 'reactstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import AuthLogo from '../../layouts/logo/AuthLogo';
 import { ReactComponent as LeftBg } from '../../assets/images/bg/login-bgleft.svg';
 import { ReactComponent as RightBg } from '../../assets/images/bg/login-bg-right.svg';
+import { AuthContext } from '../../context/AuthContext';
+import useAuth from '../../hooks/useAuth';
+import useAxios from '../../hooks/useAxios';
 
 const Login = () => {
-  const [error, setError] = useState(undefined);
+  const { auth } = useAuth();
+  const api = useAxios();
+  const { loading, error, dispatch } = useContext(AuthContext);
+  const [errStatus, setErrStatus] = useState(false);
   const navigate = useNavigate();
 
   const initialValues = {
@@ -35,13 +41,28 @@ const Login = () => {
       .required('Password is required'),
   });
 
+  const handleLogin = async (data) => {
+    dispatch({ type: 'LOGIN_START' });
+
+    const res = await api.post('auth/login', data);
+    if (res.data.status) {
+      dispatch({ type: 'LOGIN_SUCCESS', payload: res.data.auth });
+      navigate('/');
+    } else {
+      dispatch({ type: 'LOGIN_FAILURE', payload: res.data.message });
+      setErrStatus(true);
+    }
+  };
+
   useEffect(() => {
     setTimeout(() => {
-      setError();
+      setErrStatus(false);
     }, 5000);
-  }, [error]);
+  }, [errStatus]);
 
-  return (
+  return auth ? (
+    <Navigate to="/" />
+  ) : (
     <div className="loginBox">
       <LeftBg className="position-absolute left bottom-0" />
       <RightBg className="position-absolute end-0 top" />
@@ -58,17 +79,9 @@ const Login = () => {
                 <Formik
                   initialValues={initialValues}
                   validationSchema={validationSchema}
-                  onSubmit={async (fields) => {
-                    const res = await axios.post('http://127.0.0.1:8000/api/auth/login', fields);
-                    if (res.data.status === true) {
-                      console.log(res.data);
-                      navigate('/');
-                    } else {
-                      setError(res.data.message);
-                      navigate('/auth/login');
-                    }
-                  }}
-                  render={({ errors, touched }) => (
+                  onSubmit={(fields) => handleLogin(fields)}
+                >
+                  {({ errors, touched }) => (
                     <Form>
                       <FormGroup>
                         <Label htmlFor="email">Email</Label>
@@ -111,15 +124,23 @@ const Login = () => {
                             type="submit"
                             color="primary"
                             className="btn btn-primary btn-block"
+                            disabled={loading}
                           >
-                            Login
+                            {loading ? (
+                              <>
+                                <Spinner className="me-2" size="sm" color="light" />
+                                loading ..
+                              </>
+                            ) : (
+                              'Login'
+                            )}
                           </Button>
                         </div>
                       </FormGroup>
                     </Form>
                   )}
-                />
-                {error && <Alert color="danger">{error}</Alert>}
+                </Formik>
+                {errStatus && <Alert color="danger">{error}</Alert>}
               </CardBody>
             </Card>
           </Col>

@@ -1,6 +1,6 @@
 import { lazy } from 'react';
-import { Navigate } from 'react-router-dom';
 import Loadable from '../layouts/loader/Loadable';
+import RequireAuth from '../components/RequireAuth';
 import Login from '../pages/auth/Login';
 /****Layouts*****/
 
@@ -8,47 +8,108 @@ const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/BlankLayout')));
 const StarterKit = Loadable(lazy(() => import('../pages/Starterkit')));
 const ProfilePage = Loadable(lazy(() => import('../pages/profile')));
+const ProjectPage = Loadable(lazy(() => import('../pages/projects')));
+const DailyPage = Loadable(lazy(() => import('../pages/daily')));
+const ProjectDetail = Loadable(lazy(() => import('../pages/projects/ProjectDetail')));
 /***** Pages ****/
 
 const Dashboard2 = Loadable(lazy(() => import('../views/dashboards/Dashboard2')));
+const Unauthorized = Loadable(lazy(() => import('../pages/auth/Unauthorized')));
 
 /***** CASL Access Control ****/
-const CASL = Loadable(lazy(() => import('../views/apps/accessControlCASL/AccessControl')));
+// const CASL = Loadable(lazy(() => import('../views/apps/accessControlCASL/AccessControl')));
 
 /***** Auth Pages ****/
-const Error = Loadable(lazy(() => import('../views/auth/Error')));
-const RegisterFormik = Loadable(lazy(() => import('../views/auth/RegisterFormik')));
-const Maintanance = Loadable(lazy(() => import('../views/auth/Maintanance')));
-const LockScreen = Loadable(lazy(() => import('../views/auth/LockScreen')));
-const RecoverPassword = Loadable(lazy(() => import('../views/auth/RecoverPassword')));
+// const Error = Loadable(lazy(() => import('../views/auth/Error')));
+// const RegisterFormik = Loadable(lazy(() => import('../views/auth/RegisterFormik')));
+// const Maintanance = Loadable(lazy(() => import('../views/auth/Maintanance')));
+// const LockScreen = Loadable(lazy(() => import('../views/auth/LockScreen')));
+// const RecoverPassword = Loadable(lazy(() => import('../views/auth/RecoverPassword')));
+
+const ROLES = {
+  SuperAdmin: 'Super Admin',
+  Admin: 'Admin',
+  Director: 'Director',
+  Manager: 'Manager',
+  Supervisor: 'Supervisor',
+  Staff: 'Staff',
+  Employee: 'Employee',
+};
 
 /*****Routes******/
-
 const ThemeRoutes = [
+  // PROTECTED ROUTES
   {
     path: '/',
-    element: <FullLayout />,
+    element: <RequireAuth allowedRoles={[ROLES.Employee]} />,
     children: [
-      { path: '/', name: 'Home', exact: true, element: <Dashboard2 /> },
-      { path: '/starterkit', name: 'Starterkit', exact: true, element: <StarterKit /> },
-      { path: '/profile', name: 'Profile', exact: true, element: <ProfilePage /> },
-      { path: '/casl', name: 'casl', exact: true, element: <CASL /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
+      {
+        path: '/',
+        element: <FullLayout />,
+        children: [
+          {
+            path: '',
+            name: 'Dashboard',
+            element: <Dashboard2 />,
+          },
+          {
+            path: 'profile',
+            name: 'Profile',
+            element: <ProfilePage />,
+          },
+          {
+            path: 'starterkit',
+            name: 'Starterkit',
+            element: <StarterKit />,
+          },
+          {
+            path: 'projects',
+            name: 'Projects',
+            element: <ProjectPage />,
+          },
+          {
+            path: 'daily',
+            name: 'Daily',
+            element: <DailyPage />,
+          },
+          {
+            path: 'projects/details/:projectId',
+            name: 'Project Details',
+            element: <ProjectDetail />,
+          },
+        ],
+      },
     ],
   },
+  // PROTECTED ROUTES
+
+  // LOGIN ROUTE
   {
     path: '/auth',
     element: <BlankLayout />,
     children: [
-      { path: '404', element: <Error /> },
-      { path: '*', element: <Navigate to="/auth/404" /> },
-      { path: 'registerformik', element: <RegisterFormik /> },
-      { path: 'login', element: <Login /> },
-      { path: 'maintanance', element: <Maintanance /> },
-      { path: 'lockscreen', element: <LockScreen /> },
-      { path: 'recoverpwd', element: <RecoverPassword /> },
+      {
+        path: 'login',
+        name: 'Login',
+        element: <Login />,
+      },
     ],
   },
+  // LOGIN ROUTE
+
+  // Unauthorized
+  {
+    path: '/',
+    element: <BlankLayout />,
+    children: [
+      {
+        path: 'unauthorized',
+        name: 'Unauthorized',
+        element: <Unauthorized />,
+      },
+    ],
+  },
+  // Unauthorized
 ];
 
 export default ThemeRoutes;
