@@ -1,9 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Col } from 'reactstrap';
+import { useQuery } from '@tanstack/react-query';
+import useAxios from '../../hooks/useAxios';
 
 const ProjectNav = ({ navActive, setNavActive }) => {
+  const api = useAxios();
+  const { projectId } = useParams();
+
+  const { isLoading, data } = useQuery({
+    queryKey: ['project-number'],
+    queryFn: () =>
+      api.get(`/project/${projectId}`).then((res) => {
+        return res.data.data;
+      }),
+  });
+
   return (
     <Col md="12" className="d-flex justify-content-between mb-2 align-items-center">
       <div className="project-nav">
@@ -32,7 +45,7 @@ const ProjectNav = ({ navActive, setNavActive }) => {
           Files(7)
         </Link>
       </div>
-      <h3 className="fw-bold">KS0121023</h3>
+      <h3 className="fw-bold">{isLoading ? 'Loading..' : data?.project_number}</h3>
     </Col>
   );
 };

@@ -4,7 +4,7 @@ import './ProjectDetail.scss';
 import ProjectNav from './ProjectNav';
 
 const ProjectDetail = () => {
-  const [navActive, setNavActive] = useState(1);
+  const [navActive, setNavActive] = useState(2);
   return (
     <>
       <ProjectNav navActive={navActive} setNavActive={setNavActive} />

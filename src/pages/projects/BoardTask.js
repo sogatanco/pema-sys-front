@@ -1,16 +1,29 @@
 import MaterialIcon from '@material/react-material-icon';
 import React, { useState } from 'react';
-import { Badge, Button, Label } from 'reactstrap';
+import { Badge, Button, Spinner } from 'reactstrap';
 import PropTypes from 'prop-types';
 import user1 from '../../assets/images/users/user1.jpg';
-import user2 from '../../assets/images/users/user2.jpg';
-import user3 from '../../assets/images/users/user3.jpg';
 import TaskPopup from './TaskPopup';
+import TaskForm from './TaskForm';
+import ActionMenu from '../../components/actionMenu/ActionMenu';
+import useAxios from '../../hooks/useAxios';
+import useAuth from '../../hooks/useAuth';
 
-const BoardTask = ({ data }) => {
+const result = (emId) =>
+  emId.filter(
+    (person, index) => index === emId.findIndex((other) => person.employe_id === other.employe_id),
+  );
+
+const BoardTask = ({ data, projectId, refetch }) => {
+  const { auth } = useAuth();
   const [modal, setModal] = useState(false);
-  const [addSubtaskOpen, setAddSubtaskOpen] = useState(false);
+  const [addSubtaskOpen, setAddSubtaskOpen] = useState(undefined);
   const [task, setTask] = useState(undefined);
+  const [updating, setUpdating] = useState();
+  const [taskIdActive, setTaskIdActive] = useState();
+  const [status, setStatus] = useState();
+
+  const api = useAxios();
 
   const toggle = () => {
     setModal(!modal);
@@ -21,26 +34,104 @@ const BoardTask = ({ data }) => {
     setTask(selectedTask);
   };
 
+  const type = 2;
+
+  const handleTaskStatus = async (taskId, taskStatus) => {
+    setTaskIdActive(taskId);
+    setStatus(taskStatus);
+    setUpdating(true);
+    await api
+      .put(`task/${taskId}/status`, {
+        employe_id: auth.user.employe_id,
+        status: taskStatus,
+      })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+    refetch();
+    setUpdating(false);
+    setTaskIdActive();
+    setStatus();
+  };
+
+  const menuOptions = {
+    options: [
+      {
+        id: 1,
+        icon: <MaterialIcon icon="edit_note" />,
+        type: 'button',
+        label: 'To do',
+        to: 0,
+      },
+      {
+        id: 2,
+        icon: <MaterialIcon icon="play_circle_outline" />,
+        type: 'button',
+        label: 'In Progress',
+        to: 1,
+      },
+      {
+        id: 3,
+        icon: <MaterialIcon icon="check" />,
+        type: 'button',
+        label: 'Done',
+        to: 2,
+      },
+    ],
+  };
+
   return (
     <>
       <div className="">
-        {data?.map((td) => (
+        {data?.map((td, i) => (
           <div key={td.task_id} className="board">
             <div className="board-header">
-              <div className="">
-                <Badge color="info">Daily</Badge>
+              <div className="d-flex" style={{ height: 'max-content' }}>
+                <Badge color="info">#{i + 1}</Badge>
               </div>
-              <MaterialIcon icon="more_horiz" className="board-action" />
+              {td.status === 0 || td.status === 1 ? (
+                updating && taskIdActive === td.task_id ? (
+                  <div className="d-flex align-items-center gap-1">
+                    <Spinner size="sm" color="success" />
+                    <span>
+                      Updating status to
+                      <strong>
+                        {status === 0
+                          ? 'To do'
+                          : status === 1
+                          ? 'In Progress'
+                          : status === 3
+                          ? 'Done'
+                          : ''}
+                      </strong>
+                    </span>
+                  </div>
+                ) : (
+                  <div key={td.task_id}>
+                    <ActionMenu
+                      menuOptions={menuOptions}
+                      taskId={td.task_id}
+                      status={td.status}
+                      action={handleTaskStatus}
+                    />
+                  </div>
+                )
+              ) : (
+                td.status === 2 && (
+                  <Badge color="light" className="text-dark">
+                    <i className="bi-clock mr-4" style={{ fontSize: '12px' }}></i>
+                    &nbsp; Review
+                  </Badge>
+                )
+              )}
             </div>
             <div className="board-body" onClick={() => openPopup(td)}>
               <div className="task-title">{td.task_title}</div>
               <div className="task-bottom">
                 <small className="text-muted">{td.subtasks.length} Subtask</small>
                 <div className="task-action">
-                  <MaterialIcon icon="done" />
                   <div className="comment">
                     <MaterialIcon icon="comment" />
-                    <div>1</div>
+                    <div>{td.comments}</div>
                   </div>
                 </div>
               </div>
@@ -51,105 +142,61 @@ const BoardTask = ({ data }) => {
                   <div className="task-title">{st.task_title}</div>
                   <div className="task-action">
                     <MaterialIcon icon="done" />
-                    <div className="comment">
-                      <MaterialIcon icon="comment" />
-                      <div>1</div>
-                    </div>
                   </div>
                 </div>
               ))}
-            <div className="board-footer">
-              {addSubtaskOpen ? (
-                <div className="new-task">
-                  <div className="body">
-                    <div className="input">
-                      <textarea type="text" placeholder="Subtask title here.." />
-                    </div>
-                    <button type="button">
-                      <i className="b bi-person-plus-fill"></i>
-                    </button>
-                  </div>
-                  <div className="footer">
-                    <div className="option">
-                      <div className="attach">
-                        <Label for="attach">
-                          <MaterialIcon icon="attach_file" />
-                        </Label>
-                        <input type="file" id="attach" hidden />
-                      </div>
-                      <div className="duedate">
-                        <Label for="duedate">
-                          <MaterialIcon icon="calendar_month" />
-                        </Label>
-                      </div>
-                    </div>
-                    <div className="action">
+            {td.status !== 3 && (
+              <div className="board-footer">
+                {addSubtaskOpen === td.task_id ? (
+                  <TaskForm
+                    {...{ projectId, setAddSubtaskOpen, refetch, type }}
+                    taskId={td.task_id}
+                  />
+                ) : (
+                  <>
+                    {data.status !== 'done' ? (
                       <Button
                         type="button"
                         size="sm"
                         color="light"
-                        onClick={() => setAddSubtaskOpen(false)}
+                        className="d-flex align-items-center"
+                        onClick={() => setAddSubtaskOpen(td.task_id)}
                       >
-                        Cancel
+                        <MaterialIcon icon="add" style={{ fontSize: '14px' }} />
+                        Add Subtask
                       </Button>
-                      <Button type="button" size="sm">
-                        Save
-                      </Button>
+                    ) : (
+                      <div></div>
+                    )}
+                    <div className="member">
+                      {result(td.pics).map((pic) => (
+                        <img
+                          key={pic.employe_id}
+                          src={user1}
+                          className="rounded-circle"
+                          alt="avatar"
+                          width="35"
+                          height="35"
+                        />
+                      ))}
                     </div>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {data.status !== 'done' ? (
-                    <Button
-                      type="button"
-                      size="sm"
-                      color="light"
-                      className="d-flex align-items-center"
-                      onClick={() => setAddSubtaskOpen(true)}
-                    >
-                      <MaterialIcon icon="add" style={{ fontSize: '14px' }} />
-                      Add Subtask
-                    </Button>
-                  ) : (
-                    <div></div>
-                  )}
-                  <div className="member">
-                    <img
-                      src={user1}
-                      className="rounded-circle"
-                      alt="avatar"
-                      width="35"
-                      height="35"
-                    />
-                    <img
-                      src={user2}
-                      className="rounded-circle"
-                      alt="avatar"
-                      width="35"
-                      height="35"
-                    />
-                    <img
-                      src={user3}
-                      className="rounded-circle"
-                      alt="avatar"
-                      width="35"
-                      height="35"
-                    />
-                  </div>
-                </>
-              )}
-            </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         ))}
       </div>
-      <TaskPopup {...{ modal, toggle, task }} />
+      {modal && <TaskPopup {...{ modal, setModal, toggle, task, refetch }} />}
     </>
   );
 };
 
 BoardTask.propTypes = {
   data: PropTypes.array,
+  projectId: PropTypes.string,
+  refetch: PropTypes.func,
+  isRefetching: PropTypes.any,
 };
 
 export default BoardTask;

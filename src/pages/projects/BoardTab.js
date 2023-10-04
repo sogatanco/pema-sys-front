@@ -1,18 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row } from 'reactstrap';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import BoardToDo from './BoardToDo';
-// import BoardInProgress from './BoardInProgress';
-// import BoardDone from './BoardDone';
+import BoardInProgress from './BoardInProgress';
+import useAxios from '../../hooks/useAxios';
+import BoardDone from './BoardDone';
 // import NewTaskModal from './NewTaskModal';
 
 const BoardTab = () => {
-  //   const [modal, setModal] = useState(false);
-  //   const [newTaskOpen, setNewTaskOpen] = useState(false);
-  //   const [addSubtaskOpen, setAddSubtaskOpen] = useState(false);
+  const { projectId } = useParams();
+  const [todos, setTodos] = useState();
+  const [inProgress, setInProgress] = useState();
+  const [Done, setDone] = useState();
 
-  //   const toggle = () => {
-  //     setModal(!modal);
-  //   };
+  const api = useAxios();
+
+  const { isLoading, error, data, refetch, isRefetching } = useQuery({
+    queryKey: ['todos'],
+    queryFn: () =>
+      api.get(`/task/${projectId}`).then((res) => {
+        return res.data.tasks;
+      }),
+  });
+
+  useEffect(() => {
+    const todofFiltered = data?.filter((task) => {
+      return task.status === 0;
+    });
+
+    const inProgressfFiltered = data?.filter((task) => {
+      return task.status === 1;
+    });
+
+    const DoneFiltered = data?.filter((task) => {
+      return task.status === 2;
+    });
+
+    setTodos(todofFiltered);
+    setInProgress(inProgressfFiltered);
+    setDone(DoneFiltered);
+  }, [data]);
 
   return (
     <Row>
@@ -29,9 +57,9 @@ const BoardTab = () => {
           <NewTaskModal {...{ modal, setModal, toggle }} />
         </div>
       </Col> */}
-      <BoardToDo />
-      {/* <BoardInProgress /> */}
-      {/* <BoardDone /> */}
+      <BoardToDo data={todos} {...{ isLoading, error, refetch, isRefetching }} />
+      <BoardInProgress data={inProgress} {...{ isLoading, error, refetch, isRefetching }} />
+      <BoardDone data={Done} {...{ isLoading, error, refetch, isRefetching }} />
     </Row>
   );
 };

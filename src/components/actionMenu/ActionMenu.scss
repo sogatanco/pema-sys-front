@@ -1,6 +1,20 @@
 .action {
   position: relative;
 
+  .btn-option {
+    border: 1px solid white;
+    background-color: transparent;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    transition: all 500ms ease;
+
+    &:hover,
+    &.active {
+      border: 1px solid #7460ee;
+    }
+  }
+
   .material-icons {
     font-size: 20px;
   }
@@ -16,20 +30,24 @@
 
   .action-options {
     position: absolute;
+    width: 180px;
     display: flex;
     flex-direction: column;
     border-radius: 5px;
     background-color: white;
-    left: -130px;
+    left: -180px;
     top: 0;
     overflow: hidden;
     border: 1px solid rgb(239, 239, 239);
     z-index: 3;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.1);
 
     a,
     button {
       width: 100%;
       display: flex;
+      border: none;
+      background: none;
       align-items: center;
       gap: 6px;
       padding: 10px 40px 10px 20px;
@@ -41,8 +59,9 @@
         background-color: rgb(239, 239, 239);
       }
 
-      &:last-child {
-        border-top: 1px solid rgb(216, 216, 216);
+      &:disabled:hover {
+        background-color: white;
+        cursor: not-allowed;
       }
     }
 
@@ -55,14 +74,17 @@
     //   }
     // }
 
-    button {
-      background: none;
-      border: none;
-      display: inline-flex;
-      color: rgb(239, 103, 103) !important;
+    .action-del {
+      border-top: 1px solid rgb(216, 216, 216);
+      button {
+        background: none;
+        border: none;
+        display: inline-flex;
+        color: rgb(239, 103, 103) !important;
 
-      &:hover {
-        background-color: rgb(254, 234, 234);
+        &:hover {
+          background-color: rgb(254, 234, 234);
+        }
       }
     }
   }

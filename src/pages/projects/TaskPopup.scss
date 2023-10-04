@@ -1,22 +1,24 @@
 .popup-body {
   width: 100%;
-  height: 400px;
+  height: 500px;
   display: flex;
 
   .left {
     width: 45%;
     display: flex;
     flex-direction: column;
-    padding-right: 20px;
-    padding-bottom: 10px;
+    padding: 10px 20px;
     gap: 20px;
+    border: 1px solid #ecebeb;
+    border-radius: 10px;
+    overflow-y: auto;
 
     .top {
       display: flex;
-      height: 60px;
+      height: 50px;
       justify-content: space-between;
 
-      .created-at {
+      .date {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -32,16 +34,23 @@
       flex-direction: column;
       gap: 20px;
     }
+
+    .attach {
+      ul,
+      li {
+        font-size: 14px;
+      }
+    }
   }
 
   .right {
     width: 55%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     padding-bottom: 10px;
     padding-left: 20px;
-    border-left: 1px solid gray;
-    gap: 6px;
+    gap: 10px;
 
     .top {
       width: 100%;
@@ -75,17 +84,20 @@
 
       .comment-item {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        gap: 10px;
 
         .comment-user {
+          width: 100%;
           display: flex;
           gap: 10px;
 
           .comment-teks {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 10px;
-            border-radius: 0 5px 5px 5px;
+            padding: 3px 10px;
+            border-radius: 0 10px 10px 10px;
             background-color: rgb(252, 252, 252);
 
             .comment-time {

@@ -30,21 +30,17 @@ const NewProjectModal = ({ modal, setModal, toggle, setSuccessMsg, setErrorMsg }
 
   useEffect(() => {
     async function fetchDIvision() {
-      const res = await api.get(`employe/division/${auth?.user.employe_id}`);
-      if (res?.data.status === true) {
-        setDivision(res.data.division);
-      } else {
-        console.log('error');
-      }
+      await api
+        .get(`employe/division/${auth?.user.employe_id}`)
+        .then((res) => setDivision(res.data.division))
+        .catch((err) => console.log(err));
     }
 
     async function fetchBusinessOptions() {
-      const res = await api.get(`project/business-options/`);
-      if (res?.data.status === true) {
-        setOptions(res.data);
-      } else {
-        console.log('error');
-      }
+      await api
+        .get(`project/business/options`)
+        .then((res) => setOptions(res.data))
+        .catch((err) => console.log(err));
     }
 
     fetchBusinessOptions();
