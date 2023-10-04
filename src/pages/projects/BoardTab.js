@@ -26,15 +26,15 @@ const BoardTab = () => {
 
   useEffect(() => {
     const todofFiltered = data?.filter((task) => {
-      return task.status === 0;
+      return parseInt(task.status, 10) === 0;
     });
 
     const inProgressfFiltered = data?.filter((task) => {
-      return task.status === 1;
+      return parseInt(task.status, 10) === 1;
     });
 
     const DoneFiltered = data?.filter((task) => {
-      return task.status === 2;
+      return parseInt(task.status, 10) === 2;
     });
 
     setTodos(todofFiltered);
