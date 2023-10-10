@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Form, Input, Label, Modal, ModalBody, ModalHeader } from 'reactstrap';
+import { Badge, Button, Form, Input, Label, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import PropTypes from 'prop-types';
 import './TaskPopup.scss';
 import MaterialIcon from '@material/react-material-icon';
@@ -17,6 +17,8 @@ const result = (emId) =>
     (person, index) => index === emId.findIndex((other) => person.employe_id === other.employe_id),
   );
 
+// const sortByDate = (data) => data.sort(({ date: a }, { date: b }) => (a < b ? -1 : a > b ? 1 : 0));
+
 const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
   const { auth } = useAuth();
   const [history, setHistory] = useState();
@@ -26,9 +28,11 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
   const [listEmployee, setListEmploye] = useState();
   const [emModal, setEmModal] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [comments, setComments] = useState();
   const [postComment, setPostComment] = useState();
   const [commentSending, setCommentSending] = useState(false);
+  const [files, setFiles] = useState([]);
 
   const inputCommentRef = useRef();
 
@@ -58,11 +62,11 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
     }
 
     async function fetchHistory() {
-      await api.get(`/task/history/${task?.task_id}`).then((res) => setHistory(res.data.data));
+      await api.get(`api/task/history/${task?.task_id}`).then((res) => setHistory(res.data.data));
     }
 
     async function fetchComments() {
-      await api.get(`/comment/${task?.task_id}`).then((res) => setComments(res.data.data));
+      await api.get(`api/comment/${task?.task_id}`).then((res) => setComments(res.data.data));
     }
 
     fetchComments();
@@ -72,7 +76,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
   useEffect(() => {
     async function fetchEmployees() {
       await api
-        .get(`/employe/assignment-list`)
+        .get(`api/employe/assignment-list`)
         .then((res) => setListEmploye(res.data.data))
         .catch((err) => console.log(err));
     }
@@ -84,16 +88,33 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
     e.preventDefault();
     setUpdating(true);
     taskTemp.task_pic = assignedEmployees;
+    if (files) {
+      taskTemp.files = files;
+    }
 
-    await api.patch(`/task/${task?.task_id}`, taskTemp).then((res) => console.log(res));
+    await api.patch(`api/task/${task?.task_id}`, taskTemp).then((res) => console.log(res));
     refetch();
     setUpdating(false);
+  };
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    setUploading(true);
+    await api
+      .post(`api/task/${task.task_id}/upload`, files, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((res) => task.files.push(res.data.file));
+    setFiles([]);
+    setUploading(false);
   };
 
   const deleteTask = async () => {
     setLoading(true);
     await api
-      .delete(`task/${task.task_id}`)
+      .delete(`api/task/${task.task_id}`)
       .then()
       .catch((err) => console.log(err));
     setLoading(false);
@@ -118,12 +139,14 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
     postComment.employe_id = auth.user.employe_id;
     postComment.task_id = task.task_id;
     await api
-      .post(`/comment`, postComment)
+      .post(`api/comment`, postComment)
       .then((res) => setComments((current) => [...current, res.data.data]));
     setCommentSending(false);
     setPostComment();
     e.target.reset();
   };
+
+  const fileUrl = process.env.REACT_APP_FILEURL;
 
   return (
     <>
@@ -137,7 +160,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
           ) : (
             <div className="popup-body">
               <div className="left">
-                <Form onSubmit={handleUpdate}>
+                <form onSubmit={handleUpdate}>
                   <div className="top">
                     <div className="date">
                       <h6>Start Date</h6>
@@ -171,43 +194,84 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
                   </div>
                   <div className="d-flex justify-content-between align-items-center mt-3">
                     <div className="d-flex align-items-center gap-3">
-                      <div className="pt-2">
-                        <Label for="attach">
-                          <MaterialIcon icon="attach_file" className="btn-icon" />
-                        </Label>
-                        <input type="file" id="attach" hidden />
-                      </div>
                       <button type="button" className="btn-assigne" onClick={assigneModal}>
                         <i className="bi-person-plus-fill"></i>
                         <span>{assignedEmployees?.length || 0}</span>
                       </button>
                     </div>
-                    <Button type="submit" className="btn" outline disabled={updating}>
+                    <Button
+                      type="submit"
+                      className="btn"
+                      color="info"
+                      disabled={updating}
+                      size="sm"
+                    >
                       {updating ? 'Updating...' : 'Update'}
                     </Button>
                   </div>
-                </Form>
+                </form>
+                <form onSubmit={handleUpload}>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="d-flex align-items-center gap-1">
+                      <div className="pt-2">
+                        <Label for="attach">
+                          <MaterialIcon icon="attach_file" className="btn-icon" />
+                        </Label>
+                        <input
+                          type="file"
+                          id="attach"
+                          hidden
+                          onChange={(e) => setFiles(e.target.files)}
+                          required
+                        />
+                      </div>
+                      <span style={{ color: '#1F88E5', fontSize: '12px' }}>{files[0]?.name}</span>
+                    </div>
+                    <Button type="submit" className="btn" outline size="sm">
+                      {uploading ? 'Uploading...' : 'Upload'}
+                    </Button>
+                  </div>
+                </form>
                 <div className="attach">
-                  <h6>Attachment files</h6>
+                  <h6>Attachment files ({task?.files?.length || 0})</h6>
                   <ul>
-                    <li>
-                      <Link to="/linkfile">file-almpiran-task-1.pdf</Link>
-                    </li>
-                    <li>
-                      <Link to="/linkfile">file-almpiran-task-1-2.pdf</Link>
-                    </li>
-                    <li>
-                      <Link to="/linkfile">file-almpiran-task-1.pdf</Link>
-                    </li>
+                    {task?.files?.length > 0 &&
+                      task?.files.map((f) => (
+                        <div key={f.file_id} className="d-flex gap-1 align-items-center">
+                          <li>
+                            <Link
+                              className="file-link"
+                              to={`${fileUrl}taskfiles/${f.file_name}`}
+                              target="_blank"
+                            >
+                              {f.file_name}
+                            </Link>
+                          </li>
+                          <button type="button" className="btn d-flex" style={{ color: '#EF6767' }}>
+                            <MaterialIcon icon="delete_outline" style={{ fontSize: '20px' }} />
+                          </button>
+                        </div>
+                      ))}
                   </ul>
                 </div>
               </div>
               <div className="right">
                 <div className="top">
                   <div className="status">
-                    <button type="button" className="btn bg-secondary text-white">
-                      To Do
-                    </button>
+                    {task?.status === 0 ? (
+                      <Badge color="info">To Do</Badge>
+                    ) : task?.status === 1 ? (
+                      <Badge color="primary">In Progress</Badge>
+                    ) : task?.status === 2 ? (
+                      <Badge color="light" className="text-dark">
+                        <i className="bi-clock mr-4" style={{ fontSize: '12px' }}></i>
+                        &nbsp; Waiting for approval: <strong>Syahrial</strong>
+                      </Badge>
+                    ) : task?.status === 3 ? (
+                      <Badge color="success">Done</Badge>
+                    ) : (
+                      <Badge color="danger">Revision</Badge>
+                    )}
                   </div>
                   <ActionMenu menuOptions={menuOptions} action={deleteTask} />
                 </div>
@@ -216,28 +280,58 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
                     <>
                       <div className="history-item">
                         <div className="comment-name">
-                          <span>{task && task.created_by} create this task</span>
+                          <span>
+                            <strong>{task && task.created_by}</strong> create this task
+                          </span>
                         </div>
                         <small>{task && newDate(task.created_at)}</small>
                       </div>
                       {history?.map((h, i) => (
-                        <div key={h.approval_id} className="history-item">
-                          <div className="comment-name">
-                            <span>
-                              {h.status === 0 && i > 0
-                                ? `${h.first_name} change task to To Do`
-                                : h.status === 0
-                                ? `${h.first_name} was assigned`
-                                : h.status === 1
-                                ? `${h.first_name} change task to In Progress`
-                                : h.status === 2
-                                ? `${h.first_name} change task to Review`
-                                : h.status === 3
-                                ? `${h.first_name} change task to Done`
-                                : `${h.first_name} change task to Revision`}
-                            </span>
+                        <div key={h.approval_id}>
+                          <div className="history-item">
+                            <div className="comment-name">
+                              {h.status === 0 && i > 0 ? (
+                                <span>
+                                  <strong>{h.pic_task}</strong> change task to To Do
+                                </span>
+                              ) : h.status === 0 ? (
+                                <span>
+                                  <strong>{h.pic_task}</strong> was assigned
+                                </span>
+                              ) : h.status === 1 ? (
+                                <span>
+                                  <strong>{h.pic_task}</strong> change task to In Progress
+                                </span>
+                              ) : h.status === 2 ? (
+                                <span>
+                                  <strong>{h.pic_task}</strong> change task to Review
+                                </span>
+                              ) : h.status === 3 ? (
+                                <span>
+                                  <strong>{h.manager} </strong> task approved
+                                </span>
+                              ) : (
+                                <>
+                                  <span>
+                                    <strong>{h.manager} </strong>change task to Revision
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                            <small>{newDate(h.created_at)}</small>
                           </div>
-                          <small>{newDate(h.created_at)}</small>
+                          {(h.status === 3 || h.status === 4) && (
+                            <div className="comment-item mt-1">
+                              <div className="comment-user">
+                                <div className="comment-teks">
+                                  <small style={{ fontWeight: '600' }}>
+                                    {h.status === 3 ? 'Comment' : 'Notes'}
+                                  </small>
+                                  {h.notes}
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       ))}
                       <div className="comment-item">
@@ -303,6 +397,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
             defaultValue={assignedEmployees}
             options={listEmployee}
             onChange={(choice) => setAssignedEmployees(choice)}
+            isDisabled
           />
         </ModalBody>
       </Modal>

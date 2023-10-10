@@ -7,6 +7,7 @@
   padding: 4px;
 
   a {
+    position: relative;
     text-decoration: none;
     height: 100%;
     display: flex;
@@ -24,6 +25,20 @@
       background-color: rgb(109, 109, 109);
       color: white !important;
     }
+
+    .count {
+      position: absolute;
+      min-width: 14px;
+      height: 14px;
+      display: grid;
+      align-items: center;
+      justify-content: center;
+      top: 2px;
+      right: 8px;
+      font-size: 10px;
+      border-radius: 50%;
+      transition: all 300ms ease;
+    }
   }
 }
 
@@ -32,7 +47,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-top: 8px;
+  margin-bottom: 8px;
   gap: 4px;
 
   .overall-child {
@@ -143,6 +158,10 @@
     .task-bottom {
       display: flex;
       justify-content: space-between;
+
+      .task-info {
+        font-size: 14px;
+      }
     }
 
     .task-action {
@@ -354,5 +373,21 @@ i {
 
   &:hover {
     background-color: #d0d0d0;
+  }
+}
+
+.custom-card {
+  transition: all 300ms ease;
+
+  &:hover {
+    box-shadow: none;
+  }
+}
+
+.file-link {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 }

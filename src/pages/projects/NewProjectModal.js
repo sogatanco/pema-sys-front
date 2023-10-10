@@ -19,7 +19,7 @@ import PropTypes from 'prop-types';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 
-const NewProjectModal = ({ modal, setModal, toggle, setSuccessMsg, setErrorMsg }) => {
+const NewProjectModal = ({ modal, setModal, toggle, setSuccessMsg, setErrorMsg, refetch }) => {
   const { auth } = useAuth();
   const [newProject, setNewProject] = useState({});
   const [division, setDivision] = useState({});
@@ -31,14 +31,14 @@ const NewProjectModal = ({ modal, setModal, toggle, setSuccessMsg, setErrorMsg }
   useEffect(() => {
     async function fetchDIvision() {
       await api
-        .get(`employe/division/${auth?.user.employe_id}`)
+        .get(`api/employe/division/${auth?.user.employe_id}`)
         .then((res) => setDivision(res.data.division))
         .catch((err) => console.log(err));
     }
 
     async function fetchBusinessOptions() {
       await api
-        .get(`project/business/options`)
+        .get(`api/project/business/options`)
         .then((res) => setOptions(res.data))
         .catch((err) => console.log(err));
     }
@@ -57,8 +57,9 @@ const NewProjectModal = ({ modal, setModal, toggle, setSuccessMsg, setErrorMsg }
     newProject.division = division.organization_id;
 
     await api
-      .post(`project`, newProject)
+      .post(`api/project`, newProject)
       .then(() => {
+        refetch();
         setSuccessMsg('New project has been created.');
       })
       .catch((err) => {
@@ -266,6 +267,7 @@ NewProjectModal.propTypes = {
   setSuccessMsg: PropTypes.func,
   setErrorMsg: PropTypes.func,
   toggle: PropTypes.any,
+  refetch: PropTypes.func,
 };
 
 export default NewProjectModal;

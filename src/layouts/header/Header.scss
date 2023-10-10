@@ -1,0 +1,17 @@
+.notif {
+  position: relative;
+
+  .notif-count {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    top: -2px;
+    right: -2px;
+    height: 13px;
+    min-width: 13px;
+    font-size: 8px;
+    border-radius: 50%;
+    background-color: rgb(243, 70, 70);
+  }
+}

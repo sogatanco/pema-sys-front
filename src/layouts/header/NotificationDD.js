@@ -1,57 +1,67 @@
+import { useState } from 'react';
 import { ListGroup, ListGroupItem } from 'reactstrap';
-import { User, Link, Calendar, Settings } from 'react-feather';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import newDate from '../../utils/formatDate';
+import user1 from '../../assets/images/users/user1.jpg';
+import useAxios from '../../hooks/useAxios';
+import useAuth from '../../hooks/useAuth';
 
-const messages = [
-  {
-    id: 1,
-    iconclass: <Link />,
-    iconbg: 'warning',
-    title: 'Launch Admin',
-    desc: 'Just see my new admin!',
-    time: '9:30 AM',
-  },
-  {
-    id: 2,
-    iconclass: <Calendar />,
-    iconbg: 'success',
-    title: 'Event Today',
-    desc: 'Just a reminder that you have event.',
-    time: '9:10 PM',
-  },
-  {
-    id: 3,
-    iconclass: <Settings />,
-    iconbg: 'info',
-    title: 'Settings',
-    desc: 'You can customize this template as you want.',
-    time: '9:08 AM',
-  },
-  {
-    id: 4,
-    iconclass: <User />,
-    iconbg: 'danger',
-    title: 'Check Email',
-    desc: 'Just check my admin!',
-    time: '9:02 AM',
-  },
-];
+const NotificationDD = ({ data, refetch, setIsNotifOpen }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [notifIdActive, setNotifIdActive] = useState();
+  const navigate = useNavigate();
+  const api = useAxios();
+  const { auth } = useAuth();
 
-const NotificationDD = () => {
+  const handleNotif = async (projectId, notifId, category) => {
+    setIsLoading(true);
+    setNotifIdActive(notifId);
+    await api
+      .patch(`api/employe/notification/read/${notifId}`)
+      .then(
+        () => refetch(),
+        setIsLoading(false),
+        setIsNotifOpen(false),
+        auth.user.roles.includes('Manager')
+          ? category === 'project'
+            ? navigate(`/projects/details/${projectId}?n=${notifId}&to=handover`)
+            : navigate(`/projects/details/${projectId}?n=${notifId}&to=review`)
+          : navigate(`/projects/details/${projectId}`),
+      )
+      .catch((err) => console.log(err), setIsLoading(false), setIsNotifOpen(false));
+  };
+
   return (
     <div>
       <ListGroup flush>
-        {messages.map((msg) => (
-          <ListGroupItem action key={msg.id} tag="a" href="/">
+        {data?.map((msg) => (
+          <ListGroupItem
+            // action
+            key={msg.id}
+            tag="a"
+            // href={`/projects/details/${msg.project_id}?n=${msg.id}&to=review`}
+            onClick={() => handleNotif(msg.project_id, msg.id, msg.category)}
+            style={{ cursor: 'pointer' }}
+          >
             <div className="d-flex align-items-center gap-3 py-2">
-              <div
-                className={`circle-box md-box flex-shrink-0 bg-light-${msg.iconbg} text-${msg.iconbg}`}
-              >
-                {msg.iconclass}
-              </div>
+              <img src={user1} className="rounded-circle" alt="avatar" width="35" height="35" />
               <div className="col-9">
-                <h5 className="mb-0 fw-bold">{msg.title}</h5>
-                <span className="text-muted text-truncate d-block">{msg.desc}</span>
-                <small className="text-muted">{msg.time}</small>
+                <h5 className="mb-0 fw-bold" style={{ fontSize: '14px' }}>
+                  {`${msg.title} - ${msg.first_name}`}
+                </h5>
+                <span className="text-muted text-truncate d-block" style={{ fontSize: '14px' }}>
+                  {msg.desc}
+                </span>
+                {isLoading && msg.id === notifIdActive ? (
+                  <small className="text-success" style={{ fontSize: '12px' }}>
+                    loading...
+                  </small>
+                ) : (
+                  <small className="text-muted" style={{ fontSize: '12px' }}>
+                    {newDate(msg.created_at)}
+                  </small>
+                )}
               </div>
             </div>
           </ListGroupItem>
@@ -59,6 +69,12 @@ const NotificationDD = () => {
       </ListGroup>
     </div>
   );
+};
+
+NotificationDD.propTypes = {
+  data: PropTypes.array,
+  setIsNotifOpen: PropTypes.func,
+  refetch: PropTypes.func,
 };
 
 export default NotificationDD;

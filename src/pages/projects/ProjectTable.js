@@ -27,12 +27,12 @@ const ProjectTables = () => {
     setModal(!modal);
   };
 
-  const api = useAxios();
+  const api = useAxios('api');
 
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data, refetch } = useQuery({
     queryKey: ['projects'],
     queryFn: () =>
-      api.get(`project`).then((res) => {
+      api.get(`api/project`).then((res) => {
         return res.data.data;
       }),
   });
@@ -70,7 +70,9 @@ const ProjectTables = () => {
                 <MaterialIcon icon="add" />
                 Create New Project
               </Button>
-              <NewProjectModal {...{ modal, setModal, toggle, setSuccessMsg, setErrorMsg }} />
+              <NewProjectModal
+                {...{ modal, setModal, toggle, setSuccessMsg, setErrorMsg, refetch }}
+              />
             </div>
           </Col>
           {isLoading ? (
@@ -88,14 +90,14 @@ const ProjectTables = () => {
                   <th>#</th>
                   <th>Project</th>
                   <th>Number</th>
-                  <th>Division</th>
+                  <th>Level</th>
                   <th>Start</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody style={{ overflow: 'hidden' }}>
-                {data.map((p, i) => (
+                {data?.map((p, i) => (
                   <tr key={p.project_id} className="border-top">
                     <td>{i + 1}</td>
                     <td className="text-success fw-bold">
@@ -103,10 +105,10 @@ const ProjectTables = () => {
                         {p.project_name}
                       </Link>
                     </td>
-                    <td>{p.organization_name}</td>
                     <td>{p.project_number}</td>
-                    <td>{`${p.start_date.split('-')[2]}-${p.start_date.split('-')[1]}-${
-                      p.start_date.split('-')[0]
+                    <td>{p.level_desc}</td>
+                    <td>{`${p?.start_date?.split('-')[2]}-${p?.start_date?.split('-')[1]}-${
+                      p?.start_date?.split('-')[0]
                     }`}</td>
                     <td>
                       {i === 0 && <Badge color="info">New</Badge>}

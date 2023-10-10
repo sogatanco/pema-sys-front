@@ -19,22 +19,22 @@ const BoardTab = () => {
   const { isLoading, error, data, refetch, isRefetching } = useQuery({
     queryKey: ['todos'],
     queryFn: () =>
-      api.get(`/task/${projectId}`).then((res) => {
+      api.get(`api/task/${projectId}`).then((res) => {
         return res.data.tasks;
       }),
   });
 
   useEffect(() => {
-    const todofFiltered = data?.filter((task) => {
-      return parseInt(task.status, 10) === 0;
+    const todofFiltered = data?.filter((taska) => {
+      return parseInt(taska.status, 10) === 0 || parseInt(taska.status, 10) === 4;
     });
 
-    const inProgressfFiltered = data?.filter((task) => {
-      return parseInt(task.status, 10) === 1;
+    const inProgressfFiltered = data?.filter((taska) => {
+      return parseInt(taska.status, 10) === 1;
     });
 
-    const DoneFiltered = data?.filter((task) => {
-      return parseInt(task.status, 10) === 2;
+    const DoneFiltered = data?.filter((taska) => {
+      return parseInt(taska.status, 10) === 2 || parseInt(taska.status, 10) === 3;
     });
 
     setTodos(todofFiltered);
