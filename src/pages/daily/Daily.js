@@ -1,16 +1,44 @@
 import React from 'react';
-import { Card, CardBody } from 'reactstrap';
-// import BreadCrumbs from '../layouts/breadcrumbs/BreadCrumbs';
+import { Card, CardBody, Row, Col } from 'reactstrap';
+import Newtask from './Newtask';
+
 
 const Daily = () => {
+
   return (
     <>
-
       <Card>
         <CardBody className="p-4">
-          <p className="mb-0">This is some text within a card block.</p>
+          {/* autocomplere */}
+          <Newtask></Newtask>
+
+          {/* end auto complete */}
         </CardBody>
       </Card>
+
+      <Row>
+        <Col>
+          <Card>
+            <CardBody>
+              <h3>Todo</h3>
+            </CardBody>
+          </Card>
+        </Col>
+        <Col>
+          <Card>
+            <CardBody>
+              <h3>In Progress</h3>
+            </CardBody>
+          </Card>
+        </Col>
+        <Col>
+          <Card>
+            <CardBody>
+              <h3>Done</h3>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
     </>
   );
 };
