@@ -16,6 +16,9 @@ import { Link } from 'react-router-dom';
 import NewProjectModal from './NewProjectModal';
 import useAxios from '../../hooks/useAxios';
 import './Project.scss';
+import toast, { Toaster } from 'react-hot-toast';
+
+const notify = () => toast('Here is your toast.');
 
 const ProjectTables = () => {
   const [modal, setModal] = useState(false);
@@ -52,6 +55,7 @@ const ProjectTables = () => {
         <Alert color={successMsg ? 'info' : 'danger'}>{!errorMsg ? successMsg : errorMsg}</Alert>
       )}
       <Card>
+        <button onClick={notify}>Make me a toast</button>
         <CardBody style={{ position: 'relative' }}>
           <Col className="d-flex justify-content-between" col="12">
             <div className="">
