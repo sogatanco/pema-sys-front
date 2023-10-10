@@ -25,7 +25,6 @@ const BoardTab = () => {
   });
 
   useEffect(() => {
-
     const todofFiltered = data?.filter((taska) => {
       return parseInt(taska.status, 10) === 0 || parseInt(taska.status, 10) === 4;
     });
@@ -33,7 +32,6 @@ const BoardTab = () => {
     const inProgressfFiltered = data?.filter((taska) => {
       return parseInt(taska.status, 10) === 1;
     });
-
 
     const DoneFiltered = data?.filter((taska) => {
       return parseInt(taska.status, 10) === 2 || parseInt(taska.status, 10) === 3;
