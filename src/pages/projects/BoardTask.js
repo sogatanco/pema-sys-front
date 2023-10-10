@@ -41,7 +41,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
     setStatus(taskStatus);
     setUpdating(true);
     await api
-      .put(`task/${taskId}/status`, {
+      .put(`api/task/${taskId}/status`, {
         employe_id: auth.user.employe_id,
         status: taskStatus,
       })
@@ -85,21 +85,29 @@ const BoardTask = ({ data, projectId, refetch }) => {
         {data?.map((td, i) => (
           <div key={td.task_id} className="board">
             <div className="board-header">
-              <div className="d-flex" style={{ height: 'max-content' }}>
+              <div className="d-flex gap-2" style={{ height: 'max-content' }}>
                 <Badge color="info">#{i + 1}</Badge>
+                {parseInt(td.status, 10) === 4 && (
+                  <Badge color="danger">
+                    <i className="bi-pencil-square mr-4" style={{ fontSize: '12px' }}></i>
+                    &nbsp; Revision
+                  </Badge>
+                )}
               </div>
-              {parseInt(td.status, 10) === 0 || parseInt(td.status, 10) === 1 ? (
+              {parseInt(td.status, 10) === 0 ||
+              parseInt(td.status, 10) === 1 ||
+              parseInt(td.status, 10) === 4 ? (
                 updating && taskIdActive === td.task_id ? (
                   <div className="d-flex align-items-center gap-1">
                     <Spinner size="sm" color="success" />
                     <span>
-                      Updating status to
+                      Updating status to{' '}
                       <strong>
                         {status === 0
                           ? 'To do'
                           : status === 1
                           ? 'In Progress'
-                          : status === 3
+                          : status === 2
                           ? 'Done'
                           : ''}
                       </strong>
@@ -115,19 +123,26 @@ const BoardTask = ({ data, projectId, refetch }) => {
                     />
                   </div>
                 )
+              ) : parseInt(td.status, 10) === 2 ? (
+                <Badge color="light" className="d-flex text-dark">
+                  <i className="bi-clock mr-4" style={{ fontSize: '12px' }}></i>
+                  &nbsp; Waiting for approval
+                </Badge>
+              ) : parseInt(td.status, 10) === 3 ? (
+                <Badge color="success" className="d-flex">
+                  <i className="bi-check2-circle mr-4" style={{ fontSize: '13px' }}></i>
+                  &nbsp; Approved
+                </Badge>
               ) : (
-                parseInt(td.status, 10) === 2 && (
-                  <Badge color="light" className="text-dark">
-                    <i className="bi-clock mr-4" style={{ fontSize: '12px' }}></i>
-                    &nbsp; Review
-                  </Badge>
-                )
+                ''
               )}
             </div>
             <div className="board-body" onClick={() => openPopup(td)}>
               <div className="task-title">{td.task_title}</div>
               <div className="task-bottom">
-                <small className="text-muted">{td.subtasks.length} Subtask</small>
+                <div className="task-info">
+                  <small className="text-muted">{td.subtasks.length} Subtask</small>
+                </div>
                 <div className="task-action">
                   <div className="comment">
                     <MaterialIcon icon="comment" />
@@ -154,7 +169,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
                   />
                 ) : (
                   <>
-                    {data.status !== 'done' ? (
+                    {td.status !== 2 ? (
                       <Button
                         type="button"
                         size="sm"

@@ -8,7 +8,7 @@
     display: flex;
     flex-direction: column;
     padding: 10px 20px;
-    gap: 20px;
+    gap: 10px;
     border: 1px solid #ecebeb;
     border-radius: 10px;
     overflow-y: auto;
@@ -61,7 +61,7 @@
 
       .status {
         display: flex;
-        height: 35px;
+        height: max-content;
         gap: 20px;
       }
     }
@@ -102,7 +102,12 @@
 
             .comment-time {
               display: flex;
-              justify-content: end;
+              justify-content: start;
+
+              small {
+                font-size: 10px;
+                color: rgb(171, 171, 171);
+              }
             }
           }
         }

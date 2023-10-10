@@ -16,7 +16,7 @@ const TaskForm = (props) => {
   const [modal, setModal] = useState(false);
   const [assignedEmployees, setAssignedEmployees] = useState();
   const [listEmployee, setListEmploye] = useState();
-  const [files, setFiles] = useState();
+  const [files, setFiles] = useState([]);
 
   const animatedComponents = makeAnimated();
 
@@ -29,7 +29,7 @@ const TaskForm = (props) => {
   useEffect(() => {
     async function fetchEmployees() {
       await api
-        .get(`/employe/assignment-list`)
+        .get(`api/employe/assignment-list`)
         .then((res) => setListEmploye(res.data.data))
         .catch((err) => console.log(err));
     }
@@ -73,15 +73,17 @@ const TaskForm = (props) => {
     }
 
     await api
-      .post('/task', task)
+      .post('api/task', task, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
       .then((res) => console.log(res))
       .catch((err) => console.log(err.message));
     setLoading(false);
     refetch();
     closeForm();
   };
-
-  console.log(files);
 
   return (
     <>

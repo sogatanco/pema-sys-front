@@ -12,7 +12,7 @@ const MemberTab = () => {
   const { isLoading, error, data } = useQuery({
     queryKey: ['members'],
     queryFn: () =>
-      api.get(`project/${projectId}/members`).then((res) => {
+      api.get(`api/project/${projectId}/members`).then((res) => {
         return res.data.data;
       }),
   });

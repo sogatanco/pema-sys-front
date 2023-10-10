@@ -1,21 +1,53 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardBody, CardTitle, Col, Progress, Row } from 'reactstrap';
+import {
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  FormGroup,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Progress,
+  Row,
+  Spinner,
+} from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
 import { useParams } from 'react-router-dom';
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
 import user1 from '../../assets/images/users/user1.jpg';
 import useAxios from '../../hooks/useAxios';
+import newDate from '../../utils/formatDate';
+import useAuth from '../../hooks/useAuth';
 
 const OverviewTab = () => {
+  const { auth } = useAuth();
   const { projectId } = useParams();
   const [history, setHistory] = useState();
+  const [modal, setModal] = useState(false);
+  const [newPic, setNewPic] = useState();
+  const [listEmployee, setListEmploye] = useState();
+  const [loading, setLoading] = useState(false);
+  const [bst, setBst] = useState([]);
+
+  const animatedComponents = makeAnimated();
 
   const api = useAxios();
+
+  const toggle = () => {
+    setModal(!modal);
+  };
 
   const { isLoading, error, data } = useQuery({
     queryKey: ['overview'],
     queryFn: () =>
-      api.get(`/project/${projectId}`).then((res) => {
+      api.get(`api/project/${projectId}`).then((res) => {
         return res.data.data;
       }),
   });
@@ -23,7 +55,7 @@ const OverviewTab = () => {
   useEffect(() => {
     async function fetsHistory() {
       await api
-        .get(`project/${projectId}/history`)
+        .get(`api/project/${projectId}/history`)
         .then((res) => setHistory(res.data.data))
         .catch((err) => console.log(err));
     }
@@ -31,12 +63,46 @@ const OverviewTab = () => {
     fetsHistory();
   }, [projectId]);
 
-  const newDate = (date) => {
-    const timestamp = new Date(date);
-    const dateString = timestamp.toDateString();
-    const localeString = timestamp.toLocaleString();
-    return `${dateString}, ${localeString.split(',')[1]}`;
+  useEffect(() => {
+    async function fetchEmployees() {
+      await api
+        .get(`api/employe/assignment-list`)
+        .then((res) => setListEmploye(res.data.data))
+        .catch((err) => console.log(err));
+    }
+
+    fetchEmployees();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    await api
+      .post(
+        `api/project/handover`,
+        {
+          project_id: projectId,
+          new_pic: newPic.value,
+          file: bst[0],
+        },
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      )
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+    setLoading(false);
+    setModal(false);
   };
+
+  // const newDate1 = (date) => {
+  //   const timestamp = new Date(date);
+  //   const dateString = timestamp.toDateString();
+  //   const localeString = timestamp.toLocaleString();
+  //   return `${dateString}, ${localeString.split(',')[1]}`;
+  // };
 
   return isLoading ? (
     'Loading...'
@@ -99,7 +165,7 @@ const OverviewTab = () => {
           <CardBody>
             <div>
               <CardTitle tag="h4" className="text-dark">
-                Project Statistics
+                Project Histories
               </CardTitle>
             </div>
             <div className="d-flex flex-column gap-3">
@@ -137,7 +203,11 @@ const OverviewTab = () => {
               Overall Process
               <span>76%</span>
             </CardTitle>
-            <Progress className="mb-3" color="success" value="76" style={{ height: '15px' }} />
+            <Progress className="" color="success" value="76" style={{ height: '15px' }} />
+          </CardBody>
+        </Card>
+        <Card>
+          <CardBody>
             <div className="overall-process">
               <div className="overall-child">
                 <div>
@@ -172,9 +242,16 @@ const OverviewTab = () => {
             </div>
           </CardBody>
         </Card>
-        <Card>
+        {auth.user.roles.includes('Manager') && (
+          <Card>
+            <Button type="button" color="info" outline onClick={toggle.bind(null)}>
+              Hand Over Project
+            </Button>
+          </Card>
+        )}
+        {/* <Card>
           <CardBody>
-            <CardTitle tag="h4">Recent Activity</CardTitle>
+            <CardTitle tag="h4">Recent Tasks</CardTitle>
             <div className="d-flex flex-column gap-2">
               <div className="d-flex align-items-center gap-3">
                 <div className="act-list" />
@@ -214,8 +291,63 @@ const OverviewTab = () => {
               </div>
             </div>
           </CardBody>
-        </Card>
+        </Card> */}
       </Col>
+      <Modal isOpen={modal} toggle={toggle.bind(null)} size="md" fade={false} centered>
+        <ModalHeader toggle={toggle.bind(null)}>Hand Over Project</ModalHeader>
+        <form onSubmit={handleSubmit}>
+          <ModalBody>
+            <FormGroup>
+              <Label>Option</Label>
+              <Input type="select" id="base_id" name="base_id" defaultValue="a">
+                <option value="a" disabled>
+                  Select
+                </option>
+                <option value="">Hand Over</option>
+                <option value="">Done</option>
+              </Input>
+            </FormGroup>
+            <FormGroup>
+              <Label>PIC</Label>
+              <Select
+                closeMenuOnSelect={false}
+                components={animatedComponents}
+                options={listEmployee}
+                onChange={(choice) => setNewPic(choice)}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label htmlFor="bst">BST</Label>
+              <FormGroup>
+                <Input type="file" name="file" id="bst" onChange={(e) => setBst(e.target.files)} />
+              </FormGroup>
+            </FormGroup>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" outline onClick={toggle.bind(null)}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              color="info"
+              disabled={loading}
+              className="d-flex gap-1 align-items-center"
+            >
+              {loading ? (
+                <>
+                  <Spinner className="me-2" size="sm" color="light" />
+                  Sending
+                </>
+              ) : (
+                <>
+                  <MaterialIcon icon="send" style={{ fontSize: '20px' }} />
+                  Send
+                </>
+              )}
+            </Button>
+          </ModalFooter>
+        </form>
+      </Modal>
     </Row>
   );
 };

@@ -44,7 +44,7 @@ const Login = () => {
   const handleLogin = async (data) => {
     dispatch({ type: 'LOGIN_START' });
 
-    const res = await api.post('auth/login', data);
+    const res = await api.post('api/auth/login', data);
     if (res.data.status) {
       dispatch({ type: 'LOGIN_SUCCESS', payload: res.data.auth });
       navigate('/');

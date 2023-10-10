@@ -34,15 +34,15 @@ const SidebarData = [
      
     ],
   },
-  { caption: 'Starter Kit' },
-  {
-    title: 'Starter Kit',
-    href: '/starterkit',
-    id: 3,
-    icon: <MaterialIcon icon="grid_view" />,
-    ddType: 'two-column',
-    collapisble: true,
-  },
+  // { caption: 'Starter Kit' },
+  // {
+  //   title: 'Starter Kit',
+  //   href: '/starterkit',
+  //   id: 3,
+  //   icon: <MaterialIcon icon="grid_view" />,
+  //   ddType: 'two-column',
+  //   collapisble: true,
+  // },
 ];
 
 export default SidebarData;

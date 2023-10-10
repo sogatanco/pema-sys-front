@@ -1,17 +1,15 @@
-import React, { useState } from 'react';
-import { Button, Col } from 'reactstrap';
-import MaterialIcon from '@material/react-material-icon';
+import React from 'react';
+import { Col } from 'reactstrap';
+// import MaterialIcon from '@material/react-material-icon';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import BoardTask from './BoardTask';
-import TaskForm from './TaskForm';
+// import TaskForm from './TaskForm';
 
 const BoardInProgress = ({ data, isLoading, error, refetch, isRefetching }) => {
-  const [newTaskOpen, setNewTaskOpen] = useState(false);
+  // const [newTaskOpen, setNewTaskOpen] = useState(false);
 
   const { projectId } = useParams();
-
-  const type = 1;
 
   return (
     <Col lg="4" className="mt-4">
@@ -22,7 +20,7 @@ const BoardInProgress = ({ data, isLoading, error, refetch, isRefetching }) => {
         'Something went wrong.'
       ) : (
         <>
-          {!newTaskOpen ? (
+          {/* {!newTaskOpen ? (
             <Button
               type="button"
               size="sm"
@@ -35,8 +33,7 @@ const BoardInProgress = ({ data, isLoading, error, refetch, isRefetching }) => {
               New Task
             </Button>
           ) : (
-            <TaskForm {...{ projectId, setNewTaskOpen, refetch, type }} />
-          )}
+          )} */}
           <BoardTask {...{ data, projectId, refetch, isRefetching }} />
         </>
       )}

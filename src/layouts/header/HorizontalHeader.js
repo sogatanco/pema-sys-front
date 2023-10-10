@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Navbar,
   Nav,
@@ -14,16 +14,19 @@ import { Bell, MessageSquare } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
-import MessageDD from './MessageDD';
+import { useQuery } from '@tanstack/react-query';
 import NotificationDD from './NotificationDD';
 import MegaDD from './MegaDD';
 import user1 from '../../assets/images/users/user1.jpg';
 
+import MessageDD from './MessageDD';
 import { ToggleMobileSidebar } from '../../store/customizer/CustomizerSlice';
 import ProfileDD from './ProfileDD';
+import useAxios from '../../hooks/useAxios';
 
 import HorizontalLogo from '../logo/HorizontalLogo';
 import { AuthContext } from '../../context/AuthContext';
+import './Header.scss';
 
 const HorizontalHeader = () => {
   const isDarkMode = useSelector((state) => state.customizer.isDark);
@@ -31,8 +34,19 @@ const HorizontalHeader = () => {
   const isMobileSidebar = useSelector((state) => state.customizer.isMobileSidebar);
   const toggleDispatch = useDispatch();
   const { dispatch } = useContext(AuthContext);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  const api = useAxios();
+
+  const { isLoading, error, data, refetch } = useQuery({
+    queryKey: ['notification'],
+    queryFn: () =>
+      api.get(`api/employe/notification/list`).then((res) => {
+        return res.data.data;
+      }),
+  });
 
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' });
@@ -84,24 +98,39 @@ const HorizontalHeader = () => {
           {/**********Notification DD**********/}
           {/******************************/}
           <UncontrolledDropdown>
-            <DropdownToggle className="bg-transparent border-0" color={topbarColor}>
-              <Bell size={18} />
-            </DropdownToggle>
-            <DropdownMenu className="ddWidth" end>
-              <DropdownItem header>
-                <span className="mb-0 fs-5">Notifications</span>
-              </DropdownItem>
-              <DropdownItem divider />
-              <SimpleBar style={{ maxHeight: '350px' }}>
-                <NotificationDD />
-              </SimpleBar>
-              <DropdownItem divider />
-              <div className="p-2 px-3">
-                <Button color="primary" size="sm" block>
-                  Check All
-                </Button>
+            <DropdownToggle
+              className="border-0"
+              color={topbarColor}
+              onClick={() => setIsNotifOpen(true)}
+            >
+              <div className="notif">
+                <Bell size={18} />
+                {data?.length > 0 && <div className="notif-count">{data?.length}</div>}
               </div>
-            </DropdownMenu>
+            </DropdownToggle>
+            {isNotifOpen && (
+              <DropdownMenu className="ddWidth">
+                <DropdownItem header>
+                  <span className="mb-0 fs-5">Notifications</span>
+                </DropdownItem>
+                <DropdownItem divider />
+                <SimpleBar style={{ maxHeight: '350px' }}>
+                  {isLoading ? (
+                    <span style={{ padding: '0px 20px' }}>Loading...</span>
+                  ) : error ? (
+                    <span style={{ padding: '0px 20px' }}>Something went wrong.</span>
+                  ) : (
+                    <NotificationDD {...{ data, refetch, setIsNotifOpen }} />
+                  )}
+                </SimpleBar>
+                <DropdownItem divider />
+                <div className="p-2 px-3">
+                  <Button color="primary" size="sm" block>
+                    Check All
+                  </Button>
+                </div>
+              </DropdownMenu>
+            )}
           </UncontrolledDropdown>
           {/******************************/}
           {/**********Message DD**********/}
