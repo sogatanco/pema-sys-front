@@ -18,13 +18,14 @@ import {
 } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import user1 from '../../assets/images/users/user1.jpg';
 import useAxios from '../../hooks/useAxios';
 import newDate from '../../utils/formatDate';
 import useAuth from '../../hooks/useAuth';
+import { alert } from '../../components/atoms/Toast';
 
 const OverviewTab = () => {
   const { auth } = useAuth();
@@ -91,7 +92,9 @@ const OverviewTab = () => {
           },
         },
       )
-      .then((res) => console.log(res))
+      .then(() => {
+        alert('success', 'BAST is under review');
+      })
       .catch((err) => console.log(err));
     setLoading(false);
     setModal(false);
@@ -105,7 +108,11 @@ const OverviewTab = () => {
   // };
 
   return isLoading ? (
-    'Loading...'
+    <Col lg="12">
+      <Card>
+        <CardBody>Loading...</CardBody>
+      </Card>
+    </Col>
   ) : error ? (
     'Soemthing went wrong.'
   ) : (
@@ -177,6 +184,7 @@ const OverviewTab = () => {
                   <div className="col-md-7 d-flex flex-column">
                     <span className="text-dark">{h.history_desc}</span>
                     <small>{h.organization_name}</small>
+                    <Link to={`/projects/details/${projectId}?to=activities`}>See all task</Link>
                   </div>
                   <div className="col-md-3 d-flex flex-column">
                     <small>{newDate(h.created_at)}</small>

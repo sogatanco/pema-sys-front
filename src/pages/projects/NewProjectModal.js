@@ -19,7 +19,7 @@ import PropTypes from 'prop-types';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 
-const NewProjectModal = ({ modal, setModal, toggle, setSuccessMsg, setErrorMsg, refetch }) => {
+const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
   const { auth } = useAuth();
   const [newProject, setNewProject] = useState({});
   const [division, setDivision] = useState({});
@@ -60,10 +60,9 @@ const NewProjectModal = ({ modal, setModal, toggle, setSuccessMsg, setErrorMsg, 
       .post(`api/project`, newProject)
       .then(() => {
         refetch();
-        setSuccessMsg('New project has been created.');
       })
       .catch((err) => {
-        setErrorMsg(err.message);
+        console.log(err);
       });
 
     setModal(false);
@@ -264,8 +263,6 @@ const NewProjectModal = ({ modal, setModal, toggle, setSuccessMsg, setErrorMsg, 
 NewProjectModal.propTypes = {
   modal: PropTypes.bool,
   setModal: PropTypes.func,
-  setSuccessMsg: PropTypes.func,
-  setErrorMsg: PropTypes.func,
   toggle: PropTypes.any,
   refetch: PropTypes.func,
 };

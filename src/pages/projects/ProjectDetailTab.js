@@ -6,8 +6,10 @@ import MemberTab from './MemberTab';
 import FileTab from './FileTab';
 import ReviewTab from './ReviewTab';
 import HandoverTab from './HandoverTab';
+import ActivityTab from './ActivityTab';
+import ReviewBastTab from './ReviewBastTab';
 
-const ProjectDetailTab = ({ navActive, setTotalReview }) => {
+const ProjectDetailTab = ({ navActive, setTotalReview, setTotalBastReview }) => {
   return (
     <>
       {navActive === 1 && <OverviewTab />}
@@ -16,6 +18,8 @@ const ProjectDetailTab = ({ navActive, setTotalReview }) => {
       {navActive === 4 && <FileTab />}
       {navActive === 5 && <ReviewTab {...{ setTotalReview }} />}
       {navActive === 6 && <HandoverTab />}
+      {navActive === 7 && <ActivityTab />}
+      {navActive === 8 && <ReviewBastTab {...{ setTotalBastReview }} />}
     </>
   );
 };
@@ -23,6 +27,7 @@ const ProjectDetailTab = ({ navActive, setTotalReview }) => {
 ProjectDetailTab.propTypes = {
   navActive: PropTypes.any,
   setTotalReview: PropTypes.func,
+  setTotalBastReview: PropTypes.func,
 };
 
 export default ProjectDetailTab;

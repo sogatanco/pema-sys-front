@@ -1,5 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Badge, Button, Form, Input, Label, Modal, ModalBody, ModalHeader } from 'reactstrap';
+import {
+  Badge,
+  Button,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalHeader,
+} from 'reactstrap';
 import PropTypes from 'prop-types';
 import './TaskPopup.scss';
 import MaterialIcon from '@material/react-material-icon';
@@ -11,6 +21,8 @@ import user1 from '../../assets/images/users/user1.jpg';
 import useAxios from '../../hooks/useAxios';
 import newDate from '../../utils/formatDate';
 import useAuth from '../../hooks/useAuth';
+import TooltipHover from '../../components/atoms/TooltipHover';
+import { alert } from '../../components/atoms/Toast';
 
 const result = (emId) =>
   emId.filter(
@@ -19,7 +31,7 @@ const result = (emId) =>
 
 // const sortByDate = (data) => data.sort(({ date: a }, { date: b }) => (a < b ? -1 : a > b ? 1 : 0));
 
-const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
+const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
   const { auth } = useAuth();
   const [history, setHistory] = useState();
   const [loading, setLoading] = useState(false);
@@ -48,6 +60,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
     setTaskTemp({
       task_title: task?.task_title,
       task_desc: task?.task_desc,
+      task_progress: task?.task_progress,
       start_date: task?.start_date,
       end_date: task?.end_date,
     });
@@ -62,7 +75,9 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
     }
 
     async function fetchHistory() {
-      await api.get(`api/task/history/${task?.task_id}`).then((res) => setHistory(res.data.data));
+      await api.get(`api/task/history/${task?.task_id}`).then((res) => {
+        setHistory(res.data.data);
+      });
     }
 
     async function fetchComments() {
@@ -88,11 +103,15 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
     e.preventDefault();
     setUpdating(true);
     taskTemp.task_pic = assignedEmployees;
+
     if (files) {
       taskTemp.files = files;
     }
-
-    await api.patch(`api/task/${task?.task_id}`, taskTemp).then((res) => console.log(res));
+    await api.patch(`api/task/${task?.task_id}`, taskTemp).then((res) => {
+      alert('success', 'Task has been updated.');
+      console.log(res);
+    });
+    setModal(false);
     refetch();
     setUpdating(false);
   };
@@ -160,100 +179,200 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
           ) : (
             <div className="popup-body">
               <div className="left">
-                <form onSubmit={handleUpdate}>
-                  <div className="top">
-                    <div className="date">
-                      <h6>Start Date</h6>
-                      <span>{taskTemp?.start_date || '-'}</span>
-                    </div>
-                    <div className="date">
-                      <h6>Due Date</h6>
-                      <Input
-                        type="date"
-                        name="end_date"
-                        value={taskTemp?.end_date || ''}
-                        onChange={(e) => setTaskTemp({ ...taskTemp, end_date: e.target.value })}
-                      />
-                    </div>
-                  </div>
-                  <div className="bottom mt-3">
-                    <Input
-                      type="text"
-                      name="task_title"
-                      value={taskTemp?.task_title || ''}
-                      onChange={(e) => setTaskTemp({ ...taskTemp, task_title: e.target.value })}
-                    />
-                    <Input
-                      type="textarea"
-                      cols="5"
-                      rows="6"
-                      name="task_desc"
-                      value={taskTemp?.task_desc || ''}
-                      onChange={(e) => setTaskTemp({ ...taskTemp, task_desc: e.target.value })}
-                    />
-                  </div>
-                  <div className="d-flex justify-content-between align-items-center mt-3">
-                    <div className="d-flex align-items-center gap-3">
-                      <button type="button" className="btn-assigne" onClick={assigneModal}>
-                        <i className="bi-person-plus-fill"></i>
-                        <span>{assignedEmployees?.length || 0}</span>
-                      </button>
-                    </div>
-                    <Button
-                      type="submit"
-                      className="btn"
-                      color="info"
-                      disabled={updating}
-                      size="sm"
-                    >
-                      {updating ? 'Updating...' : 'Update'}
-                    </Button>
-                  </div>
-                </form>
-                <form onSubmit={handleUpload}>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="d-flex align-items-center gap-1">
-                      <div className="pt-2">
-                        <Label for="attach">
-                          <MaterialIcon icon="attach_file" className="btn-icon" />
-                        </Label>
-                        <input
-                          type="file"
-                          id="attach"
-                          hidden
-                          onChange={(e) => setFiles(e.target.files)}
-                          required
-                        />
+                {mode === 'activities' ? (
+                  <>
+                    <>
+                      <div className="top">
+                        <div className="date">
+                          <h6>Start Date</h6>
+                          <span>{taskTemp?.start_date || '-'}</span>
+                        </div>
+                        <div className="date">
+                          <h6>Due Date</h6>
+                          <span>{taskTemp?.end_date || ''}</span>
+                        </div>
                       </div>
-                      <span style={{ color: '#1F88E5', fontSize: '12px' }}>{files[0]?.name}</span>
-                    </div>
-                    <Button type="submit" className="btn" outline size="sm">
-                      {uploading ? 'Uploading...' : 'Upload'}
-                    </Button>
-                  </div>
-                </form>
-                <div className="attach">
-                  <h6>Attachment files ({task?.files?.length || 0})</h6>
-                  <ul>
-                    {task?.files?.length > 0 &&
-                      task?.files.map((f) => (
-                        <div key={f.file_id} className="d-flex gap-1 align-items-center">
-                          <li>
-                            <Link
-                              className="file-link"
-                              to={`${fileUrl}taskfiles/${f.file_name}`}
-                              target="_blank"
-                            >
-                              {f.file_name}
-                            </Link>
-                          </li>
-                          <button type="button" className="btn d-flex" style={{ color: '#EF6767' }}>
-                            <MaterialIcon icon="delete_outline" style={{ fontSize: '20px' }} />
+                      <div className="bottom mt-3">
+                        <FormGroup>
+                          <Label>Task Title</Label>
+                          <Input type="text" value={taskTemp?.task_title || ''} readOnly disabled />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label>Description</Label>
+                          <Input
+                            type="textarea"
+                            value={taskTemp?.task_desc || ''}
+                            readOnly
+                            disabled
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label>PIC</Label>
+                          <br></br>
+                          <div className="d-flex flex-column">
+                            {assignedEmployees.map((em, i) => (
+                              <div key={em.value} className="d-flex gap-3">
+                                <span>{i + 1}.</span>
+                                <span>{em.label}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </FormGroup>
+                      </div>
+                      <div className="attach">
+                        <h6>Attachment files ({task?.files?.length || 0})</h6>
+                        <ul>
+                          {task?.files?.length > 0 &&
+                            task?.files.map((f) => (
+                              <div key={f.file_id} className="d-flex gap-1 align-items-center">
+                                <li>
+                                  <Link
+                                    className="file-link"
+                                    to={`${fileUrl}taskfiles/${f.file_name}`}
+                                    target="_blank"
+                                  >
+                                    {f.file_name}
+                                  </Link>
+                                </li>
+                                <button
+                                  type="button"
+                                  className="btn d-flex"
+                                  style={{ color: '#EF6767' }}
+                                >
+                                  <MaterialIcon
+                                    icon="delete_outline"
+                                    style={{ fontSize: '20px' }}
+                                  />
+                                </button>
+                              </div>
+                            ))}
+                        </ul>
+                      </div>
+                    </>
+                  </>
+                ) : (
+                  <>
+                    <form onSubmit={handleUpdate}>
+                      <div className="top">
+                        <div className="date">
+                          <h6>Start Date {task.subtasks?.length}</h6>
+                          <span>{taskTemp?.start_date || '-'}</span>
+                        </div>
+                        <div className="date">
+                          <h6>Due Date</h6>
+                          <Input
+                            type="date"
+                            name="end_date"
+                            value={taskTemp?.end_date || ''}
+                            onChange={(e) => setTaskTemp({ ...taskTemp, end_date: e.target.value })}
+                          />
+                        </div>
+                      </div>
+                      <div className="bottom mt-3">
+                        <Input
+                          type="text"
+                          name="task_title"
+                          value={taskTemp?.task_title || ''}
+                          onChange={(e) => setTaskTemp({ ...taskTemp, task_title: e.target.value })}
+                        />
+                        <Input
+                          type="textarea"
+                          cols="5"
+                          rows="6"
+                          name="task_desc"
+                          value={taskTemp?.task_desc || ''}
+                          onChange={(e) => setTaskTemp({ ...taskTemp, task_desc: e.target.value })}
+                        />
+                        {task?.subtasks?.length > 0 ? (
+                          ''
+                        ) : (
+                          <div className="d-flex gap-2 justify-content-between">
+                            <div className="col-sm-10">
+                              <Input
+                                type="range"
+                                defaultValue={task.task_progress}
+                                onChange={(e) =>
+                                  setTaskTemp({ ...taskTemp, task_progress: e.target.value })
+                                }
+                              />
+                            </div>
+                            <div className="col-sm-1 d-flex justify-content-end">
+                              {taskTemp?.task_progress}%
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="d-flex justify-content-between align-items-center mt-3">
+                        <div className="d-flex align-items-center gap-3">
+                          <button type="button" className="btn-assigne" onClick={assigneModal}>
+                            <i className="bi-person-plus-fill"></i>
+                            <span>{assignedEmployees?.length || 0}</span>
                           </button>
                         </div>
-                      ))}
-                  </ul>
-                </div>
+                        <Button
+                          type="submit"
+                          className="btn"
+                          color="info"
+                          disabled={updating}
+                          size="sm"
+                        >
+                          {updating ? 'Updating...' : 'Update'}
+                        </Button>
+                      </div>
+                    </form>
+                    <form onSubmit={handleUpload}>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div className="d-flex align-items-center gap-1">
+                          <div className="pt-2" id="tooltip-3">
+                            <Label for="attach">
+                              <MaterialIcon icon="attach_file" className="btn-icon" />
+                            </Label>
+                            <input
+                              type="file"
+                              id="attach"
+                              hidden
+                              onChange={(e) => setFiles(e.target.files)}
+                              required
+                            />
+                            <TooltipHover title="Upload file" id="3" />
+                          </div>
+                          <span style={{ color: '#1F88E5', fontSize: '12px' }}>
+                            {files[0]?.name}
+                          </span>
+                        </div>
+                        <Button type="submit" className="btn" outline size="sm">
+                          {uploading ? 'Uploading...' : 'Upload'}
+                        </Button>
+                      </div>
+                    </form>
+                    <div className="attach">
+                      <h6>Attachment files ({task?.files?.length || 0})</h6>
+                      <ul>
+                        {task?.files?.length > 0 &&
+                          task?.files.map((f) => (
+                            <div key={f.file_id} className="d-flex gap-1 align-items-center">
+                              <li>
+                                <Link
+                                  className="file-link"
+                                  to={`${fileUrl}taskfiles/${f.file_name}`}
+                                  target="_blank"
+                                >
+                                  {f.file_name}
+                                </Link>
+                              </li>
+                              <button
+                                type="button"
+                                className="btn d-flex"
+                                style={{ color: '#EF6767' }}
+                              >
+                                <MaterialIcon icon="delete_outline" style={{ fontSize: '20px' }} />
+                              </button>
+                            </div>
+                          ))}
+                      </ul>
+                    </div>
+                  </>
+                )}
               </div>
               <div className="right">
                 <div className="top">
@@ -268,12 +387,18 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch }) => {
                         &nbsp; Waiting for approval: <strong>Syahrial</strong>
                       </Badge>
                     ) : task?.status === 3 ? (
-                      <Badge color="success">Done</Badge>
+                      <Badge color="success" className="d-flex">
+                        {' '}
+                        <i className="bi-check2-circle mr-4" style={{ fontSize: '13px' }}></i>
+                        &nbsp; Approved
+                      </Badge>
                     ) : (
                       <Badge color="danger">Revision</Badge>
                     )}
                   </div>
-                  <ActionMenu menuOptions={menuOptions} action={deleteTask} />
+                  {mode !== 'activities' && (
+                    <ActionMenu menuOptions={menuOptions} action={deleteTask} />
+                  )}
                 </div>
                 <div className="bottom">
                   {history && comments ? (
@@ -411,6 +536,7 @@ TaskPopup.propTypes = {
   toggle: PropTypes.any,
   task: PropTypes.any,
   refetch: PropTypes.func,
+  mode: PropTypes.string,
 };
 
 export default TaskPopup;

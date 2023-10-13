@@ -1,12 +1,14 @@
 import MaterialIcon from '@material/react-material-icon';
 import React, { useEffect, useState } from 'react';
-import { Button, Input, Label, Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
+import { Button, Input, Modal, ModalBody, ModalHeader, Spinner } from 'reactstrap';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import './TaskForm.scss';
+import { alert } from '../../components/atoms/Toast';
+import TooltipHover from '../../components/atoms/TooltipHover';
 
 const TaskForm = (props) => {
   const { auth } = useAuth();
@@ -16,7 +18,7 @@ const TaskForm = (props) => {
   const [modal, setModal] = useState(false);
   const [assignedEmployees, setAssignedEmployees] = useState();
   const [listEmployee, setListEmploye] = useState();
-  const [files, setFiles] = useState([]);
+  // const [files, setFiles] = useState([]);
 
   const animatedComponents = makeAnimated();
 
@@ -30,7 +32,9 @@ const TaskForm = (props) => {
     async function fetchEmployees() {
       await api
         .get(`api/employe/assignment-list`)
-        .then((res) => setListEmploye(res.data.data))
+        .then((res) => {
+          setListEmploye(res.data.data);
+        })
         .catch((err) => console.log(err));
     }
 
@@ -66,7 +70,7 @@ const TaskForm = (props) => {
     task.project_id = projectId;
     task.task_pic = assignedEmployees;
     // eslint-disable-next-line prefer-destructuring
-    task.files = files;
+    // task.files = files;
 
     if (type === 2) {
       task.task_parent = taskId;
@@ -78,7 +82,9 @@ const TaskForm = (props) => {
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then((res) => console.log(res))
+      .then(() => {
+        alert('create', 'New task has been created.');
+      })
       .catch((err) => console.log(err.message));
     setLoading(false);
     refetch();
@@ -87,6 +93,7 @@ const TaskForm = (props) => {
 
   return (
     <>
+      <div className="task-form-overlay" onClick={closeForm} />
       <form onSubmit={taskSubmit} style={{ width: '100%' }} encType="multipart/form-data">
         <div className="new-task">
           <div className="body">
@@ -99,21 +106,22 @@ const TaskForm = (props) => {
                 onChange={handleChange}
               />
             </div>
-            <button type="button" className="btn-assigne" onClick={assigneModal}>
+            <button type="button" className="btn-assigne" id="tooltip-2" onClick={assigneModal}>
               <i className="bi-person-plus-fill"></i>
               <span>{assignedEmployees?.length || 0}</span>
             </button>
+            <TooltipHover title="Assigne" id="2" />
           </div>
           <div className="footer">
             <div className="option">
-              <div className="attach">
+              {/* <div className="attach">
                 <Label for="attach">
                   <MaterialIcon icon="attach_file" className="btn-icon" />
                 </Label>
                 <input type="file" id="attach" hidden onChange={(e) => setFiles(e.target.files)} />
-              </div>
+              </div> */}
               <div className="duedate">
-                <span className="datepicker-toggle">
+                <span className="datepicker-toggle" id="tooltip-1">
                   <span className="datepicker-toggle-button">
                     <MaterialIcon icon="calendar_month" />
                   </span>
@@ -125,6 +133,8 @@ const TaskForm = (props) => {
                     onChange={handleChange}
                   />
                 </span>
+                <TooltipHover title="Due date" id="1" />
+                <span>{task.end_date}</span>
               </div>
             </div>
             <div className="action">

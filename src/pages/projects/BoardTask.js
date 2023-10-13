@@ -1,6 +1,6 @@
 import MaterialIcon from '@material/react-material-icon';
 import React, { useState } from 'react';
-import { Badge, Button, Spinner } from 'reactstrap';
+import { Badge, Button, Col, Progress, Spinner } from 'reactstrap';
 import PropTypes from 'prop-types';
 import user1 from '../../assets/images/users/user1.jpg';
 import TaskPopup from './TaskPopup';
@@ -8,6 +8,7 @@ import TaskForm from './TaskForm';
 import ActionMenu from '../../components/actionMenu/ActionMenu';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
+import { alert } from '../../components/atoms/Toast';
 
 const result = (emId) =>
   emId.filter(
@@ -45,8 +46,17 @@ const BoardTask = ({ data, projectId, refetch }) => {
         employe_id: auth.user.employe_id,
         status: taskStatus,
       })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .then(() => {
+        alert(
+          taskStatus === 1 ? 'start' : taskStatus === 2 ? 'done' : 'success',
+          `Task status has been changed to ${
+            taskStatus === 0 ? 'To Do' : taskStatus === 1 ? 'In Progress' : 'Done'
+          }`,
+        );
+      })
+      .catch((err) => {
+        alert('error', err.response.data.error);
+      });
     refetch();
     setUpdating(false);
     setTaskIdActive();
@@ -114,13 +124,26 @@ const BoardTask = ({ data, projectId, refetch }) => {
                     </span>
                   </div>
                 ) : (
-                  <div key={td.task_id}>
-                    <ActionMenu
-                      menuOptions={menuOptions}
-                      taskId={td.task_id}
-                      status={parseInt(td.status, 10)}
-                      action={handleTaskStatus}
-                    />
+                  <div className="d-flex gap-2">
+                    <div className="">
+                      {parseInt(td.status, 10) === 1 && (
+                        <span style={{ fontSize: '12px' }}>
+                          Progress{'  '}
+                          <strong style={{ fontSize: '14px', color: '#21C1D6' }}>
+                            {td.task_progress}%
+                          </strong>
+                        </span>
+                      )}
+                    </div>
+                    <div key={td.task_id}>
+                      <ActionMenu
+                        menuOptions={menuOptions}
+                        taskId={td.task_id}
+                        status={parseInt(td.status, 10)}
+                        action={handleTaskStatus}
+                        progress={td.task_progress}
+                      />
+                    </div>
                   </div>
                 )
               ) : parseInt(td.status, 10) === 2 ? (
@@ -156,7 +179,16 @@ const BoardTask = ({ data, projectId, refetch }) => {
                 <div key={st.task_id} className="board-body subtask" onClick={() => openPopup(st)}>
                   <div className="task-title">{st.task_title}</div>
                   <div className="task-action">
-                    <MaterialIcon icon="done" />
+                    <Col sm="6">
+                      <Progress
+                        className="mb-1"
+                        value={st.task_progress}
+                        color="success"
+                        style={{ fontSize: '10px', height: '12px' }}
+                      >
+                        {st.task_progress}%
+                      </Progress>
+                    </Col>
                   </div>
                 </div>
               ))}

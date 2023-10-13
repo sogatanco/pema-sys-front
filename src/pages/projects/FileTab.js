@@ -10,7 +10,7 @@ const FileTab = () => {
 
   const api = useAxios();
 
-  const fileUrl = process.REACT_APP_FILEURL;
+  const fileUrl = process.env.REACT_APP_FILEURL;
 
   const { isLoading, error, data } = useQuery({
     queryKey: ['files'],

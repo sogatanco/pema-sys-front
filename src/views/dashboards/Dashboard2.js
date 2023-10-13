@@ -4,9 +4,15 @@ import Daily from './Daily';
 import TaskList from './TaskList';
 import Project from './Project';
 import UserStatus from './UserStatus';
+import useAuth from '../../hooks/useAuth';
+import Director from './Director';
 
 const Dashboard2 = () => {
-  return (
+  const { auth } = useAuth();
+
+  return auth.user.roles.includes('Director') ? (
+    <Director />
+  ) : (
     <>
       <TopCards />
       <Row>

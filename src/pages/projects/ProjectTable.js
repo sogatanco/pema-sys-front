@@ -1,30 +1,15 @@
 import { useState } from 'react';
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  Table,
-  Col,
-  Button,
-  Alert,
-  Badge,
-} from 'reactstrap';
+import { Card, CardBody, CardTitle, CardSubtitle, Table, Col, Button, Badge } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
 import { Link } from 'react-router-dom';
 import NewProjectModal from './NewProjectModal';
 import useAxios from '../../hooks/useAxios';
 import './Project.scss';
-import toast, { Toaster } from 'react-hot-toast';
-
-const notify = () => toast('Here is your toast.');
 
 const ProjectTables = () => {
   const [modal, setModal] = useState(false);
   const [actionMenu, setActionMenu] = useState(undefined);
-  const [successMsg, setSuccessMsg] = useState();
-  const [errorMsg, setErrorMsg] = useState();
 
   const toggle = () => {
     setModal(!modal);
@@ -40,22 +25,9 @@ const ProjectTables = () => {
       }),
   });
 
-  setTimeout(() => {
-    if (successMsg) {
-      setSuccessMsg();
-    }
-    if (errorMsg) {
-      setErrorMsg();
-    }
-  }, 5000);
-
   return (
     <div>
-      {(successMsg || errorMsg) && (
-        <Alert color={successMsg ? 'info' : 'danger'}>{!errorMsg ? successMsg : errorMsg}</Alert>
-      )}
       <Card>
-        <button onClick={notify}>Make me a toast</button>
         <CardBody style={{ position: 'relative' }}>
           <Col className="d-flex justify-content-between" col="12">
             <div className="">
@@ -74,9 +46,7 @@ const ProjectTables = () => {
                 <MaterialIcon icon="add" />
                 Create New Project
               </Button>
-              <NewProjectModal
-                {...{ modal, setModal, toggle, setSuccessMsg, setErrorMsg, refetch }}
-              />
+              <NewProjectModal {...{ modal, setModal, toggle, refetch }} />
             </div>
           </Col>
           {isLoading ? (

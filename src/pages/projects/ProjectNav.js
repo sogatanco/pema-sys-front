@@ -9,6 +9,7 @@ import useAuth from '../../hooks/useAuth';
 const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
   const [currentTotalReview, setCurrentTotalReview] = useState('');
   const { auth } = useAuth();
+  const { roles } = auth.user;
   const api = useAxios();
   const { projectId } = useParams();
 
@@ -21,8 +22,12 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
       setNavActive(5);
     } else if (queryTo === 'handover') {
       setNavActive(6);
+    } else if (queryTo === 'overview') {
+      setNavActive(1);
+    } else if (queryTo === 'activities') {
+      setNavActive(7);
     }
-  }, []);
+  }, [queryParams]);
 
   useEffect(() => {
     async function fetchTotalReview() {
@@ -31,7 +36,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
         .then((res) => setCurrentTotalReview(res.data.data.filter((task) => task.status === 2)))
         .catch((err) => console.log(err));
     }
-    if (auth?.user.roles.includes('Manager')) {
+    if (roles.includes('Manager')) {
       fetchTotalReview();
     }
   }, [totalReview]);
@@ -53,13 +58,23 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
         >
           Overview
         </Link>
-        <Link
-          className={`${navActive === 2 && 'active'} text-muted fw-bold`}
-          onClick={() => setNavActive(2)}
-        >
-          Board
-        </Link>
-        {!auth?.user.roles.includes('Manager') && (
+        {!roles.includes('Director') && (
+          <Link
+            className={`${navActive === 2 && 'active'} text-muted fw-bold`}
+            onClick={() => setNavActive(2)}
+          >
+            Board
+          </Link>
+        )}
+        {(roles.includes('Manager') || roles.includes('Director')) && (
+          <Link
+            className={`${navActive === 7 && 'active'} text-muted fw-bold`}
+            onClick={() => setNavActive(7)}
+          >
+            Activities
+          </Link>
+        )}
+        {roles.includes('Staff') && (
           <>
             <Link
               className={`${navActive === 4 && 'active'} text-muted fw-bold`}
@@ -69,14 +84,30 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
             </Link>
           </>
         )}
-        <Link
-          className={`${navActive === 3 && 'active'} text-muted fw-bold`}
-          onClick={() => setNavActive(3)}
-        >
-          Members
-        </Link>
-        {auth?.user.roles.includes('Manager') && (
+        {roles.includes('Director') && (
+          <Link
+            className={`${navActive === 8 && 'active'} text-muted fw-bold`}
+            onClick={() => setNavActive(8)}
+          >
+            BAST Review{' '}
+            <div
+              color="danger"
+              className={`count ${
+                currentTotalReview.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
+              }`}
+            >
+              {currentTotalReview.length}
+            </div>
+          </Link>
+        )}
+        {roles.includes('Manager') && (
           <>
+            <Link
+              className={`${navActive === 3 && 'active'} text-muted fw-bold`}
+              onClick={() => setNavActive(3)}
+            >
+              Members
+            </Link>
             <Link
               className={`${navActive === 5 && 'active'} text-muted fw-bold`}
               onClick={() => setNavActive(5)}
