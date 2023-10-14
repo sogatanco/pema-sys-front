@@ -11,15 +11,28 @@ const SidebarData = [
     icon: <MaterialIcon icon="home" />,
     collapisble: true,
   },
-  { caption: 'Projects' },
+  
+  { caption: 'Activity' },
   {
-    title: 'Projects',
-    href: '/projects',
+    title: 'Activity',
+    href: '/activity',
     id: 2,
-    // suffix: '4',
-    // suffixColor: 'bg-info',
-    icon: <MaterialIcon icon="speed" />,
+    icon: <MaterialIcon icon="engineering" />,
+    ddType: 'two-column',
     collapisble: true,
+    children: [
+      {
+        title: 'Project',
+        href: '/projects',
+        icon: <MaterialIcon icon="work_history" />,
+      },
+      {
+        title: 'Daily Activity',
+        href: '/daily',
+        icon: <MaterialIcon icon="event" />,
+      },
+     
+    ],
   },
   // { caption: 'Starter Kit' },
   // {
