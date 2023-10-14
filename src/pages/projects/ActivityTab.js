@@ -23,7 +23,6 @@ const ActivityTab = () => {
     queryKey: ['act'],
     queryFn: () =>
       api.get(`api/task/${projectId}/activities/all`).then((res) => {
-        console.log(res);
         return res.data.data;
       }),
   });
@@ -105,7 +104,7 @@ const ActivityTab = () => {
                                 <>
                                   <img
                                     id={`tooltip-${pic.employe_id}`}
-                                    key={pic.employe_id}
+                                    // key={pic.employe_id}
                                     src={user1}
                                     className="rounded-circle"
                                     alt="avatar"

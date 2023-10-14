@@ -100,12 +100,7 @@ const OverviewTab = () => {
     setModal(false);
   };
 
-  // const newDate1 = (date) => {
-  //   const timestamp = new Date(date);
-  //   const dateString = timestamp.toDateString();
-  //   const localeString = timestamp.toLocaleString();
-  //   return `${dateString}, ${localeString.split(',')[1]}`;
-  // };
+  const allTaskPermission = ['Manager', 'Director'];
 
   return isLoading ? (
     <Col lg="12">
@@ -186,9 +181,11 @@ const OverviewTab = () => {
                       <div className="col-md-7 d-flex flex-column">
                         <span className="text-dark">{h.history_desc}</span>
                         <small>{h.organization_name}</small>
-                        <Link to={`/projects/details/${projectId}?to=activities`}>
-                          See all task
-                        </Link>
+                        {auth?.user?.roles.find((role) => allTaskPermission.includes(role)) && (
+                          <Link to={`/projects/details/${projectId}?to=activities`}>
+                            See all task
+                          </Link>
+                        )}
                       </div>
                       <div className="col-md-3 d-flex flex-column">
                         <small>{newDate(h.created_at)}</small>

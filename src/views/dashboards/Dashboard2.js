@@ -11,7 +11,23 @@ const Dashboard2 = () => {
   const { auth } = useAuth();
 
   return auth.user.roles.includes('Director') ? (
-    <Director />
+    <>
+      <TopCards />
+      <Row>
+        <Col lg="4">
+          <Project />
+          <Row>
+            <UserStatus />
+          </Row>
+        </Col>
+        <Col lg="4">
+          <Daily />
+        </Col>
+        <Col lg="4">
+          <TaskList />
+        </Col>
+      </Row>
+    </>
   ) : (
     <>
       <TopCards />
