@@ -176,30 +176,34 @@ const OverviewTab = () => {
               </CardTitle>
             </div>
             <div className="d-flex flex-column gap-3">
-              {history?.map((h) => (
-                <div
-                  key={h.history_id}
-                  className="col-md-12 d-flex justify-content-between align-items-center"
-                >
-                  <div className="col-md-7 d-flex flex-column">
-                    <span className="text-dark">{h.history_desc}</span>
-                    <small>{h.organization_name}</small>
-                    <Link to={`/projects/details/${projectId}?to=activities`}>See all task</Link>
-                  </div>
-                  <div className="col-md-3 d-flex flex-column">
-                    <small>{newDate(h.created_at)}</small>
-                  </div>
-                  <div className="col-md-1 member">
-                    <img
-                      src={h.img || user1}
-                      className="rounded-circle"
-                      alt="avatar"
-                      width="35"
-                      height="35"
-                    />
-                  </div>
-                </div>
-              ))}
+              {!history
+                ? 'Loading...'
+                : history?.map((h) => (
+                    <div
+                      key={h.history_id}
+                      className="col-md-12 d-flex justify-content-between align-items-center"
+                    >
+                      <div className="col-md-7 d-flex flex-column">
+                        <span className="text-dark">{h.history_desc}</span>
+                        <small>{h.organization_name}</small>
+                        <Link to={`/projects/details/${projectId}?to=activities`}>
+                          See all task
+                        </Link>
+                      </div>
+                      <div className="col-md-3 d-flex flex-column">
+                        <small>{newDate(h.created_at)}</small>
+                      </div>
+                      <div className="col-md-1 member">
+                        <img
+                          src={h.img || user1}
+                          className="rounded-circle"
+                          alt="avatar"
+                          width="35"
+                          height="35"
+                        />
+                      </div>
+                    </div>
+                  ))}
             </div>
           </CardBody>
         </Card>

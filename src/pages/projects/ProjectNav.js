@@ -26,6 +26,8 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
       setNavActive(1);
     } else if (queryTo === 'activities') {
       setNavActive(7);
+    } else if (queryTo === 'bast-review') {
+      setNavActive(8);
     }
   }, [queryParams]);
 
@@ -74,7 +76,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
             Activities
           </Link>
         )}
-        {roles.includes('Staff') && (
+        {roles.includes('Employee') && (
           <>
             <Link
               className={`${navActive === 4 && 'active'} text-muted fw-bold`}
@@ -103,12 +105,6 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
         {roles.includes('Manager') && (
           <>
             <Link
-              className={`${navActive === 3 && 'active'} text-muted fw-bold`}
-              onClick={() => setNavActive(3)}
-            >
-              Members
-            </Link>
-            <Link
               className={`${navActive === 5 && 'active'} text-muted fw-bold`}
               onClick={() => setNavActive(5)}
             >
@@ -130,6 +126,12 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
             </Link>
           </>
         )}
+        <Link
+          className={`${navActive === 3 && 'active'} text-muted fw-bold`}
+          onClick={() => setNavActive(3)}
+        >
+          Members
+        </Link>
       </div>
       <h3 className="fw-bold">{isLoading ? 'Loading..' : data?.project_number}</h3>
     </Col>

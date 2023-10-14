@@ -180,14 +180,17 @@ const BoardTask = ({ data, projectId, refetch }) => {
                   <div className="task-title">{st.task_title}</div>
                   <div className="task-action">
                     <Col sm="6">
-                      <Progress
-                        className="mb-1"
-                        value={st.task_progress}
-                        color="success"
-                        style={{ fontSize: '10px', height: '12px' }}
-                      >
-                        {st.task_progress}%
-                      </Progress>
+                      <div className="progress-bar">
+                        <Progress
+                          className="mb-0"
+                          value={st.task_progress}
+                          color="success"
+                          style={{ fontSize: '10px', height: '12px' }}
+                        />
+                        <div className={`num ${st.task_progress > 52 && 'white'}`}>
+                          {st.task_progress}%
+                        </div>
+                      </div>
                     </Col>
                   </div>
                 </div>

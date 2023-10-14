@@ -107,9 +107,9 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
     if (files) {
       taskTemp.files = files;
     }
-    await api.patch(`api/task/${task?.task_id}`, taskTemp).then((res) => {
+    await api.patch(`api/task/${task?.task_id}`, taskTemp).then(() => {
       alert('success', 'Task has been updated.');
-      console.log(res);
+      // console.log(res.data.message);
     });
     setModal(false);
     refetch();

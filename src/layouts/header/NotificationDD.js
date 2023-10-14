@@ -29,6 +29,8 @@ const NotificationDD = ({ data, refetch, setIsNotifOpen }) => {
             : category === 'bast'
             ? navigate(`/projects/details/${projectId}?n=${notifId}&to=overview`)
             : navigate(`/projects/details/${projectId}?n=${notifId}&to=review`)
+          : auth.user.roles.includes('Director')
+          ? navigate(`/projects/details/${projectId}?n=${notifId}&to=bast-review`)
           : navigate(`/projects/details/${projectId}`),
       )
       .catch((err) => console.log(err), setIsLoading(false), setIsNotifOpen(false));

@@ -18,6 +18,7 @@ import {
 import PropTypes from 'prop-types';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
+import { alert } from '../../components/atoms/Toast';
 
 const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
   const { auth } = useAuth();
@@ -59,6 +60,7 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
     await api
       .post(`api/project`, newProject)
       .then(() => {
+        alert('success', 'Project has been created.');
         refetch();
       })
       .catch((err) => {

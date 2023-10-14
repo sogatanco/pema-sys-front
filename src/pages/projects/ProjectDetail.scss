@@ -221,6 +221,24 @@
           padding: 1.3px 3px 0px 3px;
         }
       }
+
+      .progress-bar {
+        position: relative;
+        height: 14px;
+
+        .num {
+          position: absolute;
+          font-size: 10px;
+          display: flex;
+          width: 100%;
+          justify-content: center;
+          margin-top: 2px;
+        }
+
+        .white {
+          color: white;
+        }
+      }
     }
   }
 
