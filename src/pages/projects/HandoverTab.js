@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Badge,
@@ -14,17 +14,15 @@ import {
   Spinner,
 } from 'reactstrap';
 import { Link, useParams } from 'react-router-dom';
-import MaterialIcon from '@material/react-material-icon';
 import useAuth from '../../hooks/useAuth';
 import useAxios from '../../hooks/useAxios';
 import newDate from '../../utils/formatDate';
 import user1 from '../../assets/images/users/user1.jpg';
+import { alert } from '../../components/atoms/Toast';
 
 const HandoverTab = () => {
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
   const { auth } = useAuth();
   const { projectId } = useParams();
   const api = useAxios();
@@ -41,27 +39,20 @@ const HandoverTab = () => {
       }),
   });
 
-  useEffect(() => {
-    setSuccess('');
-    setErrorMsg('');
-  }, [data]);
-
   const fileUrl = process.env.REACT_APP_FILEURL;
 
   const handleConfirm = async () => {
     setLoading(true);
     api
-      .get(`project/${data?.history_id}/confirm`)
+      .get(`api/project/${data?.history_id}/confirm`)
       .then((res) => {
-        setSuccess(res.data.message);
         refetch();
+        alert('success', res.data.message);
       })
       .catch((err) => {
-        setErrorMsg(err.response.data.error);
+        alert('error', err.response.data.error);
       });
-    setTimeout(() => {
-      setModal(false);
-    }, 5000);
+    setModal(false);
     setLoading(false);
   };
 
@@ -93,7 +84,7 @@ const HandoverTab = () => {
                   </h5>
                 </div>
                 <p></p>
-                <span className="text-dark">Handover File:</span>
+                <span className="text-dark">BAST File:</span>
                 <div className="">
                   <div className="d-flex gap-3">
                     <Link
@@ -144,21 +135,7 @@ const HandoverTab = () => {
       <Modal isOpen={modal} toggle={toggle.bind(null)} size="md" fade={false} centered>
         <ModalHeader toggle={toggle.bind(null)}>Confirmation</ModalHeader>
         <ModalBody className="d-flex justify-content-center">
-          {success ? (
-            <>
-              <MaterialIcon icon="check_circle_outline" color="success" />
-              {'  '}
-              {success}
-            </>
-          ) : errorMsg ? (
-            <>
-              <MaterialIcon icon="highlight_off" color="success" />
-              {'  '}
-              {errorMsg}
-            </>
-          ) : (
-            'Do you want to accept this project?'
-          )}
+          Do you want to accept this project?
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" outline onClick={toggle.bind(null)}>

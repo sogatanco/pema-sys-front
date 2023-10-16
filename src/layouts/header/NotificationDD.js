@@ -26,7 +26,11 @@ const NotificationDD = ({ data, refetch, setIsNotifOpen }) => {
         auth.user.roles.includes('Manager')
           ? category === 'project'
             ? navigate(`/projects/details/${projectId}?n=${notifId}&to=handover`)
+            : category === 'bast'
+            ? navigate(`/projects/details/${projectId}?n=${notifId}&to=overview`)
             : navigate(`/projects/details/${projectId}?n=${notifId}&to=review`)
+          : auth.user.roles.includes('Director')
+          ? navigate(`/projects/details/${projectId}?n=${notifId}&to=bast-review`)
           : navigate(`/projects/details/${projectId}`),
       )
       .catch((err) => console.log(err), setIsLoading(false), setIsNotifOpen(false));
@@ -48,7 +52,7 @@ const NotificationDD = ({ data, refetch, setIsNotifOpen }) => {
               <img src={user1} className="rounded-circle" alt="avatar" width="35" height="35" />
               <div className="col-9">
                 <h5 className="mb-0 fw-bold" style={{ fontSize: '14px' }}>
-                  {`${msg.title} - ${msg.first_name}`}
+                  {`${msg.first_name} - ${msg.title}`}
                 </h5>
                 <span className="text-muted text-truncate d-block" style={{ fontSize: '14px' }}>
                   {msg.desc}

@@ -18,13 +18,15 @@ import {
 } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import user1 from '../../assets/images/users/user1.jpg';
 import useAxios from '../../hooks/useAxios';
 import newDate from '../../utils/formatDate';
 import useAuth from '../../hooks/useAuth';
+import { alert } from '../../components/atoms/Toast';
+import TooltipHover from '../../components/atoms/TooltipHover';
 
 const OverviewTab = () => {
   const { auth } = useAuth();
@@ -35,6 +37,12 @@ const OverviewTab = () => {
   const [listEmployee, setListEmploye] = useState();
   const [loading, setLoading] = useState(false);
   const [bst, setBst] = useState([]);
+  const [taskByStatus, setTaskByStatus] = useState({
+    todo: undefined,
+    inprogress: undefined,
+    underReview: undefined,
+    done: undefined,
+  });
 
   const animatedComponents = makeAnimated();
 
@@ -51,6 +59,31 @@ const OverviewTab = () => {
         return res.data.data;
       }),
   });
+
+  useEffect(() => {
+    const todofFiltered = data?.tasks.filter((task) => {
+      return parseInt(task.status, 10) === 0 || parseInt(task.status, 10) === 4;
+    });
+
+    const inProgressfFiltered = data?.tasks.filter((task) => {
+      return parseInt(task.status, 10) === 1;
+    });
+
+    const doneFiltered = data?.tasks.filter((task) => {
+      return parseInt(task.status, 10) === 2 || parseInt(task.status, 10) === 3;
+    });
+
+    const underReviewFiltered = data?.tasks.filter((task) => {
+      return parseInt(task.status, 10) === 2;
+    });
+
+    setTaskByStatus({
+      todo: todofFiltered?.length,
+      inprogress: inProgressfFiltered?.length,
+      underReview: underReviewFiltered?.length,
+      done: doneFiltered?.length,
+    });
+  }, [data]);
 
   useEffect(() => {
     async function fetsHistory() {
@@ -91,21 +124,22 @@ const OverviewTab = () => {
           },
         },
       )
-      .then((res) => console.log(res))
+      .then(() => {
+        alert('success', 'BAST is under review');
+      })
       .catch((err) => console.log(err));
     setLoading(false);
     setModal(false);
   };
 
-  // const newDate1 = (date) => {
-  //   const timestamp = new Date(date);
-  //   const dateString = timestamp.toDateString();
-  //   const localeString = timestamp.toLocaleString();
-  //   return `${dateString}, ${localeString.split(',')[1]}`;
-  // };
+  const allTaskPermission = ['Manager', 'Director'];
 
   return isLoading ? (
-    'Loading...'
+    <Col lg="12">
+      <Card>
+        <CardBody>Loading...</CardBody>
+      </Card>
+    </Col>
   ) : error ? (
     'Soemthing went wrong.'
   ) : (
@@ -140,12 +174,15 @@ const OverviewTab = () => {
                 <span className="text-dark">{data.end_date}</span>
               </div>
             </div>
-            <div className="d-flex justify-content-between align-items-end">
-              <div className="d-flex mt-3 gap-3 align-items-center">
+            <div
+              className="d-flex justify-content-between align-items-end p-2 mt-3"
+              style={{ backgroundColor: '#F3F2F2', borderRadius: '8px' }}
+            >
+              <div className="d-flex gap-3 align-items-center">
                 <img src={user1} className="rounded-circle" alt="avatar" width="45" height="45" />
                 <div className="d-flex flex-column">
                   <small className="text-muted">PIC</small>
-                  <span className="text-dark fw-bold">{data.pic.first_name}</span>
+                  <span className="text-dark fw-bold">{data.pic_active.first_name}</span>
                   {/* <small className="text-muted">Divisi Teknologi & Informasi</small> */}
                 </div>
               </div>
@@ -168,30 +205,43 @@ const OverviewTab = () => {
                 Project Histories
               </CardTitle>
             </div>
-            <div className="d-flex flex-column gap-3">
-              {history?.map((h) => (
-                <div
-                  key={h.history_id}
-                  className="col-md-12 d-flex justify-content-between align-items-center"
-                >
-                  <div className="col-md-7 d-flex flex-column">
-                    <span className="text-dark">{h.history_desc}</span>
-                    <small>{h.organization_name}</small>
-                  </div>
-                  <div className="col-md-3 d-flex flex-column">
-                    <small>{newDate(h.created_at)}</small>
-                  </div>
-                  <div className="col-md-1 member">
-                    <img
-                      src={h.img || user1}
-                      className="rounded-circle"
-                      alt="avatar"
-                      width="35"
-                      height="35"
-                    />
-                  </div>
-                </div>
-              ))}
+            <div className="d-flex flex-column gap-2">
+              {!history
+                ? 'Loading...'
+                : history?.map((h) => (
+                    <div
+                      key={h.history_id}
+                      className="col-md-12 d-flex justify-content-between align-items-center py-2 px-3"
+                      style={{ backgroundColor: '#F3F2F2', borderRadius: '8px' }}
+                    >
+                      <div className="col-md-7 d-flex flex-column">
+                        <span className="text-dark">{h.history_desc}</span>
+                        <small>{h.organization_name}</small>
+                        {auth?.user?.roles.find((role) => allTaskPermission.includes(role)) && (
+                          <Link
+                            to={`/projects/details/${projectId}?to=activities`}
+                            style={{ textDecoration: 'none' }}
+                          >
+                            See all task
+                          </Link>
+                        )}
+                      </div>
+                      <div className="col-md-3 d-flex flex-column">
+                        <small>{newDate(h.created_at)}</small>
+                      </div>
+                      <div className="col-md-1 member">
+                        <img
+                          id={`tooltip-${h.history_id}`}
+                          src={h.img || user1}
+                          className="rounded-circle"
+                          alt="avatar"
+                          width="35"
+                          height="35"
+                        />
+                        <TooltipHover title={h.first_name} id={h.history_id} />
+                      </div>
+                    </div>
+                  ))}
             </div>
           </CardBody>
         </Card>
@@ -201,9 +251,14 @@ const OverviewTab = () => {
           <CardBody>
             <CardTitle tag="h4" className="d-flex justify-content-between">
               Overall Process
-              <span>76%</span>
+              <span className="text-success fw-bold">{data.total_progress}%</span>
             </CardTitle>
-            <Progress className="" color="success" value="76" style={{ height: '15px' }} />
+            <Progress
+              className=""
+              color="success"
+              value={data.total_progress}
+              style={{ height: '15px' }}
+            />
           </CardBody>
         </Card>
         <Card>
@@ -219,7 +274,7 @@ const OverviewTab = () => {
               <div className="overall-child">
                 <div>
                   <h6 className="text-muted">Task Todo</h6>
-                  <span>30</span>
+                  <span>{taskByStatus?.todo}</span>
                 </div>
                 <MaterialIcon icon="task_alt"></MaterialIcon>
               </div>
@@ -228,14 +283,14 @@ const OverviewTab = () => {
               <div className="overall-child">
                 <div>
                   <h6 className="text-muted">Task In Progress</h6>
-                  <span>10</span>
+                  <span>{taskByStatus?.inprogress}</span>
                 </div>
                 <MaterialIcon icon="play_circle_outline"></MaterialIcon>
               </div>
               <div className="overall-child">
                 <div>
                   <h6 className="text-muted">Task Done</h6>
-                  <span>5</span>
+                  <span>{taskByStatus?.done}</span>
                 </div>
                 <MaterialIcon icon="schedule"></MaterialIcon>
               </div>
@@ -244,7 +299,13 @@ const OverviewTab = () => {
         </Card>
         {auth.user.roles.includes('Manager') && (
           <Card>
-            <Button type="button" color="info" outline onClick={toggle.bind(null)}>
+            <Button
+              type="button"
+              color="info"
+              disabled={data?.total_progress !== 100 || taskByStatus?.underReview !== 0}
+              outline
+              onClick={toggle.bind(null)}
+            >
               Hand Over Project
             </Button>
           </Card>

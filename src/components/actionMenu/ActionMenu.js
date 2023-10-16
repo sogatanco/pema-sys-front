@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import MaterialIcon from '@material/react-material-icon';
 import PropTypes from 'prop-types';
 
-const ActionMenu = ({ menuOptions, taskId, status, action }) => {
+const ActionMenu = ({ menuOptions, taskId, status, action, progress }) => {
   const [actionMenu, setActionMenu] = useState(false);
 
   const deleteTask = () => {
@@ -37,7 +37,13 @@ const ActionMenu = ({ menuOptions, taskId, status, action }) => {
                     type="button"
                     className="text-muted"
                     onClick={() => changeStatusTask(op.to)}
-                    disabled={op.to === status || (op.to === 2 && status === 0)}
+                    disabled={
+                      op.to === status ||
+                      (op.to === 2 && status === 0) ||
+                      (op.to === 2 && status === 4) ||
+                      (op.to === 0 && status === 4) ||
+                      (op.to === 2 && progress !== 100)
+                    }
                   >
                     {op.icon}
                     {op.label}
@@ -69,6 +75,7 @@ ActionMenu.propTypes = {
   taskId: PropTypes.number,
   status: PropTypes.number,
   action: PropTypes.func,
+  progress: PropTypes.number,
 };
 
 export default ActionMenu;

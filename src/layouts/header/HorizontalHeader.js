@@ -27,6 +27,7 @@ import ProfileDD from './ProfileDD';
 import HorizontalLogo from '../logo/HorizontalLogo';
 import { AuthContext } from '../../context/AuthContext';
 import './Header.scss';
+import { Toast } from '../../components/atoms/Toast';
 
 const HorizontalHeader = () => {
   const isDarkMode = useSelector((state) => state.customizer.isDark);
@@ -61,6 +62,7 @@ const HorizontalHeader = () => {
       expand="lg"
       className="shadow HorizontalTopbar p-0"
     >
+      <Toast />
       <Container className="d-flex align-items-center">
         {/******************************/}
         {/**********Logo**********/}

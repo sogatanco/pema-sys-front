@@ -11,6 +11,7 @@ const ProfilePage = Loadable(lazy(() => import('../pages/profile')));
 const ProjectPage = Loadable(lazy(() => import('../pages/projects')));
 const DailyPage = Loadable(lazy(() => import('../pages/daily')));
 const ProjectDetail = Loadable(lazy(() => import('../pages/projects/ProjectDetail')));
+const ProjectTaskList = Loadable(lazy(() => import('../pages/projects/AllTask')));
 /***** Pages ****/
 
 const Dashboard2 = Loadable(lazy(() => import('../views/dashboards/Dashboard2')));
@@ -76,6 +77,11 @@ const ThemeRoutes = [
             path: 'projects/details/:projectId',
             name: 'Project Details',
             element: <ProjectDetail />,
+          },
+          {
+            path: 'projects/alltask/:projectId',
+            name: 'Projects',
+            element: <ProjectTaskList />,
           },
         ],
       },

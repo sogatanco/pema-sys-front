@@ -1,3 +1,18 @@
+.task-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(158, 158, 158, 0.338);
+  background-blend-mode: color;
+  z-index: 1;
+}
+
+.new-task {
+  z-index: 1;
+}
+
 .datepicker-toggle {
   display: inline-block;
   position: relative;

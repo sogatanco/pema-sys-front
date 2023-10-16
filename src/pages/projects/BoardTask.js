@@ -8,6 +8,8 @@ import TaskForm from './TaskForm';
 import ActionMenu from '../../components/actionMenu/ActionMenu';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
+import { alert } from '../../components/atoms/Toast';
+import CircularPercentage from '../../components/atoms/circularPercentage/CircularPercentage';
 
 const result = (emId) =>
   emId.filter(
@@ -45,8 +47,17 @@ const BoardTask = ({ data, projectId, refetch }) => {
         employe_id: auth.user.employe_id,
         status: taskStatus,
       })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+      .then(() => {
+        alert(
+          taskStatus === 1 ? 'start' : taskStatus === 2 ? 'done' : 'success',
+          `Task status has been changed to ${
+            taskStatus === 0 ? 'To Do' : taskStatus === 1 ? 'In Progress' : 'Done'
+          }`,
+        );
+      })
+      .catch((err) => {
+        alert('error', err.response.data.error);
+      });
     refetch();
     setUpdating(false);
     setTaskIdActive();
@@ -114,13 +125,42 @@ const BoardTask = ({ data, projectId, refetch }) => {
                     </span>
                   </div>
                 ) : (
-                  <div key={td.task_id}>
-                    <ActionMenu
-                      menuOptions={menuOptions}
-                      taskId={td.task_id}
-                      status={parseInt(td.status, 10)}
-                      action={handleTaskStatus}
-                    />
+                  <div className="d-flex gap-2">
+                    <div className="">
+                      {parseInt(td.status, 10) === 1 && (
+                        <span style={{ fontSize: '12px' }}>
+                          Progress{'  '}
+                          <strong
+                            style={{
+                              fontSize: '14px',
+                              color: td.task_progress === 100 ? '#4cc790' : '#21C1D6',
+                            }}
+                          >
+                            {td.task_progress}%
+                          </strong>
+                        </span>
+                        // <div className="progress-bar">
+                        //   <Progress
+                        //     className="mb-0"
+                        //     value={td.task_progress}
+                        //     color="success"
+                        //     style={{ fontSize: '10px', height: '12px' }}
+                        //   />
+                        //   <div className={`num ${td.task_progress > 52 && 'white'}`}>
+                        //     {td.task_progress}%
+                        //   </div>
+                        // </div>
+                      )}
+                    </div>
+                    <div key={td.task_id}>
+                      <ActionMenu
+                        menuOptions={menuOptions}
+                        taskId={td.task_id}
+                        status={parseInt(td.status, 10)}
+                        action={handleTaskStatus}
+                        progress={td.task_progress}
+                      />
+                    </div>
                   </div>
                 )
               ) : parseInt(td.status, 10) === 2 ? (
@@ -138,7 +178,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
               )}
             </div>
             <div className="board-body" onClick={() => openPopup(td)}>
-              <div className="task-title">{td.task_title}</div>
+              <div className="task-title fw-bold">{td.task_title}</div>
               <div className="task-bottom">
                 <div className="task-info">
                   <small className="text-muted">{td.subtasks.length} Subtask</small>
@@ -154,9 +194,24 @@ const BoardTask = ({ data, projectId, refetch }) => {
             {td.subtasks.length >= 1 &&
               td.subtasks.map((st) => (
                 <div key={st.task_id} className="board-body subtask" onClick={() => openPopup(st)}>
-                  <div className="task-title">{st.task_title}</div>
+                  <div className="task-title text-muted">{st.task_title}</div>
                   <div className="task-action">
-                    <MaterialIcon icon="done" />
+                    <div className="circular-progress">
+                      <CircularPercentage data={st.task_progress} />
+                      {/* <Progress
+                          className="mb-0"
+                          value={st.task_progress}
+                          color="success"
+                          style={{ fontSize: '10px', height: '12px' }}
+                        />
+                        <div className={`num ${st.task_progress > 52 && 'white'}`}>
+                          {st.task_progress}%
+                        </div> */}
+                    </div>
+                    <div className="comment">
+                      <MaterialIcon icon="comment" />
+                      <div>{td.comments}</div>
+                    </div>
                   </div>
                 </div>
               ))}

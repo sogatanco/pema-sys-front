@@ -1,27 +1,17 @@
 import { useState } from 'react';
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  Table,
-  Col,
-  Button,
-  Alert,
-  Badge,
-} from 'reactstrap';
+import { Card, CardBody, CardTitle, CardSubtitle, Table, Col, Button } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
 import { Link } from 'react-router-dom';
 import NewProjectModal from './NewProjectModal';
 import useAxios from '../../hooks/useAxios';
 import './Project.scss';
+import useAuth from '../../hooks/useAuth';
 
 const ProjectTables = () => {
+  const { auth } = useAuth();
   const [modal, setModal] = useState(false);
   const [actionMenu, setActionMenu] = useState(undefined);
-  const [successMsg, setSuccessMsg] = useState();
-  const [errorMsg, setErrorMsg] = useState();
 
   const toggle = () => {
     setModal(!modal);
@@ -37,20 +27,12 @@ const ProjectTables = () => {
       }),
   });
 
-  setTimeout(() => {
-    if (successMsg) {
-      setSuccessMsg();
-    }
-    if (errorMsg) {
-      setErrorMsg();
-    }
-  }, 5000);
+  const allowedRoles = ['Staff', 'Manager'];
+
+  console.log(data);
 
   return (
     <div>
-      {(successMsg || errorMsg) && (
-        <Alert color={successMsg ? 'info' : 'danger'}>{!errorMsg ? successMsg : errorMsg}</Alert>
-      )}
       <Card>
         <CardBody style={{ position: 'relative' }}>
           <Col className="d-flex justify-content-between" col="12">
@@ -60,20 +42,20 @@ const ProjectTables = () => {
                 Overview of the projects
               </CardSubtitle>
             </div>
-            <div className="">
-              <Button
-                className="btn d-flex gap-1 align-items-end"
-                outline
-                color="info"
-                onClick={toggle.bind(null)}
-              >
-                <MaterialIcon icon="add" />
-                Create New Project
-              </Button>
-              <NewProjectModal
-                {...{ modal, setModal, toggle, setSuccessMsg, setErrorMsg, refetch }}
-              />
-            </div>
+            {auth?.user.roles.find((role) => allowedRoles?.includes(role)) && (
+              <div className="">
+                <Button
+                  className="btn d-flex gap-1 align-items-end"
+                  outline
+                  color="info"
+                  onClick={toggle.bind(null)}
+                >
+                  <MaterialIcon icon="add" />
+                  Create New Project
+                </Button>
+                <NewProjectModal {...{ modal, setModal, toggle, refetch }} />
+              </div>
+            )}
           </Col>
           {isLoading ? (
             <div className="d-flex justify-content-center">
@@ -88,10 +70,10 @@ const ProjectTables = () => {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Project</th>
-                  <th>Number</th>
-                  <th>Level</th>
-                  <th>Start</th>
+                  <th>Projects</th>
+                  <th>Numbers</th>
+                  <th>Levels</th>
+                  <th>Start at</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -99,21 +81,39 @@ const ProjectTables = () => {
               <tbody style={{ overflow: 'hidden' }}>
                 {data?.map((p, i) => (
                   <tr key={p.project_id} className="border-top">
-                    <td>{i + 1}</td>
-                    <td className="text-success fw-bold">
-                      <Link to={`details/${p.project_id}`} style={{ textDecoration: 'none' }}>
+                    <td>{i + 1}.</td>
+                    <td className="text-success">
+                      <Link
+                        className="fw-bold"
+                        to={`details/${p.project_id}`}
+                        style={{ textDecoration: 'none' }}
+                      >
                         {p.project_name}
                       </Link>
+                      <br></br>
+                      <span className="fs-7 text-muted fw-bold">{p.organization_name}</span>
                     </td>
-                    <td>{p.project_number}</td>
-                    <td>{p.level_desc}</td>
-                    <td>{`${p?.start_date?.split('-')[2]}-${p?.start_date?.split('-')[1]}-${
-                      p?.start_date?.split('-')[0]
-                    }`}</td>
+                    <td className="text-muted">{p.project_number}</td>
+                    <td className="text-muted">{p.level_desc}</td>
+                    <td className="text-muted">{`${p?.start_date?.split('-')[2]}-${
+                      p?.start_date?.split('-')[1]
+                    }-${p?.start_date?.split('-')[0]}`}</td>
                     <td>
-                      {i === 0 && <Badge color="info">New</Badge>}
-                      {i === 1 && <Badge color="warning">Ongoing</Badge>}
-                      {i !== 0 && i !== 1 && <Badge color="success">Done</Badge>}
+                      {p.status === 'new' && (
+                        <span className="badge bg-light-info text-info rounded-pill d-inline-block fw-bold">
+                          New
+                        </span>
+                      )}
+                      {p.status === 'ongoing' && (
+                        <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">
+                          Ongoing
+                        </span>
+                      )}
+                      {p.status === 'done' && (
+                        <span className="badge bg-light-success text-success rounded-pill d-inline-block fw-bold">
+                          Done
+                        </span>
+                      )}
                     </td>
                     <td width="5" align="center">
                       <div className="action-table">

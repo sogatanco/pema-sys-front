@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import MaterialIcon from '@material/react-material-icon';
 import useAxios from '../../hooks/useAxios';
 import newDate from '../../utils/formatDate';
+import { alert } from '../../components/atoms/Toast';
 
 const ReviewTab = ({ setTotalReview }) => {
   const { projectId } = useParams();
@@ -72,7 +73,9 @@ const ReviewTab = ({ setTotalReview }) => {
         status: mode === 'approve' ? 3 : 4,
         note: comments,
       })
-      .then((res) => console.log(res))
+      .then(() => {
+        alert('success', `Task has been ${mode === 'approve' ? 'approved' : 'reviewed'}`);
+      })
       .catch((err) => console.log(err));
     refetch();
     setModal(false);
@@ -193,7 +196,7 @@ const ReviewTab = ({ setTotalReview }) => {
             </CardBody>
         </Card> */}
       </Col>
-      <Modal isOpen={modal} toggle={toggle.bind(null)} size="lg" fade={false} centered>
+      <Modal isOpen={modal} toggle={toggle.bind(null)} size="md" fade={false} centered>
         <ModalHeader toggle={toggle.bind(null)}>
           {mode === 'approve' ? 'Approval' : 'Revision'}
         </ModalHeader>
