@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import dayjs from 'dayjs';
 import TextField from '@mui/material/TextField';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
@@ -10,64 +10,141 @@ import { Row, Col, Button } from 'reactstrap';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
-
 import Box from '@mui/material/Box';
+import { useQueries } from '@tanstack/react-query';
+import Stack from '@mui/material/Stack';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import useAxios from '../../hooks/useAxios';
 
 const filt = createFilterOptions();
-const top100Films = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Godfather', year: 1972 },
-  { title: 'The Godfather: Part II', year: 1974 },
-  { title: 'The Dark Knight', year: 2008 },
-];
 
-const categories = [
-  { title: 'Rutin', id: 1 },
-  { title: 'Non Rutin', id: 2 },
-  { title: 'Tahunan', id: 3 },
-];
+const Alert = React.forwardRef((props, ref)=>{
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const Newtask = () => {
+
+  const [activities, setActivities] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
   const [value, setValue] = React.useState(null);
   const [star, setStar] = React.useState(dayjs());
   const [end, setEnd] = React.useState(dayjs());
   const [progress, setProgress] = React.useState(0);
   const [category, setCategory] = React.useState(null);
+  const [actpoin, setActpoin] = React.useState(0);
 
-  const submit = () => {
-    console.log(value?.title);
-    console.log(star);
-    console.log(end);
-    console.log(category?.title);
-    console.log(progress);
+  const activityValueSubmit = {
+    activity: '',
+    poin: 0,
+    start: dayjs(),
+    end: dayjs(),
+    category: '',
+    progress: 0,
+  };
+  const api = useAxios();
+  const submit = async (e) => {
+    activityValueSubmit.activity = value?.activity;
+    activityValueSubmit.start = dayjs(star);
+    activityValueSubmit.end = dayjs(end);
+    activityValueSubmit.category = category?.id;
+    activityValueSubmit.progress = progress;
+    activityValueSubmit.poin = actpoin;
+
+    e.preventDefault();
+
+    await api
+      .post(`dapi/activit`, activityValueSubmit)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const [act, cat] = useQueries({
+    queries: [
+      {
+        queryKey: ['act'],
+        queryFn: () =>
+          api.get(`dapi/activities`).then((res) => {
+            return res.data.data;
+          }),
+      },
+      {
+        queryKey: ['cat'],
+        queryFn: () =>
+          api.get(`dapi/categories`).then((res) => {
+            return res.data.data;
+          }),
+      },
+    ],
+  });
+
+  useEffect(() => {
+    setCategories(cat.data);
+    setActivities(act.data);
+  }, [cat.data, act.data]);
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
   };
 
   return (
     <>
+     <Stack spacing={2} sx={{ width: '100%' }}>
+        <Button  variant="dark" onClick={handleClick}>
+          Open success snackbar
+        </Button>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            This is a success message!
+          </Alert>
+        </Snackbar>
+      </Stack>
       <Autocomplete
         value={value}
         onChange={(event, newValue) => {
           if (typeof newValue === 'string') {
             setValue({
-              title: newValue,
+              activity: newValue,
             });
+            setActpoin(0);
           } else if (newValue && newValue.inputValue) {
             setValue({
-              title: newValue.inputValue,
+              activity: newValue.inputValue,
             });
+            setActpoin(0);
           } else {
             setValue(newValue);
+            setActpoin(newValue?.poin);
+
+            const filcat = cat.data.filter((cats) => cats.id === parseInt(newValue?.category, 10));
+            if (filcat?.length > 0) {
+              setCategory(filcat[0]);
+            }
           }
         }}
         filterOptions={(options, params) => {
           const filtered = filt(options, params);
 
           const { inputValue } = params;
-          const isExisting = options.some((option) => inputValue === option.title);
+          const isExisting = options.some((option) => inputValue === option.activity);
           if (inputValue !== '' && !isExisting) {
             filtered.push({
               inputValue,
-              title: `Add "${inputValue}"`,
+              activity: `Add "${inputValue}"`,
             });
           }
 
@@ -77,7 +154,7 @@ const Newtask = () => {
         clearOnBlur
         handleHomeEndKeys
         id="free-solo-with-text-demo"
-        options={top100Films}
+        options={activities || []}
         getOptionLabel={(option) => {
           if (typeof option === 'string') {
             return option;
@@ -85,9 +162,9 @@ const Newtask = () => {
           if (option.inputValue) {
             return option.inputValue;
           }
-          return option.title;
+          return option.activity;
         }}
-        renderOption={(props, option) => <li {...props}>{option.title}</li>}
+        renderOption={(props, option) => <li {...props}>{option.activity}</li>}
         freeSolo
         renderInput={(params) => <TextField {...params} label="What are you doing today ?" />}
       />
@@ -109,16 +186,16 @@ const Newtask = () => {
         <Col>
           <Autocomplete
             id="disabled-options-demo"
-            options={categories}
+            options={categories || []}
             value={category}
             onChange={(event, newValue) => {
               if (typeof newValue === 'string') {
                 setCategory({
-                  title: newValue,
+                  category_name: newValue,
                 });
               } else if (newValue && newValue.inputValue) {
                 setCategory({
-                  title: newValue.inputValue,
+                  category_name: newValue.inputValue,
                 });
               } else {
                 setCategory(newValue);
@@ -131,9 +208,9 @@ const Newtask = () => {
               if (option.inputValue) {
                 return option.inputValue;
               }
-              return option.title;
+              return option.category_name;
             }}
-            renderOption={(props, option) => <li {...props}>{option.title}</li>}
+            renderOption={(props, option) => <li {...props}>{option.category_name}</li>}
             renderInput={(params) => <TextField {...params} label="Category" />}
           />
         </Col>
@@ -161,6 +238,8 @@ const Newtask = () => {
           SUBMIT
         </Button>
       </div>
+
+     
     </>
   );
 };
