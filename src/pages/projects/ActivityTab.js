@@ -53,7 +53,7 @@ const ActivityTab = () => {
                     <th>Task title</th>
                     <th width="">Status</th>
                     <th>Progress</th>
-                    <th>PIC</th>
+                    <th width="100">PICS</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -62,9 +62,7 @@ const ActivityTab = () => {
                       <tr key={ts.task_id} onClick={() => openPopup(ts)}>
                         <td>{idx + 1}.</td>
                         <td>
-                          <span style={{ fontWeight: '600' }}>
-                            {ts.task_title} - {ts.status}
-                          </span>
+                          <span style={{ fontWeight: '600' }}>{ts.task_title}</span>
                           <br></br>
                           <Badge color="light" className="text-muted">
                             {ts.subtasks.length} subtask
@@ -93,7 +91,7 @@ const ActivityTab = () => {
                           )}
                         </td>
                         <td>
-                          <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">
+                          <span className="badge bg-light-success text-primary rounded-pill d-inline-block fw-bold">
                             {ts.task_progress}%
                           </span>
                         </td>
@@ -132,7 +130,7 @@ const ActivityTab = () => {
                             </td>
 
                             <td>
-                              {st.status === 0 ? (
+                              {/* {st.status === 0 ? (
                                 <Badge color="light" className="text-dark">
                                   To Do
                                 </Badge>
@@ -146,7 +144,8 @@ const ActivityTab = () => {
                                 <Badge color="success">Approved</Badge>
                               ) : (
                                 <Badge color="danger">Revision</Badge>
-                              )}
+                              )} */}
+                              -
                             </td>
                             <td>
                               <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">

@@ -51,8 +51,15 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
       }),
   });
 
+  const BoardAllowedRoles = ['Staff', 'Manager'];
+  const MembersAllowedRoles = ['Staff', 'Manager', 'Director'];
+  const ActivitiesAllowedRoles = ['Manager', 'Director'];
+  const FilesAllowedRoles = ['Staff'];
+  const BASTReviewAllowedRoles = ['Director'];
+  const ReviewAndHandoverAllowedRoles = ['Manager'];
+
   return (
-    <Col md="12" className="d-flex justify-content-between mb-2 align-items-center">
+    <Col md="12" className="d-flex justify-content-between mb-3 align-items-center">
       <div className="project-nav">
         <Link
           className={`${navActive === 1 && 'active'} text-muted fw-bold`}
@@ -60,7 +67,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
         >
           Overview
         </Link>
-        {!roles.includes('Director') && (
+        {auth?.user?.roles.find((role) => BoardAllowedRoles.includes(role)) && (
           <Link
             className={`${navActive === 2 && 'active'} text-muted fw-bold`}
             onClick={() => setNavActive(2)}
@@ -68,7 +75,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
             Board
           </Link>
         )}
-        {(roles.includes('Manager') || roles.includes('Director')) && (
+        {auth?.user?.roles.find((role) => ActivitiesAllowedRoles.includes(role)) && (
           <Link
             className={`${navActive === 7 && 'active'} text-muted fw-bold`}
             onClick={() => setNavActive(7)}
@@ -76,7 +83,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
             Activities
           </Link>
         )}
-        {roles.includes('Employee') && (
+        {auth?.user?.roles.find((role) => FilesAllowedRoles.includes(role)) && (
           <>
             <Link
               className={`${navActive === 4 && 'active'} text-muted fw-bold`}
@@ -86,7 +93,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
             </Link>
           </>
         )}
-        {roles.includes('Director') && (
+        {auth?.user?.roles.find((role) => BASTReviewAllowedRoles.includes(role)) && (
           <Link
             className={`${navActive === 8 && 'active'} text-muted fw-bold`}
             onClick={() => setNavActive(8)}
@@ -102,7 +109,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
             </div>
           </Link>
         )}
-        {roles.includes('Manager') && (
+        {auth?.user?.roles.find((role) => ReviewAndHandoverAllowedRoles.includes(role)) && (
           <>
             <Link
               className={`${navActive === 5 && 'active'} text-muted fw-bold`}
@@ -126,12 +133,14 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
             </Link>
           </>
         )}
-        <Link
-          className={`${navActive === 3 && 'active'} text-muted fw-bold`}
-          onClick={() => setNavActive(3)}
-        >
-          Members
-        </Link>
+        {auth?.user?.roles.find((role) => MembersAllowedRoles.includes(role)) && (
+          <Link
+            className={`${navActive === 3 && 'active'} text-muted fw-bold`}
+            onClick={() => setNavActive(3)}
+          >
+            Members
+          </Link>
+        )}
       </div>
       <h3 className="fw-bold">{isLoading ? 'Loading..' : data?.project_number}</h3>
     </Col>

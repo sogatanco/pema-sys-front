@@ -129,9 +129,11 @@
   @keyframes board-animation {
     0% {
       transform: scale(0.9);
+      background-color: transparent;
     }
     100% {
       transform: scale(1);
+      background-color: white;
     }
   }
 
@@ -179,7 +181,7 @@
       display: flex;
       align-items: center;
       justify-content: end;
-      gap: 15px;
+      gap: 2px;
       padding: 0 10px;
 
       i {
@@ -208,7 +210,7 @@
         div {
           right: -3px;
           top: -3px;
-          width: max-content;
+          min-width: 12px;
           height: 12px;
           display: flex;
           align-items: center;
@@ -216,28 +218,15 @@
           border-radius: 50%;
           position: absolute;
           font-size: 8px;
-          background-color: #fc889d;
+          background-color: #fb778f;
           color: white;
           padding: 1.3px 3px 0px 3px;
         }
       }
 
-      .progress-bar {
-        position: relative;
-        height: 14px;
-
-        .num {
-          position: absolute;
-          font-size: 10px;
-          display: flex;
-          width: 100%;
-          justify-content: center;
-          margin-top: 2px;
-        }
-
-        .white {
-          color: white;
-        }
+      .circular-progress {
+        height: 30px;
+        width: 40px;
       }
     }
   }
@@ -440,5 +429,24 @@ i {
 
   &:hover {
     text-decoration: underline;
+  }
+}
+
+.progress-bar {
+  position: relative;
+  height: 35px;
+  background-color: red;
+
+  .num {
+    position: absolute;
+    font-size: 10px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .white {
+    color: white;
   }
 }

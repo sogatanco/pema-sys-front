@@ -82,8 +82,6 @@ const ReviewTab = ({ setTotalReview }) => {
     setLoading(false);
   };
 
-  console.log(listReview);
-
   return (
     <>
       <Col>

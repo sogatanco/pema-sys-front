@@ -8,7 +8,7 @@ const BoardDone = ({ data, isLoading, error, refetch, isRefetching }) => {
   const { projectId } = useParams();
 
   return (
-    <Col lg="4" className="mt-4">
+    <Col lg="4" className="mt-1">
       <h4>Done ({data?.length})</h4>
       {isLoading ? (
         'Loading...'

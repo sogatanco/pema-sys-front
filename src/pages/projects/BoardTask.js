@@ -1,6 +1,6 @@
 import MaterialIcon from '@material/react-material-icon';
 import React, { useState } from 'react';
-import { Badge, Button, Col, Progress, Spinner } from 'reactstrap';
+import { Badge, Button, Spinner } from 'reactstrap';
 import PropTypes from 'prop-types';
 import user1 from '../../assets/images/users/user1.jpg';
 import TaskPopup from './TaskPopup';
@@ -9,6 +9,7 @@ import ActionMenu from '../../components/actionMenu/ActionMenu';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import { alert } from '../../components/atoms/Toast';
+import CircularPercentage from '../../components/atoms/circularPercentage/CircularPercentage';
 
 const result = (emId) =>
   emId.filter(
@@ -129,10 +130,26 @@ const BoardTask = ({ data, projectId, refetch }) => {
                       {parseInt(td.status, 10) === 1 && (
                         <span style={{ fontSize: '12px' }}>
                           Progress{'  '}
-                          <strong style={{ fontSize: '14px', color: '#21C1D6' }}>
+                          <strong
+                            style={{
+                              fontSize: '14px',
+                              color: td.task_progress === 100 ? '#4cc790' : '#21C1D6',
+                            }}
+                          >
                             {td.task_progress}%
                           </strong>
                         </span>
+                        // <div className="progress-bar">
+                        //   <Progress
+                        //     className="mb-0"
+                        //     value={td.task_progress}
+                        //     color="success"
+                        //     style={{ fontSize: '10px', height: '12px' }}
+                        //   />
+                        //   <div className={`num ${td.task_progress > 52 && 'white'}`}>
+                        //     {td.task_progress}%
+                        //   </div>
+                        // </div>
                       )}
                     </div>
                     <div key={td.task_id}>
@@ -161,7 +178,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
               )}
             </div>
             <div className="board-body" onClick={() => openPopup(td)}>
-              <div className="task-title">{td.task_title}</div>
+              <div className="task-title fw-bold">{td.task_title}</div>
               <div className="task-bottom">
                 <div className="task-info">
                   <small className="text-muted">{td.subtasks.length} Subtask</small>
@@ -177,11 +194,11 @@ const BoardTask = ({ data, projectId, refetch }) => {
             {td.subtasks.length >= 1 &&
               td.subtasks.map((st) => (
                 <div key={st.task_id} className="board-body subtask" onClick={() => openPopup(st)}>
-                  <div className="task-title">{st.task_title}</div>
+                  <div className="task-title text-muted">{st.task_title}</div>
                   <div className="task-action">
-                    <Col sm="6">
-                      <div className="progress-bar">
-                        <Progress
+                    <div className="circular-progress">
+                      <CircularPercentage data={st.task_progress} />
+                      {/* <Progress
                           className="mb-0"
                           value={st.task_progress}
                           color="success"
@@ -189,9 +206,12 @@ const BoardTask = ({ data, projectId, refetch }) => {
                         />
                         <div className={`num ${st.task_progress > 52 && 'white'}`}>
                           {st.task_progress}%
-                        </div>
-                      </div>
-                    </Col>
+                        </div> */}
+                    </div>
+                    <div className="comment">
+                      <MaterialIcon icon="comment" />
+                      <div>{td.comments}</div>
+                    </div>
                   </div>
                 </div>
               ))}

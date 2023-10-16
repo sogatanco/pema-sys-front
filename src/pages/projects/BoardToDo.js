@@ -14,7 +14,7 @@ const BoardToDo = ({ data, isLoading, error, refetch, isRefetching }) => {
   const type = 1;
 
   return (
-    <Col lg="4" className="mt-4">
+    <Col lg="4" className="mt-1">
       <h4>To do ({data?.length})</h4>
       {isLoading ? (
         'Loading...'
