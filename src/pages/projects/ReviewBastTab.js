@@ -53,8 +53,6 @@ const ReviewBastTab = () => {
     setReviewBy(byEmploye);
   };
 
-  console.log('pic lama', oldPic);
-
   const toggle = () => {
     setModal(!modal);
   };

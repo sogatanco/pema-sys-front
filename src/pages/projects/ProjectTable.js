@@ -29,8 +29,6 @@ const ProjectTables = () => {
 
   const allowedRoles = ['Staff', 'Manager'];
 
-  console.log(data);
-
   return (
     <div>
       <Card>

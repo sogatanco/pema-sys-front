@@ -124,11 +124,11 @@
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
   transition: all 300ms ease;
   animation: board-animation 350ms ease;
-  transition: all 300ms ease;
+  transition: all 500ms ease;
 
   @keyframes board-animation {
     0% {
-      transform: scale(0.9);
+      transform: scale(0.95);
       background-color: transparent;
     }
     100% {

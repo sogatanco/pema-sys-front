@@ -16,7 +16,7 @@ const TaskForm = (props) => {
   const [loading, setLoading] = useState(false);
   const [task, setTask] = useState({});
   const [modal, setModal] = useState(false);
-  const [assignedEmployees, setAssignedEmployees] = useState();
+  const [assignedEmployees, setAssignedEmployees] = useState([]);
   const [listEmployee, setListEmploye] = useState();
   // const [files, setFiles] = useState([]);
 
@@ -42,8 +42,8 @@ const TaskForm = (props) => {
 
     setAssignedEmployees([
       {
-        label: auth.user.first_name,
         value: auth.user.employe_id,
+        label: auth.user.first_name,
       },
     ]);
   }, []);
@@ -164,7 +164,7 @@ const TaskForm = (props) => {
         <ModalHeader toggle={toggle.bind(null)}>Assigne Employee</ModalHeader>
         <ModalBody>
           <Select
-            closeMenuOnSelect={false}
+            // closeMenuOnSelect={false}
             components={animatedComponents}
             isMulti
             defaultValue={assignedEmployees}

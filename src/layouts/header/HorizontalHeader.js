@@ -111,7 +111,7 @@ const HorizontalHeader = () => {
               </div>
             </DropdownToggle>
             {isNotifOpen && (
-              <DropdownMenu className="ddWidth">
+              <DropdownMenu className="notif-view">
                 <DropdownItem header>
                   <span className="mb-0 fs-5">Notifications</span>
                 </DropdownItem>

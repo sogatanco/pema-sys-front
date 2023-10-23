@@ -44,14 +44,19 @@ const Login = () => {
   const handleLogin = async (data) => {
     dispatch({ type: 'LOGIN_START' });
 
-    const res = await api.post('api/auth/login', data);
-    if (res.data.status) {
-      dispatch({ type: 'LOGIN_SUCCESS', payload: res.data.auth });
-      navigate('/');
-    } else {
-      dispatch({ type: 'LOGIN_FAILURE', payload: res.data.message });
-      setErrStatus(true);
-    }
+    await api
+      .post('api/auth/login', data)
+      .then((res) => {
+        navigate('/');
+        dispatch({ type: 'LOGIN_SUCCESS', payload: res.data.auth });
+      })
+      .catch((err) => {
+        dispatch({
+          type: 'LOGIN_FAILURE',
+          payload: err.response?.data.message || 'Something went wrong.',
+        });
+        setErrStatus(true);
+      });
   };
 
   useEffect(() => {

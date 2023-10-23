@@ -105,7 +105,7 @@ const ReviewTab = ({ setTotalReview }) => {
                       {task.first_name}
                     </Badge>
                   </div>
-                  <span style={{ fontSize: '14px' }}>{newDate(task.created_at)}</span>
+                  <span style={{ fontSize: '14px' }}>{newDate(task.send_date)}</span>
                 </CardTitle>
                 <h5>
                   <strong>{task.task_title}</strong>

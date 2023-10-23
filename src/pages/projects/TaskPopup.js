@@ -24,10 +24,10 @@ import useAuth from '../../hooks/useAuth';
 import TooltipHover from '../../components/atoms/TooltipHover';
 import { alert } from '../../components/atoms/Toast';
 
-const result = (emId) =>
-  emId.filter(
-    (person, index) => index === emId.findIndex((other) => person.employe_id === other.employe_id),
-  );
+// const result = (emId) =>
+//   emId.filter(
+//     (person, index) => index === emId.findIndex((other) => person.employe_id === other.employe_id),
+//   );
 
 // const sortByDate = (data) => data.sort(({ date: a }, { date: b }) => (a < b ? -1 : a > b ? 1 : 0));
 
@@ -45,6 +45,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
   const [postComment, setPostComment] = useState();
   const [commentSending, setCommentSending] = useState(false);
   const [files, setFiles] = useState([]);
+  const [popContent, setPopContent] = useState();
 
   const inputCommentRef = useRef();
 
@@ -65,17 +66,23 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
       end_date: task?.end_date,
     });
 
-    if (task?.pics) {
-      setAssignedEmployees(
-        result(task.pics).map((pic) => ({
-          label: pic.first_name,
-          value: pic.employe_id,
-        })),
-      );
-    }
+    setAssignedEmployees([
+      {
+        label: task.first_name,
+        value: task.employe_id,
+      },
+    ]);
+    // if (task?.pics) {
+    //   setAssignedEmployees(
+    //     result(task.pics).map((pic) => ({
+    //       label: pic.first_name,
+    //       value: pic.employe_id,
+    //     })),
+    //   );
+    // }
 
     async function fetchHistory() {
-      await api.get(`api/task/history/${task?.task_id}`).then((res) => {
+      await api.get(`api/task/history/${task?.task_id}/${task?.employe_id}`).then((res) => {
         setHistory(res.data.data);
       });
     }
@@ -99,6 +106,14 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
     fetchEmployees();
   }, []);
 
+  useEffect(() => {
+    setPopContent(history?.concat(comments));
+  }, [history, comments]);
+
+  useEffect(() => {
+    popContent?.sort((a, b) => a.created_at.localeCompare(b.created_at));
+  }, [popContent]);
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     setUpdating(true);
@@ -109,7 +124,6 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
     }
     await api.patch(`api/task/${task?.task_id}`, taskTemp).then(() => {
       alert('success', 'Task has been updated.');
-      // console.log(res.data.message);
     });
     setModal(false);
     refetch();
@@ -159,7 +173,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
     postComment.task_id = task.task_id;
     await api
       .post(`api/comment`, postComment)
-      .then((res) => setComments((current) => [...current, res.data.data]));
+      .then((res) => setPopContent((current) => [...current, res.data.data]));
     setCommentSending(false);
     setPostComment();
     e.target.reset();
@@ -179,7 +193,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
           ) : (
             <div className="popup-body">
               <div className="left">
-                {mode === 'activities' ? (
+                {auth?.user.employe_id !== task.employe_id || mode === 'activities' ? (
                   <>
                     <>
                       <div className="top">
@@ -376,27 +390,38 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
               </div>
               <div className="right">
                 <div className="top">
-                  <div className="status">
-                    {task?.status === 0 ? (
-                      <Badge color="info">To Do</Badge>
-                    ) : task?.status === 1 ? (
-                      <Badge color="primary">In Progress</Badge>
-                    ) : task?.status === 2 ? (
-                      <Badge color="light" className="text-dark">
-                        <i className="bi-clock mr-4" style={{ fontSize: '12px' }}></i>
-                        &nbsp; Waiting for approval: <strong>Syahrial</strong>
-                      </Badge>
-                    ) : task?.status === 3 ? (
-                      <Badge color="success" className="d-flex">
-                        {' '}
-                        <i className="bi-check2-circle mr-4" style={{ fontSize: '13px' }}></i>
-                        &nbsp; Approved
-                      </Badge>
-                    ) : (
-                      <Badge color="danger">Revision</Badge>
-                    )}
-                  </div>
-                  {mode !== 'activities' && (
+                  {task.task_parent === null ? (
+                    <div className="status">
+                      <span className="badge bg-light-success text-primary rounded-pill d-inline-block fw-bold">
+                        Task
+                      </span>
+                      {task?.status === 0 ? (
+                        <Badge color="info">To Do</Badge>
+                      ) : task?.status === 1 ? (
+                        <Badge color="primary">In Progress</Badge>
+                      ) : task?.status === 2 ? (
+                        <Badge color="light" className="text-dark">
+                          <i className="bi-clock mr-4" style={{ fontSize: '12px' }}></i>
+                          &nbsp; Waiting for approval: <strong></strong>
+                        </Badge>
+                      ) : task?.status === 3 ? (
+                        <Badge color="success" className="d-flex">
+                          {' '}
+                          <i className="bi-check2-circle mr-4" style={{ fontSize: '13px' }}></i>
+                          &nbsp; Approved
+                        </Badge>
+                      ) : (
+                        <Badge color="danger">Revision</Badge>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="status">
+                      <span className="badge bg-light-success text-primary rounded-pill d-inline-block fw-bold">
+                        Subtask
+                      </span>
+                    </div>
+                  )}
+                  {auth?.user.employe_id === task.employe_id && (
                     <ActionMenu menuOptions={menuOptions} action={deleteTask} />
                   )}
                 </div>
@@ -411,74 +436,81 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                         </div>
                         <small>{task && newDate(task.created_at)}</small>
                       </div>
-                      {history?.map((h, i) => (
-                        <div key={h.approval_id}>
-                          <div className="history-item">
-                            <div className="comment-name">
-                              {h.status === 0 && i > 0 ? (
-                                <span>
-                                  <strong>{h.pic_task}</strong> change task to To Do
-                                </span>
-                              ) : h.status === 0 ? (
-                                <span>
-                                  <strong>{h.pic_task}</strong> was assigned
-                                </span>
-                              ) : h.status === 1 ? (
-                                <span>
-                                  <strong>{h.pic_task}</strong> change task to In Progress
-                                </span>
-                              ) : h.status === 2 ? (
-                                <span>
-                                  <strong>{h.pic_task}</strong> change task to Review
-                                </span>
-                              ) : h.status === 3 ? (
-                                <span>
-                                  <strong>{h.manager} </strong> task approved
-                                </span>
-                              ) : (
-                                <>
-                                  <span>
-                                    <strong>{h.manager} </strong>change task to Revision
-                                  </span>
-                                </>
+                      {popContent?.map((h, i) => (
+                        <div key={h.created_at}>
+                          {h.approval_id ? (
+                            <>
+                              <div className="history-item">
+                                <div className="comment-name">
+                                  {h.status === 0 && i > 0 ? (
+                                    <span>
+                                      <strong>{h.pic_task}</strong> change task to To Do
+                                    </span>
+                                  ) : h.status === 0 ? (
+                                    <span>
+                                      <strong>{h.pic_task}</strong> was assigned
+                                    </span>
+                                  ) : h.status === 1 ? (
+                                    <span>
+                                      <strong>{h.pic_task}</strong> change task to In Progress
+                                    </span>
+                                  ) : h.status === 2 ? (
+                                    <span>
+                                      <strong>{h.pic_task}</strong> change task to Review
+                                    </span>
+                                  ) : h.status === 3 ? (
+                                    <span>
+                                      <strong>{h.status_by} </strong> task approved
+                                    </span>
+                                  ) : (
+                                    <>
+                                      <span>
+                                        <strong>{h.status_by} </strong>change task to Revision
+                                      </span>
+                                    </>
+                                  )}
+                                </div>
+                                <small>{newDate(h.created_at)}</small>
+                              </div>
+                              {(h.status === 3 || h.status === 4) && (
+                                <div className="comment-item mt-1">
+                                  <div className="comment-user ">
+                                    <div
+                                      className={`comment-teks ${
+                                        h.status === 3 ? 'text-success' : 'text-warning'
+                                      }`}
+                                    >
+                                      <small style={{ fontWeight: '600' }}>
+                                        {h.status === 3 ? 'Comment' : 'Notes'}
+                                      </small>
+                                      {h.notes}
+                                    </div>
+                                  </div>
+                                </div>
                               )}
-                            </div>
-                            <small>{newDate(h.created_at)}</small>
-                          </div>
-                          {(h.status === 3 || h.status === 4) && (
-                            <div className="comment-item mt-1">
-                              <div className="comment-user">
-                                <div className="comment-teks">
-                                  <small style={{ fontWeight: '600' }}>
-                                    {h.status === 3 ? 'Comment' : 'Notes'}
-                                  </small>
-                                  {h.notes}
+                            </>
+                          ) : (
+                            <div className="comment-item">
+                              <div key={h.comment_id} className="comment-user">
+                                <img
+                                  src={user1}
+                                  className="rounded-circle"
+                                  alt="avatar"
+                                  width="35"
+                                  height="35"
+                                />
+                                <div key={h.comment_id} className="comment-teks">
+                                  <small style={{ fontWeight: '600' }}>{h.first_name}</small>
+                                  {h.comment}
+                                  <div className="comment-time">
+                                    <small>{newDate(h.created_at)}</small>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           )}
                         </div>
                       ))}
-                      <div className="comment-item">
-                        {comments?.map((com) => (
-                          <div key={com.comment_id} className="comment-user">
-                            <img
-                              src={user1}
-                              className="rounded-circle"
-                              alt="avatar"
-                              width="35"
-                              height="35"
-                            />
-                            <div key={com.comment_id} className="comment-teks">
-                              <small style={{ fontWeight: '600' }}>{com.first_name}</small>
-                              {com.comment}
-                              <div className="comment-time">
-                                <small>{newDate(com.created_at)}</small>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
                     </>
                   ) : (
                     'Loading...'

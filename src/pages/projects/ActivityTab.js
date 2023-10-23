@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { Badge, Card, CardBody, Col, Table } from 'reactstrap';
 import MaterialIcon from '@material/react-material-icon';
 import useAxios from '../../hooks/useAxios';
 import TaskPopup from './TaskPopup';
 import user1 from '../../assets/images/users/user1.jpg';
-import TooltipHover from '../../components/atoms/TooltipHover';
+// import TooltipHover from '../../components/atoms/TooltipHover';
 
 const result = (emId) =>
   emId.filter(
@@ -19,10 +19,12 @@ const ActivityTab = () => {
   const [task, setTask] = useState(undefined);
   const api = useAxios();
 
+  const { search } = useLocation();
+
   const { isLoading, error, data } = useQuery({
     queryKey: ['act'],
     queryFn: () =>
-      api.get(`api/task/${projectId}/activities/all`).then((res) => {
+      api.get(`api/task/${projectId}/activities/all${search}`).then((res) => {
         return res.data.data;
       }),
   });
@@ -60,8 +62,8 @@ const ActivityTab = () => {
                   {data?.map((ts, idx) => (
                     <>
                       <tr key={ts.task_id} onClick={() => openPopup(ts)}>
-                        <td>{idx + 1}.</td>
-                        <td>
+                        <td style={{ backgroundColor: '#f9f9f9' }}>{idx + 1}.</td>
+                        <td style={{ backgroundColor: '#f9f9f9' }}>
                           <span style={{ fontWeight: '600' }}>{ts.task_title}</span>
                           <br></br>
                           <Badge color="light" className="text-muted">
@@ -73,7 +75,7 @@ const ActivityTab = () => {
                             {ts.comments}
                           </Badge>
                         </td>
-                        <td>
+                        <td style={{ backgroundColor: '#f9f9f9' }}>
                           {ts.status === 0 ? (
                             <Badge color="light" className="text-dark">
                               To Do
@@ -90,18 +92,18 @@ const ActivityTab = () => {
                             <Badge color="danger">Revision</Badge>
                           )}
                         </td>
-                        <td>
+                        <td style={{ backgroundColor: '#f9f9f9' }}>
                           <span className="badge bg-light-success text-primary rounded-pill d-inline-block fw-bold">
                             {ts.task_progress}%
                           </span>
                         </td>
-                        <td>
+                        <td style={{ backgroundColor: '#f9f9f9' }}>
                           <div className="member-2">
                             <div className="member-item">
                               {result(ts.pics).map((pic) => (
-                                <>
+                                <div key={pic.employe_id}>
                                   <img
-                                    id={`tooltip-${pic.employe_id}`}
+                                    // id={`tooltip-${i}`}
                                     // key={pic.employe_id}
                                     src={user1}
                                     className="rounded-circle"
@@ -109,8 +111,8 @@ const ActivityTab = () => {
                                     width="35"
                                     height="35"
                                   />
-                                  <TooltipHover title={pic.first_name} id={pic.employe_id} />
-                                </>
+                                  {/* <TooltipHover title={pic.first_name} id={i} /> */}
+                                </div>
                               ))}
                             </div>
                           </div>
@@ -154,18 +156,17 @@ const ActivityTab = () => {
                             </td>
                             <td>
                               {result(st.pics).map((pic) => (
-                                <>
+                                <div key={`${pic.employe_id}--${ts.task_id}`}>
                                   <img
-                                    id={`tooltip-${pic.employe_id}`}
-                                    key={pic.employe_id}
+                                    // id={`tooltip-${i}`}
                                     src={user1}
                                     className="rounded-circle"
                                     alt="avatar"
                                     width="35"
                                     height="35"
                                   />
-                                  <TooltipHover title={pic.first_name} id={pic.employe_id} />
-                                </>
+                                  {/* <TooltipHover title={pic.first_name} id={i} /> */}
+                                </div>
                               ))}
                             </td>
                           </tr>

@@ -19,7 +19,7 @@ const TooltipHover = (props) => {
 
 TooltipHover.propTypes = {
   title: PropTypes.string,
-  id: PropTypes.string,
+  id: PropTypes.number,
 };
 
 export default TooltipHover;
