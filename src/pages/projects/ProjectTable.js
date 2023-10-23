@@ -17,7 +17,7 @@ const ProjectTables = () => {
     setModal(!modal);
   };
 
-  const api = useAxios('api');
+  const api = useAxios();
 
   const { isLoading, error, data, refetch } = useQuery({
     queryKey: ['projects'],
