@@ -31,6 +31,10 @@ import { alert } from '../../components/atoms/Toast';
 
 // const sortByDate = (data) => data.sort(({ date: a }, { date: b }) => (a < b ? -1 : a > b ? 1 : 0));
 
+const sortHistoryByDate = (data) => {
+  return data?.sort((a, b) => a.created_at.localeCompare(b.created_at));
+};
+
 const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
   const { auth } = useAuth();
   const [history, setHistory] = useState();
@@ -110,10 +114,6 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
     setPopContent(history?.concat(comments));
   }, [history, comments]);
 
-  useEffect(() => {
-    popContent?.sort((a, b) => a.created_at.localeCompare(b.created_at));
-  }, [popContent]);
-
   const handleUpdate = async (e) => {
     e.preventDefault();
     setUpdating(true);
@@ -139,7 +139,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then((res) => task.files.push(res.data.file));
+      .then((res) => task?.files?.push(res.data.file));
     setFiles([]);
     setUploading(false);
   };
@@ -181,6 +181,8 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
 
   const fileUrl = process.env.REACT_APP_FILEURL;
 
+  console.log(task);
+
   return (
     <>
       <Modal isOpen={modal} toggle={toggle.bind(null)} size="xl" fade={false}>
@@ -193,7 +195,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
           ) : (
             <div className="popup-body">
               <div className="left">
-                {auth?.user.employe_id !== task.employe_id || mode === 'activities' ? (
+                {auth?.user.employe_id !== task.employe_id.toString() || mode === 'activities' ? (
                   <>
                     <>
                       <div className="top">
@@ -224,12 +226,15 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                           <Label>PIC</Label>
                           <br></br>
                           <div className="d-flex flex-column">
-                            {assignedEmployees.map((em, i) => (
+                            {/* {assignedEmployees.map((em, i) => (
                               <div key={em.value} className="d-flex gap-3">
                                 <span>{i + 1}.</span>
                                 <span>{em.label}</span>
                               </div>
-                            ))}
+                            ))} */}
+                            <div className="d-flex gap-3">
+                              <span>{task.first_name}</span>
+                            </div>
                           </div>
                         </FormGroup>
                       </div>
@@ -248,16 +253,18 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                                     {f.file_name}
                                   </Link>
                                 </li>
-                                <button
-                                  type="button"
-                                  className="btn d-flex"
-                                  style={{ color: '#EF6767' }}
-                                >
-                                  <MaterialIcon
-                                    icon="delete_outline"
-                                    style={{ fontSize: '20px' }}
-                                  />
-                                </button>
+                                {auth?.user.employe_id === task?.employe_id && (
+                                  <button
+                                    type="button"
+                                    className="btn d-flex"
+                                    style={{ color: '#EF6767' }}
+                                  >
+                                    <MaterialIcon
+                                      icon="delete_outline"
+                                      style={{ fontSize: '20px' }}
+                                    />
+                                  </button>
+                                )}
                               </div>
                             ))}
                         </ul>
@@ -393,7 +400,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                   {task.task_parent === null ? (
                     <div className="status">
                       <span className="badge bg-light-success text-primary rounded-pill d-inline-block fw-bold">
-                        Task
+                        Task {task.status}
                       </span>
                       {task?.status === 0 ? (
                         <Badge color="info">To Do</Badge>
@@ -402,7 +409,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                       ) : task?.status === 2 ? (
                         <Badge color="light" className="text-dark">
                           <i className="bi-clock mr-4" style={{ fontSize: '12px' }}></i>
-                          &nbsp; Waiting for approval: <strong></strong>
+                          &nbsp; Waiting for approval<strong></strong>
                         </Badge>
                       ) : task?.status === 3 ? (
                         <Badge color="success" className="d-flex">
@@ -436,52 +443,52 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                         </div>
                         <small>{task && newDate(task.created_at)}</small>
                       </div>
-                      {popContent?.map((h, i) => (
-                        <div key={h.created_at}>
-                          {h.approval_id ? (
+                      {sortHistoryByDate(popContent)?.map((h, i) => (
+                        <div key={h?.created_at}>
+                          {h?.approval_id ? (
                             <>
                               <div className="history-item">
                                 <div className="comment-name">
-                                  {h.status === 0 && i > 0 ? (
+                                  {h?.status === 0 && i > 0 ? (
                                     <span>
-                                      <strong>{h.pic_task}</strong> change task to To Do
+                                      <strong>{h?.pic_task}</strong> change task to To Do
                                     </span>
-                                  ) : h.status === 0 ? (
+                                  ) : h?.status === 0 ? (
                                     <span>
-                                      <strong>{h.pic_task}</strong> was assigned
+                                      <strong>{h?.pic_task}</strong> was assigned
                                     </span>
-                                  ) : h.status === 1 ? (
+                                  ) : h?.status === 1 ? (
                                     <span>
-                                      <strong>{h.pic_task}</strong> change task to In Progress
+                                      <strong>{h?.pic_task}</strong> change task to In Progress
                                     </span>
-                                  ) : h.status === 2 ? (
+                                  ) : h?.status === 2 ? (
                                     <span>
-                                      <strong>{h.pic_task}</strong> change task to Review
+                                      <strong>{h?.pic_task}</strong> change task to Review
                                     </span>
-                                  ) : h.status === 3 ? (
+                                  ) : h?.status === 3 ? (
                                     <span>
-                                      <strong>{h.status_by} </strong> task approved
+                                      <strong>{h?.status_by} </strong> task approved
                                     </span>
                                   ) : (
                                     <>
                                       <span>
-                                        <strong>{h.status_by} </strong>change task to Revision
+                                        <strong>{h?.status_by} </strong>change task to Revision
                                       </span>
                                     </>
                                   )}
                                 </div>
-                                <small>{newDate(h.created_at)}</small>
+                                <small>{newDate(h?.created_at)}</small>
                               </div>
-                              {(h.status === 3 || h.status === 4) && (
+                              {(h?.status === 3 || h?.status === 4) && (
                                 <div className="comment-item mt-1">
                                   <div className="comment-user ">
                                     <div
                                       className={`comment-teks ${
-                                        h.status === 3 ? 'text-success' : 'text-warning'
+                                        h?.status === 3 ? 'text-success' : 'text-warning'
                                       }`}
                                     >
                                       <small style={{ fontWeight: '600' }}>
-                                        {h.status === 3 ? 'Comment' : 'Notes'}
+                                        {h?.status === 3 ? 'Comment' : 'Notes'}
                                       </small>
                                       {h.notes}
                                     </div>
@@ -490,8 +497,8 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                               )}
                             </>
                           ) : (
-                            <div className="comment-item">
-                              <div key={h.comment_id} className="comment-user">
+                            <div key={h?.comment_id} className="comment-item">
+                              <div className="comment-user">
                                 <img
                                   src={user1}
                                   className="rounded-circle"
@@ -499,11 +506,11 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                                   width="35"
                                   height="35"
                                 />
-                                <div key={h.comment_id} className="comment-teks">
-                                  <small style={{ fontWeight: '600' }}>{h.first_name}</small>
-                                  {h.comment}
+                                <div key={h?.comment_id} className="comment-teks">
+                                  <small style={{ fontWeight: '600' }}>{h?.first_name}</small>
+                                  {h?.comment}
                                   <div className="comment-time">
-                                    <small>{newDate(h.created_at)}</small>
+                                    <small>{newDate(h?.created_at)}</small>
                                   </div>
                                 </div>
                               </div>

@@ -11,7 +11,6 @@ const SidebarData = [
     icon: <MaterialIcon icon="home" />,
     collapisble: true,
   },
-  
   { caption: 'Activity' },
   {
     title: 'Activity',
@@ -31,7 +30,6 @@ const SidebarData = [
         href: '/daily',
         icon: <MaterialIcon icon="event" />,
       },
-     
     ],
   },
   // { caption: 'Starter Kit' },

@@ -44,6 +44,7 @@ const TaskForm = (props) => {
       {
         value: auth.user.employe_id,
         label: auth.user.first_name,
+        isFixed: false,
       },
     ]);
   }, []);
@@ -169,6 +170,7 @@ const TaskForm = (props) => {
             isMulti
             defaultValue={assignedEmployees}
             options={listEmployee}
+            isClearable={assignedEmployees.some((v) => !v.isFixed)}
             onChange={(choice) => setAssignedEmployees(choice)}
           />
         </ModalBody>

@@ -10,19 +10,19 @@ import {
   Container,
 } from 'reactstrap';
 import * as Icon from 'react-feather';
-import { MessageSquare } from 'react-feather';
+import { Bell } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import SimpleBar from 'simplebar-react';
-// import { useQuery } from '@tanstack/react-query';
-// import NotificationDD from './NotificationDD';
+import { useQuery } from '@tanstack/react-query';
+import NotificationDD from './NotificationDD';
 import MegaDD from './MegaDD';
 import user1 from '../../assets/images/users/user1.jpg';
 
-import MessageDD from './MessageDD';
+// import MessageDD from './MessageDD';
 import { ToggleMobileSidebar } from '../../store/customizer/CustomizerSlice';
 import ProfileDD from './ProfileDD';
-// import useAxios from '../../hooks/useAxios';
+import useAxios from '../../hooks/useAxios';
 
 import HorizontalLogo from '../logo/HorizontalLogo';
 import { AuthContext } from '../../context/AuthContext';
@@ -39,15 +39,15 @@ const HorizontalHeader = () => {
 
   const navigate = useNavigate();
 
-  // const api = useAxios();
+  const api = useAxios();
 
-  // const { isLoading, error, data, refetch } = useQuery({
-  //   queryKey: ['notification'],
-  //   queryFn: () =>
-  //     api.get(`api/employe/notification/list`).then((res) => {
-  //       return res.data.data;
-  //     }),
-  // });
+  const { isLoading, error, data, refetch } = useQuery({
+    queryKey: ['notification'],
+    queryFn: () =>
+      api.get(`api/employe/notification/list`).then((res) => {
+        return res.data.data;
+      }),
+  });
 
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' });
@@ -105,10 +105,10 @@ const HorizontalHeader = () => {
               color={topbarColor}
               onClick={() => setIsNotifOpen(true)}
             >
-              {/* <div className="notif">
+              <div className="notif">
                 <Bell size={18} />
                 {data?.length > 0 && <div className="notif-count">{data?.length}</div>}
-              </div> */}
+              </div>
             </DropdownToggle>
             {isNotifOpen && (
               <DropdownMenu className="notif-view">
@@ -117,13 +117,13 @@ const HorizontalHeader = () => {
                 </DropdownItem>
                 <DropdownItem divider />
                 <SimpleBar style={{ maxHeight: '350px' }}>
-                  {/* {isLoading ? (
+                  {isLoading ? (
                     <span style={{ padding: '0px 20px' }}>Loading...</span>
                   ) : error ? (
                     <span style={{ padding: '0px 20px' }}>Something went wrong.</span>
                   ) : (
                     <NotificationDD {...{ data, refetch, setIsNotifOpen }} />
-                  )} */}
+                  )}
                 </SimpleBar>
                 <DropdownItem divider />
                 <div className="p-2 px-3">
@@ -137,7 +137,7 @@ const HorizontalHeader = () => {
           {/******************************/}
           {/**********Message DD**********/}
           {/******************************/}
-          <UncontrolledDropdown className="mx-1">
+          {/* <UncontrolledDropdown className="mx-1">
             <DropdownToggle className="bg-transparent border-0" color={topbarColor}>
               <MessageSquare size={18} />
             </DropdownToggle>
@@ -156,7 +156,7 @@ const HorizontalHeader = () => {
                 </Button>
               </div>
             </DropdownMenu>
-          </UncontrolledDropdown>
+          </UncontrolledDropdown> */}
           {/******************************/}
           {/**********Profile DD**********/}
           {/******************************/}
