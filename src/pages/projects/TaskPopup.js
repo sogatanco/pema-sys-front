@@ -181,8 +181,6 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
 
   const fileUrl = process.env.REACT_APP_FILEURL;
 
-  console.log(task);
-
   return (
     <>
       <Modal isOpen={modal} toggle={toggle.bind(null)} size="xl" fade={false}>
