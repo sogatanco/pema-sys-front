@@ -24,7 +24,7 @@ export default TopCardsData;
 TopCardsData.propTypes = {
   bg: PropTypes.string,
   icon: PropTypes.string,
-  title: PropTypes.string,
+  title: PropTypes.number,
   subtitle: PropTypes.string,
   loading: PropTypes.bool,
 };

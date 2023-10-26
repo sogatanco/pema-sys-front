@@ -18,13 +18,14 @@ import {
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
+import PropTypes from 'prop-types';
 import useAuth from '../../hooks/useAuth';
 import useAxios from '../../hooks/useAxios';
 import user1 from '../../assets/images/users/user1.jpg';
 import newDate from '../../utils/formatDate';
 import { alert } from '../../components/atoms/Toast';
 
-const ReviewBastTab = () => {
+const ReviewBastTab = ({ setTotalBastReview }) => {
   const { auth } = useAuth();
   const { projectId } = useParams();
   const [modal, setModal] = useState(false);
@@ -41,6 +42,7 @@ const ReviewBastTab = () => {
     queryKey: ['bast-review'],
     queryFn: () =>
       api.get(`api/project/${projectId}/${auth?.user.employe_id}/bast/review`).then((res) => {
+        setTotalBastReview(res.data.data);
         return res.data.data;
       }),
   });
@@ -205,6 +207,10 @@ const ReviewBastTab = () => {
       </Modal>
     </>
   );
+};
+
+ReviewBastTab.propTypes = {
+  setTotalBastReview: PropTypes.func,
 };
 
 export default ReviewBastTab;

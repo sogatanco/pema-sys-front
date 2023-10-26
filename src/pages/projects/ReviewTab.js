@@ -37,8 +37,8 @@ const ReviewTab = ({ setTotalReview }) => {
   const { isLoading, error, refetch, isRefetching } = useQuery({
     queryKey: ['review'],
     queryFn: () =>
-      api.get(`api/task/${projectId}/manager/review`).then((res) => {
-        setListReview(res.data.data.filter((task) => task.status === 2));
+      api.get(`api/task/${projectId}/level1/review`).then((res) => {
+        setListReview(res.data.data);
         return res.data.data;
       }),
   });

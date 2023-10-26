@@ -292,7 +292,7 @@ const OverviewTab = () => {
                               width="35"
                               height="35"
                             />
-                            <TooltipHover title={h.first_name} id={h.history_id} />
+                            <TooltipHover title={h.first_name} id={h.history_id.toString()} />
                           </div>
                         </div>
                       ))}

@@ -1,0 +1,25 @@
+.circular-progress {
+  height: 30px;
+  width: 45px;
+}
+
+.link-item {
+  transition: all 300ms ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgb(237, 236, 236);
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  }
+}
+
+.link-item-bordered {
+  transition: all 400ms ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &:hover {
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    border: 1px solid #62a9e6;
+  }
+}

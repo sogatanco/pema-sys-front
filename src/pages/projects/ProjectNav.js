@@ -6,8 +6,11 @@ import { useQuery } from '@tanstack/react-query';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 
-const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
+const allowedRoles = ['Manager', 'Director'];
+
+const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) => {
   const [currentTotalReview, setCurrentTotalReview] = useState('');
+  const [currentTotalBastReview, setCurrentTotalBastReview] = useState('');
   const { auth } = useAuth();
   const { roles } = auth.user;
   const api = useAxios();
@@ -34,14 +37,26 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
   useEffect(() => {
     async function fetchTotalReview() {
       await api
-        .get(`api/task/${projectId}/manager/review`)
-        .then((res) => setCurrentTotalReview(res.data.data.filter((task) => task.status === 2)))
+        .get(`api/task/${projectId}/level1/review`)
+        .then((res) => setCurrentTotalReview(res.data.data))
         .catch((err) => console.log(err));
     }
-    if (roles.includes('Manager')) {
+    if (roles?.find((role) => allowedRoles.includes(role))) {
       fetchTotalReview();
     }
   }, [totalReview]);
+
+  useEffect(() => {
+    async function fetchTotalBastReview() {
+      await api
+        .get(`api/project/${projectId}/${auth?.user.employe_id}/bast/review`)
+        .then((res) => setCurrentTotalBastReview(res.data.data))
+        .catch((err) => console.log(err));
+    }
+    if (roles?.find((role) => allowedRoles.includes(role))) {
+      fetchTotalBastReview();
+    }
+  }, [totalBastReview]);
 
   const { isLoading, data } = useQuery({
     queryKey: ['project-number'],
@@ -56,7 +71,8 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
   const ActivitiesAllowedRoles = ['Manager', 'Director'];
   const FilesAllowedRoles = ['Staff'];
   const BASTReviewAllowedRoles = ['Director'];
-  const ReviewAndHandoverAllowedRoles = ['Manager'];
+  const ReviewTaskAllowedRoles = ['Manager', 'Director'];
+  const HandoverAllowedRoles = ['Manager'];
 
   return (
     <Col md="12" className="d-flex justify-content-between mb-3 align-items-center">
@@ -102,14 +118,14 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
             <div
               color="danger"
               className={`count ${
-                currentTotalReview.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
+                currentTotalBastReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
               }`}
             >
-              {currentTotalReview.length}
+              {currentTotalBastReview?.length}
             </div>
           </Link>
         )}
-        {auth?.user?.roles.find((role) => ReviewAndHandoverAllowedRoles.includes(role)) && (
+        {auth?.user?.roles.find((role) => ReviewTaskAllowedRoles.includes(role)) && (
           <>
             <Link
               className={`${navActive === 5 && 'active'} text-muted fw-bold`}
@@ -119,19 +135,21 @@ const ProjectNav = ({ navActive, setNavActive, totalReview }) => {
               <div
                 color="danger"
                 className={`count ${
-                  currentTotalReview.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
+                  currentTotalReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
                 }`}
               >
-                {currentTotalReview.length}
+                {currentTotalReview?.length}
               </div>
             </Link>
-            <Link
-              className={`${navActive === 6 && 'active'} text-muted fw-bold`}
-              onClick={() => setNavActive(6)}
-            >
-              Handover{' '}
-            </Link>
           </>
+        )}
+        {auth?.user?.roles.find((role) => HandoverAllowedRoles.includes(role)) && (
+          <Link
+            className={`${navActive === 6 && 'active'} text-muted fw-bold`}
+            onClick={() => setNavActive(6)}
+          >
+            Handover{' '}
+          </Link>
         )}
         {auth?.user?.roles.find((role) => MembersAllowedRoles.includes(role)) && (
           <Link
@@ -151,6 +169,7 @@ ProjectNav.propTypes = {
   navActive: PropTypes.any,
   setNavActive: PropTypes.func,
   totalReview: PropTypes.number,
+  totalBastReview: PropTypes.number,
 };
 
 export default ProjectNav;

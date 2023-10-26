@@ -4,6 +4,8 @@ import useAuth from '../../hooks/useAuth';
 import Director from './Director';
 import ProjectList from './ProjectList';
 import TopCards from './TopCards';
+import './Dashboard.scss';
+// import Daily from './Daily';
 
 const Dashboard2 = () => {
   const { auth } = useAuth();

@@ -2,11 +2,14 @@ import React from 'react';
 import './CircularPercentage.scss';
 import PropTypes from 'prop-types';
 
-const CircularPercentage = ({ data }) => {
+const CircularPercentage = ({ data, color }) => {
   return (
     <div className="flex-wrapper">
       <div className="single-chart">
-        <svg viewBox="0 0 36 36" className={`circular-chart ${data === 100 ? 'green' : 'blue'}`}>
+        <svg
+          viewBox="0 0 36 36"
+          className={`circular-chart ${data === 100 ? 'green' : data !== 100 ? 'blue' : color}`}
+        >
           <path
             className="circle-bg"
             d="M18 2.0845
@@ -79,6 +82,7 @@ const CircularPercentage = ({ data }) => {
 
 CircularPercentage.propTypes = {
   data: PropTypes.number,
+  color: PropTypes.string,
 };
 
 export default CircularPercentage;
