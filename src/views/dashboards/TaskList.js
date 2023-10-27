@@ -74,7 +74,7 @@ const TaskList = () => {
                 <div>
                   <div className="d-flex gap-1 justify-content-center align-items-center">
                     <div className="circular-progress">
-                      <CircularPercentage data={t.task_progress} color="red" />
+                      <CircularPercentage data={t.task_progress.toFixed()} color="red" />
                     </div>
                   </div>
                 </div>

@@ -72,7 +72,7 @@ const ProjectList = () => {
                             </span>
                             <div>
                               <span className="badge text-primary bg-light-primary rounded-pill d-inline-block">
-                                <small>{p.organization_name}</small>
+                                <small className="fw-bold">{p.organization_name}</small>
                               </span>
                             </div>
                           </abbr>
@@ -84,7 +84,10 @@ const ProjectList = () => {
                         </small>
                         <small>{p.end_date}</small>
                       </div>
-                      <span className="badge text-info bg-light-info rounded-pill d-inline-block">
+                      <span
+                        className="badge text-info bg-light-info rounded-pill d-inline-block fw-bold"
+                        style={{ textTransform: 'capitalize' }}
+                      >
                         {p.status}
                       </span>
                       <div className="d-flex gap-1 justify-content-center align-items-center">
@@ -92,7 +95,7 @@ const ProjectList = () => {
                           <small>Progress</small>
                         </div> */}
                         <div className="circular-progress">
-                          <CircularPercentage data={p.total_progress.toFixed()} />
+                          <CircularPercentage data={parseInt(p.total_progress.toFixed(), 10)} />
                         </div>
                       </div>
                       <div className="">

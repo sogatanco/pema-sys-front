@@ -75,6 +75,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
   const ActivitiesAllowedRoles = ['Manager', 'Director'];
   const FilesAllowedRoles = ['Staff'];
   const BASTReviewAllowedRoles = ['Director'];
+  const BASTAndReviewNotAllowedRoles = 'Presdir';
   const ReviewTaskAllowedRoles = ['Manager', 'Director'];
   const HandoverAllowedRoles = ['Manager'];
 
@@ -114,40 +115,44 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
               </Link>
             </>
           )}
-          {auth?.user?.roles.find((role) => BASTReviewAllowedRoles.includes(role)) && (
-            <Link
-              className={`${navActive === 8 && 'active'} text-muted fw-bold`}
-              onClick={() => setNavActive(8)}
-            >
-              BAST Review{' '}
-              <div
-                color="danger"
-                className={`count ${
-                  currentTotalBastReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
-                }`}
-              >
-                {currentTotalBastReview?.length}
-              </div>
-            </Link>
-          )}
-          {auth?.user?.roles.find((role) => ReviewTaskAllowedRoles.includes(role)) && (
-            <>
+          {auth?.user?.roles.find((role) => BASTReviewAllowedRoles.includes(role)) &&
+            !auth?.user?.roles.includes(BASTAndReviewNotAllowedRoles) && (
               <Link
-                className={`${navActive === 5 && 'active'} text-muted fw-bold`}
-                onClick={() => setNavActive(5)}
+                className={`${navActive === 8 && 'active'} text-muted fw-bold`}
+                onClick={() => setNavActive(8)}
               >
-                Review{' '}
+                BAST Review{' '}
                 <div
                   color="danger"
                   className={`count ${
-                    currentTotalReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
+                    currentTotalBastReview?.length > 0
+                      ? 'bg-danger text-white'
+                      : 'bg-light text-dark'
                   }`}
                 >
-                  {currentTotalReview?.length}
+                  {currentTotalBastReview?.length}
                 </div>
               </Link>
-            </>
-          )}
+            )}
+          {auth?.user?.roles.find((role) => ReviewTaskAllowedRoles.includes(role)) &&
+            !auth?.user?.roles.includes(BASTAndReviewNotAllowedRoles) && (
+              <>
+                <Link
+                  className={`${navActive === 5 && 'active'} text-muted fw-bold`}
+                  onClick={() => setNavActive(5)}
+                >
+                  Review{' '}
+                  <div
+                    color="danger"
+                    className={`count ${
+                      currentTotalReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
+                    }`}
+                  >
+                    {currentTotalReview?.length}
+                  </div>
+                </Link>
+              </>
+            )}
           {auth?.user?.roles.find((role) => HandoverAllowedRoles.includes(role)) && (
             <Link
               className={`${navActive === 6 && 'active'} text-muted fw-bold`}
