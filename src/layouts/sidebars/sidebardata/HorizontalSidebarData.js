@@ -1,5 +1,6 @@
 import MaterialIcon from '@material/react-material-icon';
 
+
 const SidebarData = [
   { caption: 'Home' },
   {

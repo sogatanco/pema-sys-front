@@ -79,14 +79,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
         type: 'button',
         label: 'In Progress',
         to: 1,
-      },
-      {
-        id: 3,
-        icon: <MaterialIcon icon="check" />,
-        type: 'button',
-        label: 'Done',
-        to: 2,
-      },
+      }
     ],
   };
 
