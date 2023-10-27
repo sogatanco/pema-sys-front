@@ -1,14 +1,8 @@
 import React from 'react';
-import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
-import ProjectTables from './ProjectTable';
+import ProjectPart from './ProjectPart';
 
 const index = () => {
-  return (
-    <>
-      <BreadCrumbs />
-      <ProjectTables />
-    </>
-  );
+  return <ProjectPart />;
 };
 
 export default index;

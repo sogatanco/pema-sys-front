@@ -30,6 +30,7 @@ const Unauthorized = Loadable(lazy(() => import('../pages/auth/Unauthorized')));
 const ROLES = {
   SuperAdmin: 'Super Admin',
   Admin: 'Admin',
+  Presdir: 'Presdir',
   Director: 'Director',
   Manager: 'Manager',
   Supervisor: 'Supervisor',

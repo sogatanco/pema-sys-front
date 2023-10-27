@@ -1,7 +1,14 @@
 import React from 'react';
+import ProjectList from './ProjectList';
+import TopCards from './TopCards';
 
 const Director = () => {
-  return <div>Director Dashboard</div>;
+  return (
+    <>
+      <TopCards />
+      <ProjectList />
+    </>
+  );
 };
 
 export default Director;

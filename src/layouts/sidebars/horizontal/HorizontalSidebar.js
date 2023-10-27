@@ -1,16 +1,30 @@
+import { useEffect, useState } from 'react';
 import { Container, Nav } from 'reactstrap';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import SidebarData from '../sidebardata/HorizontalSidebarData';
+import DirectorSidebarData from '../sidebardata/DirectorSidebarData';
 import NavSubItem from './NavSubItem';
 import NavSingleItem from './NavSingleItem';
+import useAuth from '../../../hooks/useAuth';
 
 const HorizontalSidebar = () => {
+  const { auth } = useAuth();
   const activeBg = useSelector((state) => state.customizer.sidebarBg);
   const location = useLocation();
   const currentURL = location.pathname.split('/').slice(0, -1).join('/');
   const isFixed = useSelector((state) => state.customizer.isSidebarFixed);
   const isMobileSidebar = useSelector((state) => state.customizer.isMobileSidebar);
+  const [sidebarData, setSidebarData] = useState();
+
+  useEffect(() => {
+    if (auth?.user.roles.includes('Director')) {
+      setSidebarData(DirectorSidebarData);
+    } else {
+      setSidebarData(SidebarData);
+    }
+  }, []);
+
   return (
     <div
       className={`horizontalNav shadow bg-${activeBg}  ${isFixed ? 'fixedSidebar' : ''} ${
@@ -19,7 +33,7 @@ const HorizontalSidebar = () => {
     >
       <Container>
         <Nav className={activeBg === 'white' ? '' : 'lightText'}>
-          {SidebarData.map((navi) => {
+          {sidebarData?.map((navi) => {
             if (navi.caption) {
               return (
                 <div

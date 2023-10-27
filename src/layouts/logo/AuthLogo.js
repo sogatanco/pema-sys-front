@@ -20,8 +20,13 @@ const AuthLogo = () => {
         </>
       ) : (
         <>
-          <img src={Logo} alt="logo" width="40" height="40" />
-          <h4>PROJECT MANAGEMENT</h4>
+          <img src={Logo} alt="logo" width="75" height="75" />
+          <div className="d-flex flex-column">
+            <h1 className="fw-bold">PEMA-Sys</h1>
+            <div className="d-flex justify-content-end" style={{ marginTop: '-10px' }}>
+              <small className="text-danger">Beta Version</small>
+            </div>
+          </div>
           {/* <LogoDarkIcon /> */}
           {/* <LogoDarkText /> */}
         </>

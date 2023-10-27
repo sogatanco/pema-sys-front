@@ -11,10 +11,10 @@ import useAuth from '../../hooks/useAuth';
 import { alert } from '../../components/atoms/Toast';
 import CircularPercentage from '../../components/atoms/circularPercentage/CircularPercentage';
 
-const result = (emId) =>
-  emId.filter(
-    (person, index) => index === emId.findIndex((other) => person.employe_id === other.employe_id),
-  );
+// const result = (emId) =>
+//   emId.filter(
+//     (person, index) => index === emId.findIndex((other) => person.employe_id === other.employe_id),
+//   );
 
 const BoardTask = ({ data, projectId, refetch }) => {
   const { auth } = useAuth();
@@ -129,7 +129,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
                               color: td.task_progress === 100 ? '#4cc790' : '#21C1D6',
                             }}
                           >
-                            {td.task_progress}%
+                            {td.task_progress.toFixed(td.task_progress !== 100 && 2)}%
                           </strong>
                         </span>
                         // <div className="progress-bar">
@@ -146,13 +146,15 @@ const BoardTask = ({ data, projectId, refetch }) => {
                       )}
                     </div>
                     <div key={td.task_id}>
-                      <ActionMenu
-                        menuOptions={menuOptions}
-                        taskId={td.task_id}
-                        status={parseInt(td.status, 10)}
-                        action={handleTaskStatus}
-                        progress={td.task_progress}
-                      />
+                      {auth?.user.employe_id === td.employe_id && (
+                        <ActionMenu
+                          menuOptions={menuOptions}
+                          taskId={td.task_id}
+                          status={parseInt(td.status, 10)}
+                          action={handleTaskStatus}
+                          progress={td.task_progress}
+                        />
+                      )}
                     </div>
                   </div>
                 )
@@ -203,7 +205,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
                     </div>
                     <div className="comment">
                       <MaterialIcon icon="comment" />
-                      <div>{td.comments}</div>
+                      <div>{st.comments}</div>
                     </div>
                   </div>
                 </div>
@@ -232,7 +234,15 @@ const BoardTask = ({ data, projectId, refetch }) => {
                       <div></div>
                     )}
                     <div className="member">
-                      {result(td.pics).map((pic) => (
+                      <img
+                        key={td.employe_id}
+                        src={user1}
+                        className="rounded-circle"
+                        alt="avatar"
+                        width="35"
+                        height="35"
+                      />
+                      {/* {td.pics.map((pic) => (
                         <img
                           key={pic.employe_id}
                           src={user1}
@@ -241,7 +251,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
                           width="35"
                           height="35"
                         />
-                      ))}
+                      ))} */}
                     </div>
                   </>
                 )}

@@ -16,7 +16,7 @@ const TaskForm = (props) => {
   const [loading, setLoading] = useState(false);
   const [task, setTask] = useState({});
   const [modal, setModal] = useState(false);
-  const [assignedEmployees, setAssignedEmployees] = useState();
+  const [assignedEmployees, setAssignedEmployees] = useState([]);
   const [listEmployee, setListEmploye] = useState();
   // const [files, setFiles] = useState([]);
 
@@ -42,8 +42,9 @@ const TaskForm = (props) => {
 
     setAssignedEmployees([
       {
-        label: auth.user.first_name,
         value: auth.user.employe_id,
+        label: auth.user.first_name,
+        isFixed: false,
       },
     ]);
   }, []);
@@ -110,7 +111,7 @@ const TaskForm = (props) => {
               <i className="bi-person-plus-fill"></i>
               <span>{assignedEmployees?.length || 0}</span>
             </button>
-            <TooltipHover title="Assigne" id="2" />
+            <TooltipHover title="Assigne" id={2} />
           </div>
           <div className="footer">
             <div className="option">
@@ -164,11 +165,12 @@ const TaskForm = (props) => {
         <ModalHeader toggle={toggle.bind(null)}>Assigne Employee</ModalHeader>
         <ModalBody>
           <Select
-            closeMenuOnSelect={false}
+            // closeMenuOnSelect={false}
             components={animatedComponents}
             isMulti
             defaultValue={assignedEmployees}
             options={listEmployee}
+            isClearable={assignedEmployees.some((v) => !v.isFixed)}
             onChange={(choice) => setAssignedEmployees(choice)}
           />
         </ModalBody>

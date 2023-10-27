@@ -68,7 +68,6 @@ const ProjectTables = () => {
               <tr>
                 <th>Team Lead</th>
                 <th>Project</th>
-
                 <th>Status</th>
                 <th>Weeks</th>
                 <th>Budget</th>

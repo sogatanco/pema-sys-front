@@ -41,7 +41,7 @@ const NotificationDD = ({ data, refetch, setIsNotifOpen }) => {
       <ListGroup flush>
         {data?.map((msg) => (
           <ListGroupItem
-            // action
+            action
             key={msg.id}
             tag="a"
             // href={`/projects/details/${msg.project_id}?n=${msg.id}&to=review`}
