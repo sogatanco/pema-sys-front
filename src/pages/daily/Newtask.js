@@ -6,25 +6,21 @@ import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
+import MaterialIcon from '@material/react-material-icon';
 import { Row, Col, Button } from 'reactstrap';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
+import PropTypes from 'prop-types';
 import { useQueries } from '@tanstack/react-query';
-import Stack from '@mui/material/Stack';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import useAxios from '../../hooks/useAxios';
+import { alert } from '../../components/atoms/Toast';
+
 
 const filt = createFilterOptions();
 
-const Alert = React.forwardRef((props, ref)=>{
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
-const Newtask = () => {
-
+const Newtask = ({refetch}) => {
   const [activities, setActivities] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
   const [value, setValue] = React.useState(null);
@@ -33,6 +29,7 @@ const Newtask = () => {
   const [progress, setProgress] = React.useState(0);
   const [category, setCategory] = React.useState(null);
   const [actpoin, setActpoin] = React.useState(0);
+  const [isAddForm, setIsAddForm] = React.useState(false);
 
   const activityValueSubmit = {
     activity: '',
@@ -55,12 +52,28 @@ const Newtask = () => {
 
     await api
       .post(`dapi/activit`, activityValueSubmit)
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
+        alert('success', `Data has been submitted !`);
+        setValue(null);
+        setCategory(null);
+        setProgress(0);
+        setStar(dayjs());
+        setEnd(dayjs());
+        refetch();
       })
       .catch((err) => {
-        console.log(err);
+        alert('error', err);
       });
+  };
+
+  const addForm = async (e) => {
+    e.preventDefault();
+    setIsAddForm(true);
+  };
+
+  const removeForm = async (e) => {
+    e.preventDefault();
+    setIsAddForm(false);
   };
 
   const [act, cat] = useQueries({
@@ -87,32 +100,17 @@ const Newtask = () => {
     setActivities(act.data);
   }, [cat.data, act.data]);
 
-  const [open, setOpen] = React.useState(false);
-
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
-
-  return (
+  return !isAddForm ? (
+    <div className="d-grid gap-2 mt-3">
+      <Button variant="dark" size="lg" onClick={addForm}>
+        Add New Activity
+      </Button>
+    </div>
+  ) : (
     <>
-     <Stack spacing={2} sx={{ width: '100%' }}>
-        <Button  variant="dark" onClick={handleClick}>
-          Open success snackbar
-        </Button>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-            This is a success message!
-          </Alert>
-        </Snackbar>
-      </Stack>
+      <div className="d-flex justify-content-end mb-3">
+        <MaterialIcon icon="close" onClick={removeForm} />
+      </div>
       <Autocomplete
         value={value}
         onChange={(event, newValue) => {
@@ -238,10 +236,11 @@ const Newtask = () => {
           SUBMIT
         </Button>
       </div>
-
-     
     </>
   );
 };
 
+Newtask.propTypes = {
+  refetch: PropTypes.func
+};
 export default Newtask;

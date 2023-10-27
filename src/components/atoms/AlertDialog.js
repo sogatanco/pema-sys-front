@@ -1,7 +1,6 @@
 import React from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 
-
 const notify = (type, msg) =>
   type === 'success'
     ? toast.success(msg)
@@ -35,8 +34,6 @@ export const Toast = () => {
   );
 };
 
-export const alert = (type, msg) => {
+export const  alert= (type, msg) => {
   notify(type, msg);
 };
-
-

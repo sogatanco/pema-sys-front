@@ -1,12 +1,12 @@
 import React from 'react';
 import BreadCrumbs from '../../layouts/breadcrumbs/BreadCrumbs';
-import Daily from './Daily';
+import Home from './Home';
 
 const index = () => {
   return (
     <>
     <BreadCrumbs />
-    <Daily></Daily>
+    <Home></Home>
     </>
   );
 };
