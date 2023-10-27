@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import { Link, useParams } from 'react-router-dom';
 import { Col } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
+import MaterialIcon from '@material/react-material-icon';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
+import user1 from '../../assets/images/users/user1.jpg';
+import './Project.scss';
 
 const allowedRoles = ['Manager', 'Director'];
 
@@ -15,6 +18,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
   const { roles } = auth.user;
   const api = useAxios();
   const { projectId } = useParams();
+  const [actionMenu, setActionMenu] = useState(false);
 
   const queryParams = new URLSearchParams(window.location.search);
 
@@ -75,92 +79,137 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
   const HandoverAllowedRoles = ['Manager'];
 
   return (
-    <Col md="12" className="d-flex justify-content-between mb-3 align-items-center">
-      <div className="project-nav">
-        <Link
-          className={`${navActive === 1 && 'active'} text-muted fw-bold`}
-          onClick={() => setNavActive(1)}
-        >
-          Overview
-        </Link>
-        {auth?.user?.roles.find((role) => BoardAllowedRoles.includes(role)) && (
+    <Col>
+      <Col md="12" className="d-flex justify-content-between mb-3 align-items-center">
+        <div className="project-nav">
           <Link
-            className={`${navActive === 2 && 'active'} text-muted fw-bold`}
-            onClick={() => setNavActive(2)}
+            className={`${navActive === 1 && 'active'} text-muted fw-bold`}
+            onClick={() => setNavActive(1)}
           >
-            Board
+            Overview
           </Link>
-        )}
-        {auth?.user?.roles.find((role) => ActivitiesAllowedRoles.includes(role)) && (
-          <Link
-            className={`${navActive === 7 && 'active'} text-muted fw-bold`}
-            onClick={() => setNavActive(7)}
-          >
-            Activities
-          </Link>
-        )}
-        {auth?.user?.roles.find((role) => FilesAllowedRoles.includes(role)) && (
-          <>
+          {auth?.user?.roles.find((role) => BoardAllowedRoles.includes(role)) && (
             <Link
-              className={`${navActive === 4 && 'active'} text-muted fw-bold`}
-              onClick={() => setNavActive(4)}
+              className={`${navActive === 2 && 'active'} text-muted fw-bold`}
+              onClick={() => setNavActive(2)}
             >
-              Files
+              Board
             </Link>
-          </>
-        )}
-        {auth?.user?.roles.find((role) => BASTReviewAllowedRoles.includes(role)) && (
-          <Link
-            className={`${navActive === 8 && 'active'} text-muted fw-bold`}
-            onClick={() => setNavActive(8)}
-          >
-            BAST Review{' '}
-            <div
-              color="danger"
-              className={`count ${
-                currentTotalBastReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
-              }`}
-            >
-              {currentTotalBastReview?.length}
-            </div>
-          </Link>
-        )}
-        {auth?.user?.roles.find((role) => ReviewTaskAllowedRoles.includes(role)) && (
-          <>
+          )}
+          {auth?.user?.roles.find((role) => ActivitiesAllowedRoles.includes(role)) && (
             <Link
-              className={`${navActive === 5 && 'active'} text-muted fw-bold`}
-              onClick={() => setNavActive(5)}
+              className={`${navActive === 7 && 'active'} text-muted fw-bold`}
+              onClick={() => setNavActive(7)}
             >
-              Review{' '}
+              Activities
+            </Link>
+          )}
+          {auth?.user?.roles.find((role) => FilesAllowedRoles.includes(role)) && (
+            <>
+              <Link
+                className={`${navActive === 4 && 'active'} text-muted fw-bold`}
+                onClick={() => setNavActive(4)}
+              >
+                Files
+              </Link>
+            </>
+          )}
+          {auth?.user?.roles.find((role) => BASTReviewAllowedRoles.includes(role)) && (
+            <Link
+              className={`${navActive === 8 && 'active'} text-muted fw-bold`}
+              onClick={() => setNavActive(8)}
+            >
+              BAST Review{' '}
               <div
                 color="danger"
                 className={`count ${
-                  currentTotalReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
+                  currentTotalBastReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
                 }`}
               >
-                {currentTotalReview?.length}
+                {currentTotalBastReview?.length}
               </div>
             </Link>
+          )}
+          {auth?.user?.roles.find((role) => ReviewTaskAllowedRoles.includes(role)) && (
+            <>
+              <Link
+                className={`${navActive === 5 && 'active'} text-muted fw-bold`}
+                onClick={() => setNavActive(5)}
+              >
+                Review{' '}
+                <div
+                  color="danger"
+                  className={`count ${
+                    currentTotalReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
+                  }`}
+                >
+                  {currentTotalReview?.length}
+                </div>
+              </Link>
+            </>
+          )}
+          {auth?.user?.roles.find((role) => HandoverAllowedRoles.includes(role)) && (
+            <Link
+              className={`${navActive === 6 && 'active'} text-muted fw-bold`}
+              onClick={() => setNavActive(6)}
+            >
+              Handover{' '}
+            </Link>
+          )}
+          {auth?.user?.roles.find((role) => MembersAllowedRoles.includes(role)) && (
+            <Link
+              className={`${navActive === 3 && 'active'} text-muted fw-bold`}
+              onClick={() => setNavActive(3)}
+            >
+              Members
+            </Link>
+          )}
+        </div>
+        <h3 className="fw-bold">{isLoading ? 'Loading..' : data?.project_number}</h3>
+      </Col>
+      <Col md="12" className="d-flex justify-content-between bg-white p-3 mb-3 rounded-2">
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+            <div className="d-flex flex-column">
+              <h5 className="mb-0 fw-bold">{data?.project_name}</h5>
+              <small>{data?.pic_active.organization_name}</small>
+            </div>
+            <div className="d-flex align-items-center gap-1">
+              <img src={user1} className="rounded-circle" alt="avatar" width="35" height="35" />
+              {auth?.user.first_name === data?.created_by ? (
+                <div className="action-table">
+                  <button type="button" className="btn" onClick={() => setActionMenu(true)}>
+                    <MaterialIcon icon="more_vert" />
+                  </button>
+                  {actionMenu && (
+                    <>
+                      <div className="action-overlay" onClick={() => setActionMenu(false)} />
+                      <div className="action-options">
+                        <Link to="/" className="text-muted">
+                          <MaterialIcon icon="update" />
+                          Update
+                        </Link>
+                        <button
+                          type="button"
+                          className="text-muted"
+                          onClick={() => setActionMenu(undefined)}
+                        >
+                          <MaterialIcon icon="delete_outline" />
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                ''
+              )}
+            </div>
           </>
         )}
-        {auth?.user?.roles.find((role) => HandoverAllowedRoles.includes(role)) && (
-          <Link
-            className={`${navActive === 6 && 'active'} text-muted fw-bold`}
-            onClick={() => setNavActive(6)}
-          >
-            Handover{' '}
-          </Link>
-        )}
-        {auth?.user?.roles.find((role) => MembersAllowedRoles.includes(role)) && (
-          <Link
-            className={`${navActive === 3 && 'active'} text-muted fw-bold`}
-            onClick={() => setNavActive(3)}
-          >
-            Members
-          </Link>
-        )}
-      </div>
-      <h3 className="fw-bold">{isLoading ? 'Loading..' : data?.project_number}</h3>
+      </Col>
     </Col>
   );
 };

@@ -55,7 +55,7 @@ const ActivityTab = () => {
                     <th>Task title</th>
                     <th width="">Status</th>
                     <th>Progress</th>
-                    <th width="100">PICS</th>
+                    <th width="100">PIC</th>
                   </tr>
                 </thead>
                 <tbody>

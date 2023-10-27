@@ -10,7 +10,7 @@ import useAuth from '../../hooks/useAuth';
 const ProjectList = () => {
   const { auth } = useAuth();
   const api = useAxios();
-  const [isDriector, setIsDirector] = useState(false);
+  const [isDirector, setIsDirector] = useState(false);
 
   const { isLoading, error, data } = useQuery({
     queryKey: ['projectsdash'],
@@ -64,7 +64,7 @@ const ProjectList = () => {
                         <div className="d-flex flex-column">
                           <abbr title={p.project_name} style={{ textDecoration: 'none' }}>
                             <span className="fw-bold" style={{ fontSize: '14px' }}>
-                              {isDriector
+                              {isDirector
                                 ? p.project_name
                                 : p.project_name.trim().length > 40
                                 ? `${p.project_name.substring(0, 42)}...`

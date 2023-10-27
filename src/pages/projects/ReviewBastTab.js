@@ -71,8 +71,7 @@ const ReviewBastTab = ({ setTotalBastReview }) => {
         status: mode === 'approve' ? 'handover' : 'revision',
         note: comments,
       })
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         refetch();
         alert('success', `BAST has been ${mode === 'approve' ? 'approved' : 'reviewed'}`);
       })

@@ -26,7 +26,7 @@ const SidebarData = [
         icon: <MaterialIcon icon="work_history" />,
       },
       {
-        title: 'Daily Activity',
+        title: 'Daily',
         href: '/daily',
         icon: <MaterialIcon icon="event" />,
       },

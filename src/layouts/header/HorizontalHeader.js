@@ -164,7 +164,7 @@ const HorizontalHeader = () => {
             <DropdownToggle tag="span" className="p-2 cursor-pointer ">
               <img src={user1} alt="profile" className="rounded-circle" width="30" />
             </DropdownToggle>
-            <DropdownMenu className="ddWidth">
+            <DropdownMenu className="account-view">
               <ProfileDD />
 
               <div className="p-2 px-3">

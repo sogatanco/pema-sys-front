@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { Card, CardBody, CardTitle, CardSubtitle, Table, Col, Button } from 'reactstrap';
+import { useEffect, useState } from 'react';
+import { Card, CardBody, CardTitle, Table, Col, Button } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import NewProjectModal from './NewProjectModal';
 import useAxios from '../../hooks/useAxios';
-import './Project.scss';
 import useAuth from '../../hooks/useAuth';
 
-const ProjectTables = () => {
+const ProjectTables = ({ nav }) => {
   const { auth } = useAuth();
   const [modal, setModal] = useState(false);
-  const [actionMenu, setActionMenu] = useState(undefined);
+  // const [actionMenu, setActionMenu] = useState(undefined);
 
   const toggle = () => {
     setModal(!modal);
@@ -19,13 +19,26 @@ const ProjectTables = () => {
 
   const api = useAxios();
 
-  const { isLoading, error, data, refetch } = useQuery({
+  const { isLoading, error, data, refetch, isRefetching } = useQuery({
     queryKey: ['projects'],
     queryFn: () =>
-      api.get(`api/project`).then((res) => {
-        return res.data.data;
-      }),
+      // api.get(`api/project`).then((res) => {
+      api
+        .get(
+          `${
+            nav === 1 || auth?.user.roles.includes('Director')
+              ? 'api/project'
+              : `api/project/${auth?.user.employe_id}/list`
+          } `,
+        )
+        .then((res) => {
+          return res.data.data;
+        }),
   });
+
+  useEffect(() => {
+    refetch();
+  }, [nav]);
 
   const allowedRoles = ['Staff', 'Manager'];
 
@@ -35,12 +48,14 @@ const ProjectTables = () => {
         <CardBody style={{ position: 'relative' }}>
           <Col className="d-flex justify-content-between" col="12">
             <div className="">
-              <CardTitle tag="h5">Project Listing</CardTitle>
-              <CardSubtitle className="mb-2 text-muted" tag="h6">
+              <CardTitle tag="h5">
+                {nav === 1 || auth?.user.roles.includes('Director') ? 'All' : 'My'} Project Listing
+              </CardTitle>
+              {/* <CardSubtitle className="mb-2 text-muted" tag="h6">
                 Overview of the projects
-              </CardSubtitle>
+              </CardSubtitle> */}
             </div>
-            {auth?.user.roles.find((role) => allowedRoles?.includes(role)) && (
+            {auth?.user.roles.find((role) => allowedRoles?.includes(role)) && nav === 2 && (
               <div className="">
                 <Button
                   className="btn d-flex gap-1 align-items-end"
@@ -55,7 +70,7 @@ const ProjectTables = () => {
               </div>
             )}
           </Col>
-          {isLoading ? (
+          {isLoading || isRefetching ? (
             <div className="d-flex justify-content-center">
               <h6>Loading...</h6>
             </div>
@@ -73,7 +88,7 @@ const ProjectTables = () => {
                   <th>Levels</th>
                   <th>Start at</th>
                   <th>Status</th>
-                  <th>Action</th>
+                  {/* <th>Action</th> */}
                 </tr>
               </thead>
               <tbody style={{ overflow: 'hidden' }}>
@@ -113,46 +128,47 @@ const ProjectTables = () => {
                         </span>
                       )}
                     </td>
-                    <td width="5" align="center">
-                      <div className="action-table">
-                        <button
-                          type="button"
-                          className="btn"
-                          onClick={() => setActionMenu(p.project_id)}
-                        >
-                          <MaterialIcon icon="more_vert" />
-                        </button>
-                        {actionMenu === p.project_id && (
-                          <>
-                            <div
-                              className="action-overlay"
-                              onClick={() => setActionMenu(undefined)}
-                            />
-                            <div className="action-options">
-                              {/* <Link to={`tasks/${p.project_id}`} className="text-muted">
-                                Create Task
-                              </Link> */}
-                              <Link to={`details/${p.project_id}`} className="text-muted">
-                                <MaterialIcon icon="info" />
-                                Details
-                              </Link>
-                              <Link to="/" className="text-muted">
-                                <MaterialIcon icon="update" />
-                                Update
-                              </Link>
-                              <button
-                                type="button"
-                                className="text-muted"
+                    {/* <td width="5" align="center">
+                      {auth?.user.employe_id === p.created_by ? (
+                        <div className="action-table">
+                          <button
+                            type="button"
+                            className="btn"
+                            onClick={() => setActionMenu(p.project_id)}
+                          >
+                            <MaterialIcon icon="more_vert" />
+                          </button>
+                          {actionMenu === p.project_id && (
+                            <>
+                              <div
+                                className="action-overlay"
                                 onClick={() => setActionMenu(undefined)}
-                              >
-                                <MaterialIcon icon="delete_outline" />
-                                Delete
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </td>
+                              />
+                              <div className="action-options">
+                                <Link to={`details/${p.project_id}`} className="text-muted">
+                                  <MaterialIcon icon="info" />
+                                  Details
+                                </Link>
+                                <Link to="/" className="text-muted">
+                                  <MaterialIcon icon="update" />
+                                  Update
+                                </Link>
+                                <button
+                                  type="button"
+                                  className="text-muted"
+                                  onClick={() => setActionMenu(undefined)}
+                                >
+                                  <MaterialIcon icon="delete_outline" />
+                                  Delete
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ) : (
+                        '-'
+                      )}
+                    </td> */}
                   </tr>
                 ))}
               </tbody>
@@ -166,6 +182,10 @@ const ProjectTables = () => {
       </Card>
     </div>
   );
+};
+
+ProjectTables.propTypes = {
+  nav: PropTypes.number,
 };
 
 export default ProjectTables;

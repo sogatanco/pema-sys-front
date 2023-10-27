@@ -178,7 +178,7 @@ const OverviewTab = () => {
             <Card>
               <CardBody>
                 <div>
-                  <CardTitle tag="h4" className="text-dark">
+                  <CardTitle tag="h5" className="text-dark fw-bold">
                     Description
                   </CardTitle>
                 </div>
@@ -191,8 +191,17 @@ const OverviewTab = () => {
                   <div className="d-flex flex-column col-4">
                     <small className="text-muted">Base</small>
                     <div className="d-flex">
-                      <span className="text-dark">{data.base_description}</span>
-                      <i className="me-2 bi-info-circle-fill"></i>
+                      <span className="text-dark">
+                        {data?.base_description.trim().length > 25
+                          ? `${data?.base_description.substring(0, 25)}...`
+                          : data?.base_description}
+                      </span>
+                      <abbr title={data?.base_description}>
+                        <i
+                          className="me-2 bi-info-circle-fill"
+                          style={{ fontSize: '14px', marginLeft: '4px' }}
+                        ></i>
+                      </abbr>
                     </div>
                   </div>
                   <div className="d-flex flex-column">
@@ -236,7 +245,7 @@ const OverviewTab = () => {
             <Card>
               <CardBody>
                 <div>
-                  <CardTitle tag="h4" className="text-dark">
+                  <CardTitle tag="h5" className="text-dark fw-bold">
                     Project Histories
                   </CardTitle>
                 </div>
@@ -303,7 +312,7 @@ const OverviewTab = () => {
           <Col lg="4">
             <Card>
               <CardBody>
-                <CardTitle tag="h4" className="d-flex justify-content-between">
+                <CardTitle tag="h5" className="d-flex justify-content-between fw-bold">
                   Overall Process
                   <span className="text-success fw-bold">
                     {data.total_progress.toFixed(data.total_progress !== 100 && 2)}%
