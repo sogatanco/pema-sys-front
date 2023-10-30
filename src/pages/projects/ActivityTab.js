@@ -67,7 +67,7 @@ const ActivityTab = () => {
                           <span style={{ fontWeight: '600' }}>{ts.task_title}</span>
                           <br></br>
                           <Badge color="light" className="text-muted">
-                            {ts.subtasks.length} subtask
+                            {ts?.subtasks?.length} subtask
                           </Badge>
                           {'  '}
                           <Badge color="light" className="text-muted">
