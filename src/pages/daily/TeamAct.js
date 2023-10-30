@@ -13,7 +13,6 @@ import {
   DropdownMenu,
   DropdownItem,
 } from 'reactstrap';
-// import { useReactToPrint } from 'react-to-print';
 import useAxios from '../../hooks/useAxios';
 import { alert } from '../../components/atoms/Toast';
 
@@ -67,7 +66,7 @@ const TeamAct = () => {
             </Dropdown>
           </div>
           {data?.length > 0 ? (
-            <Table striped className="mt-2">
+            <Table striped className="mt-2" id="printablediv">
               <thead>
                 <tr>
                   <th>Activities</th>
@@ -86,7 +85,8 @@ const TeamAct = () => {
                     <th scope="row">{d.poin}</th>
                     <th scope="row">
                       <div className="member" onClick={() => toggle(d.member)}>
-                        {d?.member?.map((m) => (
+                        {d?.member?.map((m, r) => (
+                             r < 3 ? (
                           <img
                             key={m?.employe_id}
                             src={
@@ -99,16 +99,28 @@ const TeamAct = () => {
                             width="35"
                             height="35"
                           />
-                        ))}
+                        ):''))}
+
+                        {d?.member?.length > 3 ? (
+                          <img
+                            src="https://cdn5.vectorstock.com/i/1000x1000/38/64/color-circle-with-plus-icon-vector-13503864.jpg"
+                            className="rounded-circle img-pluss"
+                            alt="avatar"
+                            width="20"
+                            height="20"
+                          />
+                        ) : (
+                          ''
+                        )}
                       </div>
                     </th>
                     <th scope="row">
-                      <Badge color={parseInt(d.progress, 10) === 100 ? 'success' : 'warning'}>
+                      <Badge color={parseInt(d?.progress, 10) === 100 ? 'success' : 'warning'}>
                         {d.progress} %
                       </Badge>
                     </th>
                     <th scope="row">
-                      <Badge color={d.status === 'approve' ? 'success' : 'warning'}>
+                      <Badge color={d?.status === 'approve' ? 'success' : 'warning'}>
                         {d.status}
                       </Badge>
                     </th>

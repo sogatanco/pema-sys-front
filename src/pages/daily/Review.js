@@ -21,6 +21,7 @@ import { alert } from '../../components/atoms/Toast';
 
 const Review = ({ misal, refetch }) => {
   const [modal, setModal] = useState(false);
+  const [modal1, setModal1] = useState(false);
   const [idAct, setIdAct] = useState(0);
   const [catatan, setCatatan] = useState('');
   const [modalApprove, setModalApprove] = useState(false);
@@ -29,6 +30,7 @@ const Review = ({ misal, refetch }) => {
   const [activityName, setActivityName] = useState('');
   const [activityPoin, setActivityPoin] = useState(0);
   const [category, setCategory] = useState(0);
+  const [assignee, SetAssignee] = useState();
 
   const activityValueSubmit = {
     id: 0,
@@ -93,6 +95,13 @@ const Review = ({ misal, refetch }) => {
     }
   };
 
+  const toggle1 = (p) => {
+    setModal1(!modal1);
+    if (!modal1) {
+      SetAssignee(p);
+    }
+  };
+
   const approvesubmit = async (e) => {
     activityValueSubmit.status = 'approve';
     activityValueSubmit.id = idAct;
@@ -144,7 +153,7 @@ const Review = ({ misal, refetch }) => {
                     <th scope="row">{d.poin}</th>
 
                     <th scope="row">
-                      <div className="member">
+                      <div className="member" onClick={() => toggle1(d.member)}>
                         {d?.member?.map((m, r) =>
                           r < 3 ? (
                             <img
@@ -162,6 +171,18 @@ const Review = ({ misal, refetch }) => {
                           ) : (
                             ''
                           ),
+                        )}
+
+                        {d?.member?.length > 3 ? (
+                          <img
+                            src="https://cdn5.vectorstock.com/i/1000x1000/38/64/color-circle-with-plus-icon-vector-13503864.jpg"
+                            className="rounded-circle img-pluss"
+                            alt="avatar"
+                            width="20"
+                            height="20"
+                          />
+                        ) : (
+                          ''
                         )}
                       </div>
                     </th>
@@ -247,6 +268,16 @@ const Review = ({ misal, refetch }) => {
           <div className="d-grid gap-2 mt-3">
             <Button onClick={approvesubmit}>Approve</Button>
           </div>
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={modal1} toggle={toggle1}>
+        <ModalBody>
+          {assignee?.map((a) => (
+            <Badge key={a.employe_id} color="primary" className="me-2">
+              {a.first_name}
+            </Badge>
+          ))}
         </ModalBody>
       </Modal>
     </>

@@ -35,6 +35,8 @@ const TaskBoard = ({ data, isLoading, employe, refetch }) => {
   const [modal, setModal] = useState(false);
   const [modalProgress, setModalProgress] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [modal1, setModal1] = useState(false);
+  const [assignee, SetAssignee] = useState();
 
   const api = useAxios();
   const valueSubmit = {
@@ -132,6 +134,13 @@ const TaskBoard = ({ data, isLoading, employe, refetch }) => {
     }
   };
 
+  const toggle1 = (p) => {
+    setModal1(!modal1);
+    if (!modal1) {
+      SetAssignee(p);
+    }
+  };
+
   return isLoading ? (
     'Loading'
   ) : (
@@ -158,7 +167,7 @@ const TaskBoard = ({ data, isLoading, employe, refetch }) => {
             </div>
           </div>
           <div className="d-flex justify-content-between">
-            <div className="member">
+            {act.status!=='approve'?<div className="member">
               {act?.member?.map((m, r) =>
                 r < 2 ? (
                   <img
@@ -186,7 +195,27 @@ const TaskBoard = ({ data, isLoading, employe, refetch }) => {
                   height="20"
                 />
               </div>:''}
-            </div>
+              {/* here */}
+            </div>:<div className='member' onClick={()=>toggle1(act.member)}>
+            {act?.member?.map((m, r) =>
+                r < 2 ? (
+                  <img
+                    key={m?.employe_id}
+                    src={
+                      m?.img
+                        ? m?.img
+                        : 'https://i.pinimg.com/736x/10/ec/86/10ec8691f73b787677bd0bbeddbd22e0.jpg'
+                    }
+                    className="rounded-circle"
+                    alt="avatar"
+                    width="35"
+                    height="35"
+                  />
+                ) : (
+                  ''
+                ),
+              )}
+              </div>}
             {act.status==='approve'?
             <Badge
             className="img-pluss"
@@ -239,6 +268,16 @@ const TaskBoard = ({ data, isLoading, employe, refetch }) => {
           <div className="d-grid gap-2 mt-3">
             <Button onClick={updateProgress}>Submit Update</Button>
           </div>
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={modal1} toggle={toggle1}>
+        <ModalBody>
+          {assignee?.map((a) => (
+            <Badge key={a.employe_id} color="primary" className="me-2">
+              {a.first_name}
+            </Badge>
+          ))}
         </ModalBody>
       </Modal>
     </>
