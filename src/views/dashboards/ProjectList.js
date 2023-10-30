@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, CardTitle, Col, Row } from 'reactstrap';
@@ -10,7 +10,6 @@ import useAuth from '../../hooks/useAuth';
 const ProjectList = () => {
   const { auth } = useAuth();
   const api = useAxios();
-  const [isDirector, setIsDirector] = useState(false);
 
   const { isLoading, error, data } = useQuery({
     queryKey: ['projectsdash'],
@@ -21,18 +20,12 @@ const ProjectList = () => {
             auth?.user?.roles.includes('Director')
               ? 'api/project'
               : `api/project/${auth?.user.employe_id}/list`
-          } `,
+          }`,
         )
         .then((res) => {
           return res.data.data;
         }),
   });
-
-  useEffect(() => {
-    if (auth?.user?.roles.includes('Director')) {
-      setIsDirector(true);
-    }
-  }, [auth]);
 
   return (
     <Row>
@@ -64,9 +57,7 @@ const ProjectList = () => {
                         <div className="d-flex flex-column">
                           <abbr title={p.project_name} style={{ textDecoration: 'none' }}>
                             <span className="fw-bold" style={{ fontSize: '14px' }}>
-                              {isDirector
-                                ? p.project_name
-                                : p.project_name.trim().length > 40
+                              {p.project_name.trim().length > 40
                                 ? `${p.project_name.substring(0, 42)}...`
                                 : p.project_name}
                             </span>

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useParams } from 'react-router-dom';
-import { Badge, Card, CardBody, Col, Table } from 'reactstrap';
+import { Badge, Card, CardBody, Col, Spinner, Table } from 'reactstrap';
 import MaterialIcon from '@material/react-material-icon';
 import useAxios from '../../hooks/useAxios';
 import TaskPopup from './TaskPopup';
 import user1 from '../../assets/images/users/user1.jpg';
+import useAuth from '../../hooks/useAuth';
+import { alert } from '../../components/atoms/Toast';
 // import TooltipHover from '../../components/atoms/TooltipHover';
 
 const result = (emId) =>
@@ -14,14 +16,18 @@ const result = (emId) =>
   );
 
 const ActivityTab = () => {
+  const { auth } = useAuth();
   const { projectId } = useParams();
   const [modal, setModal] = useState(false);
   const [task, setTask] = useState(undefined);
+  const [taskIdSelected, setTaskIdSelected] = useState();
+  const [addingFavorite, setAddingFavorite] = useState();
+  const [isDirector, setIsDirector] = useState(false);
   const api = useAxios();
 
   const { search } = useLocation();
 
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data, refetch } = useQuery({
     queryKey: ['act'],
     queryFn: () =>
       api.get(`api/task/${projectId}/activities/all${search}`).then((res) => {
@@ -37,6 +43,31 @@ const ActivityTab = () => {
     setModal(true);
     setTask(selectedTask);
   };
+
+  const handleFavorite = async (taskId) => {
+    setTaskIdSelected(taskId);
+    setAddingFavorite(true);
+    await api
+      .post(`api/task/${auth?.user.employe_id}/${taskId}/favorite`)
+      .then((res) => {
+        refetch();
+        alert('success', res.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('error', 'Bad request.');
+      });
+    setTaskIdSelected();
+    setAddingFavorite(false);
+  };
+
+  const favoriteAllowedRoles = ['Director'];
+
+  useEffect(() => {
+    if (auth?.user.roles.find((role) => favoriteAllowedRoles.includes(role))) {
+      setIsDirector(true);
+    }
+  }, [auth]);
 
   return (
     <>
@@ -56,14 +87,18 @@ const ActivityTab = () => {
                     <th width="">Status</th>
                     <th>Progress</th>
                     <th width="100">PIC</th>
+                    {isDirector && <th width="50"></th>}
                   </tr>
                 </thead>
                 <tbody>
                   {data?.map((ts, idx) => (
                     <>
-                      <tr key={ts.task_id} onClick={() => openPopup(ts)}>
+                      <tr key={ts.task_id}>
                         <td style={{ backgroundColor: '#f9f9f9' }}>{idx + 1}.</td>
-                        <td style={{ backgroundColor: '#f9f9f9' }}>
+                        <td
+                          style={{ backgroundColor: '#f9f9f9', cursor: 'pointer' }}
+                          onClick={() => openPopup(ts)}
+                        >
                           <span style={{ fontWeight: '600' }}>{ts.task_title}</span>
                           <br></br>
                           <Badge color="light" className="text-muted">
@@ -117,12 +152,32 @@ const ActivityTab = () => {
                             </div>
                           </div>
                         </td>
+                        {isDirector && (
+                          <td className="text-center">
+                            {addingFavorite && taskIdSelected === ts.task_id ? (
+                              <Spinner size="sm" color="warning" />
+                            ) : (
+                              <abbr title="Mark task" style={{ textDecoration: 'none' }}>
+                                <button
+                                  type="button"
+                                  className="fav-btn"
+                                  onClick={() => handleFavorite(ts.task_id)}
+                                >
+                                  <MaterialIcon
+                                    icon="star"
+                                    className={`${ts.isFavorite && 'is_favorite'}`}
+                                  />
+                                </button>
+                              </abbr>
+                            )}
+                          </td>
+                        )}
                       </tr>
                       {ts.subtasks.length > 0 &&
                         ts.subtasks.map((st) => (
-                          <tr key={st.task_id} onClick={() => openPopup(st)}>
+                          <tr key={st.task_id}>
                             <td></td>
-                            <td>
+                            <td onClick={() => openPopup(st)} style={{ cursor: 'pointer' }}>
                               {st.task_title}
                               <br></br>
                               <Badge color="light" className="text-muted">
@@ -169,6 +224,26 @@ const ActivityTab = () => {
                                 </div>
                               ))}
                             </td>
+                            {isDirector && (
+                              <td className="text-center">
+                                {addingFavorite && taskIdSelected === st.task_id ? (
+                                  <Spinner size="sm" color="warning" />
+                                ) : (
+                                  <abbr title="Mark task" style={{ textDecoration: 'none' }}>
+                                    <button
+                                      type="button"
+                                      className="fav-btn"
+                                      onClick={() => handleFavorite(st.task_id)}
+                                    >
+                                      <MaterialIcon
+                                        icon="star"
+                                        className={`${st.isFavorite && 'is_favorite'}`}
+                                      />
+                                    </button>
+                                  </abbr>
+                                )}
+                              </td>
+                            )}
                           </tr>
                         ))}
                     </>

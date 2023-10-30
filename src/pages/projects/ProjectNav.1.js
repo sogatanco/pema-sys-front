@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { Link, useParams } from 'react-router-dom';
 import { Col } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
@@ -7,12 +6,9 @@ import MaterialIcon from '@material/react-material-icon';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import user1 from '../../assets/images/users/user1.jpg';
-import './Project.scss';
+import { allowedRoles } from './ProjectNav';
 
-const allowedRolesForReview = ['Manager', 'Director'];
-const allowedRolesForBastReview = ['Director'];
-
-const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) => {
+export const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) => {
   const [currentTotalReview, setCurrentTotalReview] = useState('');
   const [currentTotalBastReview, setCurrentTotalBastReview] = useState('');
   const { auth } = useAuth();
@@ -46,7 +42,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
         .then((res) => setCurrentTotalReview(res.data.data))
         .catch((err) => console.log(err));
     }
-    if (roles?.find((role) => allowedRolesForReview.includes(role))) {
+    if (roles?.find((role) => allowedRoles.includes(role))) {
       fetchTotalReview();
     }
   }, [totalReview]);
@@ -58,7 +54,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
         .then((res) => setCurrentTotalBastReview(res.data.data))
         .catch((err) => console.log(err));
     }
-    if (roles?.find((role) => allowedRolesForBastReview.includes(role))) {
+    if (roles?.find((role) => allowedRoles.includes(role))) {
       fetchTotalBastReview();
     }
   }, [totalBastReview]);
@@ -76,7 +72,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
   const ActivitiesAllowedRoles = ['Manager', 'Director'];
   const FilesAllowedRoles = ['Staff'];
   const BASTReviewAllowedRoles = ['Director'];
-  const BASTAndReviewNotAllowedRoles = 'Presdir';
+  const BASTReviewNotAllowedRoles = ['Presdir'];
   const ReviewTaskAllowedRoles = ['Manager', 'Director'];
   const HandoverAllowedRoles = ['Manager'];
 
@@ -116,8 +112,8 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
               </Link>
             </>
           )}
-          {auth?.user?.roles.find((role) => BASTReviewAllowedRoles.includes(role)) &&
-            !auth?.user?.roles.includes(BASTAndReviewNotAllowedRoles) && (
+          {auth?.user?.roles.find((role) => BASTReviewAllowedRoles.includes(role)) ||
+            (auth?.user?.roles.find((role) => !BASTReviewNotAllowedRoles.includes(role)) && (
               <Link
                 className={`${navActive === 8 && 'active'} text-muted fw-bold`}
                 onClick={() => setNavActive(8)}
@@ -134,26 +130,25 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                   {currentTotalBastReview?.length}
                 </div>
               </Link>
-            )}
-          {auth?.user?.roles.find((role) => ReviewTaskAllowedRoles.includes(role)) &&
-            !auth?.user?.roles.includes(BASTAndReviewNotAllowedRoles) && (
-              <>
-                <Link
-                  className={`${navActive === 5 && 'active'} text-muted fw-bold`}
-                  onClick={() => setNavActive(5)}
+            ))}
+          {auth?.user?.roles.find((role) => ReviewTaskAllowedRoles.includes(role)) && (
+            <>
+              <Link
+                className={`${navActive === 5 && 'active'} text-muted fw-bold`}
+                onClick={() => setNavActive(5)}
+              >
+                Review{' '}
+                <div
+                  color="danger"
+                  className={`count ${
+                    currentTotalReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
+                  }`}
                 >
-                  Review{' '}
-                  <div
-                    color="danger"
-                    className={`count ${
-                      currentTotalReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
-                    }`}
-                  >
-                    {currentTotalReview?.length}
-                  </div>
-                </Link>
-              </>
-            )}
+                  {currentTotalReview?.length}
+                </div>
+              </Link>
+            </>
+          )}
           {auth?.user?.roles.find((role) => HandoverAllowedRoles.includes(role)) && (
             <Link
               className={`${navActive === 6 && 'active'} text-muted fw-bold`}
@@ -186,7 +181,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
               <img src={user1} className="rounded-circle" alt="avatar" width="35" height="35" />
               {auth?.user.first_name === data?.created_by ? (
                 <div className="action-table">
-                  <button type="button" className="btn d-flex" onClick={() => setActionMenu(true)}>
+                  <button type="button" className="btn" onClick={() => setActionMenu(true)}>
                     <MaterialIcon icon="more_vert" />
                   </button>
                   {actionMenu && (
@@ -199,10 +194,10 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                         </Link>
                         <button
                           type="button"
-                          className="text-muted fw-bold"
+                          className="text-muted"
                           onClick={() => setActionMenu(undefined)}
                         >
-                          <MaterialIcon icon="delete" />
+                          <MaterialIcon icon="delete_outline" />
                           Delete
                         </button>
                       </div>
@@ -219,12 +214,3 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
     </Col>
   );
 };
-
-ProjectNav.propTypes = {
-  navActive: PropTypes.any,
-  setNavActive: PropTypes.func,
-  totalReview: PropTypes.number,
-  totalBastReview: PropTypes.number,
-};
-
-export default ProjectNav;
