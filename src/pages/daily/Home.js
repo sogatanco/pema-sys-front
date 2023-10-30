@@ -9,6 +9,8 @@ import { Card } from 'reactstrap';
 import Daily from './Daily';
 import useAxios from '../../hooks/useAxios';
 import Review from './Review';
+import TeamAct from './TeamAct';
+
 
 
 const Home = () => {
@@ -85,8 +87,8 @@ const Home = () => {
         <TabPanel value="1" className="ps-0 pe-0">
           <Daily></Daily>
         </TabPanel>
-        <TabPanel value="2">
-          dgsgsdg
+        <TabPanel value="2"  className="ps-0 pe-0">
+          <TeamAct></TeamAct>
         </TabPanel>
         <TabPanel value="3" className="ps-0 pe-0">
         <Review misal={data} {...{ refetch}}></Review>

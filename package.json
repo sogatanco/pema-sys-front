@@ -62,6 +62,7 @@
     "react-table": "^7.8.0",
     "react-table-v6": "^6.8.6",
     "react-tagsinput": "^3.20.3",
+    "react-to-print": "^2.14.15",
     "react-validation": "^3.0.7",
     "reactstrap": "^9.2.0",
     "redux": "^4.2.1",

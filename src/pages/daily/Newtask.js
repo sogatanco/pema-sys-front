@@ -41,15 +41,16 @@ const Newtask = ({refetch}) => {
   };
   const api = useAxios();
   const submit = async (e) => {
+    e.preventDefault();
+   if(value?.activity && category?.id){
+  
     activityValueSubmit.activity = value?.activity;
     activityValueSubmit.start = dayjs(star);
     activityValueSubmit.end = dayjs(end);
     activityValueSubmit.category = category?.id;
     activityValueSubmit.progress = progress;
     activityValueSubmit.poin = actpoin;
-
     e.preventDefault();
-
     await api
       .post(`dapi/activit`, activityValueSubmit)
       .then(() => {
@@ -64,6 +65,11 @@ const Newtask = ({refetch}) => {
       .catch((err) => {
         alert('error', err);
       });
+   }else{
+
+    alert('error', `Fields Can't Be Empty !!`);
+    
+   }
   };
 
   const addForm = async (e) => {
