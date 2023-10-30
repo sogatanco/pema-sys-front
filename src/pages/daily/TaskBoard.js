@@ -177,7 +177,7 @@ const TaskBoard = ({ data, isLoading, employe, refetch }) => {
                   ''
                 ),
               )}
-              <div onClick={() => toggle(act?.member, act?.id)}>
+              {act?.status!=='approve'?<div onClick={() => toggle(act?.member, act?.id)}>
                 <img
                   src="https://cdn5.vectorstock.com/i/1000x1000/38/64/color-circle-with-plus-icon-vector-13503864.jpg"
                   className="rounded-circle img-pluss"
@@ -185,7 +185,7 @@ const TaskBoard = ({ data, isLoading, employe, refetch }) => {
                   width="20"
                   height="20"
                 />
-              </div>
+              </div>:''}
             </div>
             {act.status==='approve'?
             <Badge
