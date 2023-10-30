@@ -1,5 +1,18 @@
 .action-table {
   position: relative;
+  transition: all 300ms ease;
+
+  button {
+    outline: none;
+
+    &:hover {
+      background-color: #eaf2fb;
+    }
+
+    &:focus {
+      border: none;
+    }
+  }
 
   .material-icons {
     font-size: 20px;

@@ -185,7 +185,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
               <img src={user1} className="rounded-circle" alt="avatar" width="35" height="35" />
               {auth?.user.first_name === data?.created_by ? (
                 <div className="action-table">
-                  <button type="button" className="btn" onClick={() => setActionMenu(true)}>
+                  <button type="button" className="btn d-flex" onClick={() => setActionMenu(true)}>
                     <MaterialIcon icon="more_vert" />
                   </button>
                   {actionMenu && (
@@ -198,10 +198,10 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                         </Link>
                         <button
                           type="button"
-                          className="text-muted"
+                          className="text-muted fw-bold"
                           onClick={() => setActionMenu(undefined)}
                         >
-                          <MaterialIcon icon="delete_outline" />
+                          <MaterialIcon icon="delete" />
                           Delete
                         </button>
                       </div>
