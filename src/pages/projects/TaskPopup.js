@@ -231,7 +231,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                               </div>
                             ))} */}
                             <div className="d-flex gap-3">
-                              <span>{task.first_name}</span>
+                              <span>{task?.pics[0]?.first_name}</span>
                             </div>
                           </div>
                         </FormGroup>

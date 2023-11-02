@@ -7,11 +7,35 @@ import Login from '../pages/auth/Login';
 const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/BlankLayout')));
 const StarterKit = Loadable(lazy(() => import('../pages/Starterkit')));
+
+/***** Profile ****/
 const ProfilePage = Loadable(lazy(() => import('../pages/profile')));
-const ProjectPage = Loadable(lazy(() => import('../pages/projects')));
+/***** Profile ****/
+
+/***** Daily ****/
 const DailyPage = Loadable(lazy(() => import('../pages/daily')));
+/***** Daily ****/
+
+/***** Projects ****/
+const ProjectPage = Loadable(lazy(() => import('../pages/projects')));
 const ProjectDetail = Loadable(lazy(() => import('../pages/projects/ProjectDetail')));
 const ProjectTaskList = Loadable(lazy(() => import('../pages/projects/AllTask')));
+/***** Projects ****/
+
+/***** Tickets ****/
+const TicketPage = Loadable(lazy(() => import('../pages/tickets')));
+/***** Tickets ****/
+
+/***** Forms ****/
+const PentryPage = Loadable(lazy(() => import('../pages/form/Pentry')));
+const AtkPage = Loadable(lazy(() => import('../pages/form/Atk')));
+/***** Forms ****/
+
+/***** Forms ****/
+const PentryReportPage = Loadable(lazy(() => import('../pages/report/PentryReport')));
+const AtkReportPage = Loadable(lazy(() => import('../pages/report/AtkReport')));
+/***** Forms ****/
+
 /***** Pages ****/
 
 const Dashboard2 = Loadable(lazy(() => import('../views/dashboards/Dashboard2')));
@@ -37,6 +61,9 @@ const ROLES = {
   Staff: 'Staff',
   Employee: 'Employee',
 };
+
+const formAllowedRoles = ['Picpentry', 'Picatk'];
+const reportAllowedRoles = ['Picpentry', 'Picatk'];
 
 /*****Routes******/
 const ThemeRoutes = [
@@ -83,6 +110,45 @@ const ThemeRoutes = [
             path: 'projects/alltask/:projectId',
             name: 'Projects',
             element: <ProjectTaskList />,
+          },
+          {
+            path: 'tickets',
+            name: 'Tickets',
+            element: <TicketPage />,
+          },
+          {
+            path: 'forms',
+            name: 'Form',
+            element: <RequireAuth allowedRoles={formAllowedRoles} />,
+            children: [
+              {
+                path: 'pentry',
+                name: 'Pentry',
+                element: <PentryPage />,
+              },
+              {
+                path: 'atk',
+                name: 'Atk',
+                element: <AtkPage />,
+              },
+            ],
+          },
+          {
+            path: 'reports',
+            name: 'Report',
+            element: <RequireAuth allowedRoles={reportAllowedRoles} />,
+            children: [
+              {
+                path: 'pentry',
+                name: 'Pentry',
+                element: <PentryReportPage />,
+              },
+              {
+                path: 'atk',
+                name: 'Atk',
+                element: <AtkReportPage />,
+              },
+            ],
           },
         ],
       },

@@ -45,7 +45,7 @@ const HorizontalSidebar = () => {
               );
             }
             if (navi.children) {
-              return (
+              return auth?.user.roles.find((role) => navi.allowedRoles.includes(role)) ? (
                 <NavSubItem
                   key={navi.id}
                   icon={navi.icon}
@@ -57,9 +57,11 @@ const HorizontalSidebar = () => {
                   suffixColor={navi.suffixColor}
                   isUrl={currentURL === navi.href}
                 />
+              ) : (
+                ''
               );
             }
-            return (
+            return auth?.user.roles.find((role) => navi.allowedRoles.includes(role)) ? (
               <NavSingleItem
                 key={navi.id}
                 //toggle={() => toggle(navi.id)}
@@ -70,6 +72,8 @@ const HorizontalSidebar = () => {
                 suffixColor={navi.suffixColor}
                 icon={navi.icon}
               />
+            ) : (
+              ''
             );
           })}
         </Nav>

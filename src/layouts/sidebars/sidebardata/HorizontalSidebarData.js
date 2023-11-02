@@ -1,6 +1,5 @@
 import MaterialIcon from '@material/react-material-icon';
 
-
 const SidebarData = [
   { caption: 'Home' },
   {
@@ -11,6 +10,7 @@ const SidebarData = [
     // suffixColor: 'bg-info',
     icon: <MaterialIcon icon="home" />,
     collapisble: true,
+    allowedRoles: ['Employee'],
   },
   { caption: 'Activity' },
   {
@@ -20,6 +20,7 @@ const SidebarData = [
     icon: <MaterialIcon icon="engineering" />,
     ddType: 'two-column',
     collapisble: true,
+    allowedRoles: ['Employee'],
     children: [
       {
         title: 'Project',
@@ -30,6 +31,57 @@ const SidebarData = [
         title: 'Daily',
         href: '/daily',
         icon: <MaterialIcon icon="event" />,
+      },
+    ],
+  },
+  { caption: 'Ticket' },
+  {
+    title: 'Ticket',
+    href: '/tickets',
+    id: 3,
+    icon: <MaterialIcon icon="description" />,
+    collapisble: true,
+    allowedRoles: ['Employee'],
+  },
+  { caption: 'Form' },
+  {
+    title: 'Form',
+    id: 4,
+    icon: <MaterialIcon icon="list_alt" />,
+    ddType: 'two-column',
+    collapisble: true,
+    allowedRoles: ['Picpentry', 'Picatk'],
+    children: [
+      {
+        title: 'Pentry',
+        href: 'forms/pentry',
+        icon: <MaterialIcon icon="restaurant_menu" />,
+      },
+      {
+        title: 'ATK',
+        href: 'forms/atk',
+        icon: <MaterialIcon icon="home_repair_service" />,
+      },
+    ],
+  },
+  { caption: 'Reports' },
+  {
+    title: 'Report',
+    id: 5,
+    icon: <MaterialIcon icon="list_alt" />,
+    ddType: 'two-column',
+    collapisble: true,
+    allowedRoles: ['Picpentry', 'Picatk'],
+    children: [
+      {
+        title: 'Pentry Report',
+        href: 'reports/pentry',
+        icon: <MaterialIcon icon="restaurant_menu" />,
+      },
+      {
+        title: 'ATK Report',
+        href: 'reports/atk',
+        icon: <MaterialIcon icon="home_repair_service" />,
       },
     ],
   },

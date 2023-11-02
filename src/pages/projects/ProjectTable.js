@@ -48,7 +48,7 @@ const ProjectTables = ({ nav }) => {
         <CardBody style={{ position: 'relative' }}>
           <Col className="d-flex justify-content-between" col="12">
             <div className="">
-              <CardTitle tag="h5">
+              <CardTitle tag="h5" className="fw-bold">
                 {nav === 1 || auth?.user.roles.includes('Director') ? 'All' : 'My'} Project Listing
               </CardTitle>
               {/* <CardSubtitle className="mb-2 text-muted" tag="h6">
@@ -58,10 +58,11 @@ const ProjectTables = ({ nav }) => {
             {auth?.user.roles.find((role) => allowedRoles?.includes(role)) && nav === 2 && (
               <div className="">
                 <Button
-                  className="btn d-flex gap-1 align-items-end"
+                  className="btn d-flex gap-1 align-items-center"
                   outline
                   color="info"
                   onClick={toggle.bind(null)}
+                  size="sm"
                 >
                   <MaterialIcon icon="add" />
                   Create New Project

@@ -129,7 +129,7 @@ const ActivityTab = () => {
                         </td>
                         <td style={{ backgroundColor: '#f9f9f9' }}>
                           <span className="badge bg-light-success text-primary rounded-pill d-inline-block fw-bold">
-                            {ts.task_progress.toFixed()}%
+                            {ts?.task_progress.toFixed()}%
                           </span>
                         </td>
                         <td style={{ backgroundColor: '#f9f9f9' }}>
@@ -206,7 +206,7 @@ const ActivityTab = () => {
                             </td>
                             <td>
                               <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">
-                                {st.task_progress.toFixed()}%
+                                {st?.task_progress.toFixed()}%
                               </span>
                             </td>
                             <td>
