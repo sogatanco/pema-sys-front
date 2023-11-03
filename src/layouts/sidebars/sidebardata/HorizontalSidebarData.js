@@ -25,11 +25,13 @@ const SidebarData = [
       {
         title: 'Project',
         href: '/projects',
+        allowedRoles: ['Staff', 'Manager'],
         icon: <MaterialIcon icon="work_history" />,
       },
       {
         title: 'Daily',
         href: '/daily',
+        allowedRoles: ['Employee'],
         icon: <MaterialIcon icon="event" />,
       },
     ],
@@ -43,48 +45,52 @@ const SidebarData = [
     collapisble: true,
     allowedRoles: ['Employee'],
   },
-  { caption: 'Form' },
-  {
-    title: 'Form',
-    id: 4,
-    icon: <MaterialIcon icon="list_alt" />,
-    ddType: 'two-column',
-    collapisble: true,
-    allowedRoles: ['Picpentry', 'Picatk'],
-    children: [
-      {
-        title: 'Pentry',
-        href: 'forms/pentry',
-        icon: <MaterialIcon icon="restaurant_menu" />,
-      },
-      {
-        title: 'ATK',
-        href: 'forms/atk',
-        icon: <MaterialIcon icon="home_repair_service" />,
-      },
-    ],
-  },
-  { caption: 'Reports' },
-  {
-    title: 'Report',
-    id: 5,
-    icon: <MaterialIcon icon="list_alt" />,
-    ddType: 'two-column',
-    collapisble: true,
-    allowedRoles: ['Picpentry', 'Picatk'],
-    children: [
-      {
-        title: 'Pentry Report',
-        href: 'reports/pentry',
-        icon: <MaterialIcon icon="restaurant_menu" />,
-      },
-      {
-        title: 'ATK Report',
-        href: 'reports/atk',
-        icon: <MaterialIcon icon="home_repair_service" />,
-      },
-    ],
-  },
+  // { caption: 'Form' },
+  // {
+  //   title: 'Form',
+  //   id: 4,
+  //   icon: <MaterialIcon icon="list_alt" />,
+  //   ddType: 'two-column',
+  //   collapisble: true,
+  //   allowedRoles: ['Picpentry', 'Picatk'],
+  //   children: [
+  //     {
+  //       title: 'Pentry',
+  //       href: 'forms/pentry',
+  //       allowedRoles: ['Picpentry', 'Picatk'],
+  //       icon: <MaterialIcon icon="restaurant_menu" />,
+  //     },
+  //     {
+  //       title: 'ATK',
+  //       href: 'forms/atk',
+  //       allowedRoles: ['Picpentry', 'Picatk'],
+  //       icon: <MaterialIcon icon="home_repair_service" />,
+  //     },
+  //   ],
+  // },
+  // { caption: 'Reports' },
+  // {
+  //   title: 'Report',
+  //   id: 5,
+  //   icon: <MaterialIcon icon="list_alt" />,
+  //   ddType: 'two-column',
+  //   collapisble: true,
+  //   allowedRoles: ['Picpentry', 'Picatk'],
+  //   children: [
+  //     {
+  //       title: 'Pentry Report',
+  //       href: 'reports/pentry',
+  //       allowedRoles: ['Picpentry', 'Picatk'],
+  //       icon: <MaterialIcon icon="restaurant_menu" />,
+  //     },
+  //     {
+  //       title: 'ATK Report',
+  //       href: 'reports/atk',
+  //       allowedRoles: ['Picpentry', 'Picatk'],
+  //       icon: <MaterialIcon icon="home_repair_service" />,
+  //     },
+  //   ],
+  // },
   // { caption: 'Starter Kit' },
   // {
   //   title: 'Starter Kit',

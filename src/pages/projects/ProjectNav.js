@@ -178,12 +178,20 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
           <p>Loading...</p>
         ) : (
           <>
-            <div className="d-flex flex-column">
-              <h5 className="mb-0 fw-bold">{data?.project_name}</h5>
-              <small>{data?.pic_active.organization_name}</small>
-            </div>
             <div className="d-flex align-items-center gap-1">
               <img src={user1} className="rounded-circle" alt="avatar" width="35" height="35" />
+              <div className="d-flex flex-column" style={{ marginLeft: '10px' }}>
+                <small className="fw-bold">{data?.pic_active.first_name}</small>
+                <small>{data?.pic_active.position_name}</small>
+              </div>
+            </div>
+            <div className="d-flex align-items-center gap-1">
+              <div className="d-flex flex-column align-items-end">
+                <h5 className="mb-0 fw-bold">{data?.project_name}</h5>
+                <span className="badge text-dark bg-light rounded-pill d-inline-block fw-bold">
+                  Stage: ?
+                </span>
+              </div>
               {auth?.user.first_name === data?.created_by ? (
                 <div className="action-table">
                   <button type="button" className="btn d-flex" onClick={() => setActionMenu(true)}>

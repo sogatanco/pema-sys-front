@@ -46,6 +46,8 @@ const TeamAct = () => {
     refetch();
   }, [filterby]);
 
+  console.log(data);
+
   return (
     <>
       <Card>
@@ -85,21 +87,24 @@ const TeamAct = () => {
                     <th scope="row">{d.poin}</th>
                     <th scope="row">
                       <div className="member" onClick={() => toggle(d.member)}>
-                        {d?.member?.map((m, r) => (
-                             r < 3 ? (
-                          <img
-                            key={m?.employe_id}
-                            src={
-                              m?.img
-                                ? m?.img
-                                : 'https://i.pinimg.com/736x/10/ec/86/10ec8691f73b787677bd0bbeddbd22e0.jpg'
-                            }
-                            className="rounded-circle"
-                            alt="avatar"
-                            width="35"
-                            height="35"
-                          />
-                        ):''))}
+                        {d?.member?.map((m, r) =>
+                          r < 3 ? (
+                            <img
+                              key={m?.employe_id}
+                              src={
+                                m?.img
+                                  ? m?.img
+                                  : 'https://i.pinimg.com/736x/10/ec/86/10ec8691f73b787677bd0bbeddbd22e0.jpg'
+                              }
+                              className="rounded-circle"
+                              alt="avatar"
+                              width="35"
+                              height="35"
+                            />
+                          ) : (
+                            ''
+                          ),
+                        )}
 
                         {d?.member?.length > 3 ? (
                           <img
