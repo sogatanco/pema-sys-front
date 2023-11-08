@@ -10,6 +10,7 @@ const StarterKit = Loadable(lazy(() => import('../pages/Starterkit')));
 const ProfilePage = Loadable(lazy(() => import('../pages/profile')));
 const ProjectPage = Loadable(lazy(() => import('../pages/projects')));
 const DailyPage = Loadable(lazy(() => import('../pages/daily')));
+const AssetPage = Loadable(lazy(() => import('../pages/asset')));
 const ProjectDetail = Loadable(lazy(() => import('../pages/projects/ProjectDetail')));
 const ProjectTaskList = Loadable(lazy(() => import('../pages/projects/AllTask')));
 /***** Pages ****/
@@ -73,6 +74,11 @@ const ThemeRoutes = [
             path: 'daily',
             name: 'Daily',
             element: <DailyPage />,
+          },
+          {
+            path: 'inventory',
+            name: 'Inventory',
+            element: <AssetPage />,
           },
           {
             path: 'projects/details/:projectId',
