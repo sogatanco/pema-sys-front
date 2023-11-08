@@ -313,7 +313,7 @@ const OverviewTab = () => {
             <Card>
               <CardBody>
                 <CardTitle tag="h5" className="d-flex justify-content-between fw-bold">
-                  Overall Process
+                  Project Active
                   <span className="text-success fw-bold">
                     {data.total_progress.toFixed(data.total_progress !== 100 && 2)}%
                   </span>
@@ -332,7 +332,7 @@ const OverviewTab = () => {
                   <div className="overall-child">
                     <div>
                       <h6 className="text-muted">Remaining days</h6>
-                      <span className="text-danger">{remaininDays(data.end_date)}</span>
+                      <span className="text-danger">{remaininDays(data.end_date).toFixed()}</span>
                     </div>
                     <MaterialIcon icon="timer"></MaterialIcon>
                   </div>

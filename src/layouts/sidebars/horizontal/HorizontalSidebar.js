@@ -3,7 +3,7 @@ import { Container, Nav } from 'reactstrap';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import SidebarData from '../sidebardata/HorizontalSidebarData';
-import DirectorSidebarData from '../sidebardata/DirectorSidebarData';
+// import DirectorSidebarData from '../sidebardata/DirectorSidebarData';
 import NavSubItem from './NavSubItem';
 import NavSingleItem from './NavSingleItem';
 import useAuth from '../../../hooks/useAuth';
@@ -18,11 +18,7 @@ const HorizontalSidebar = () => {
   const [sidebarData, setSidebarData] = useState();
 
   useEffect(() => {
-    if (auth?.user.roles.includes('Director')) {
-      setSidebarData(DirectorSidebarData);
-    } else {
-      setSidebarData(SidebarData);
-    }
+    setSidebarData(SidebarData);
   }, []);
 
   return (
@@ -45,7 +41,7 @@ const HorizontalSidebar = () => {
               );
             }
             if (navi.children) {
-              return (
+              return auth?.user.roles.find((role) => navi.allowedRoles.includes(role)) ? (
                 <NavSubItem
                   key={navi.id}
                   icon={navi.icon}
@@ -56,10 +52,13 @@ const HorizontalSidebar = () => {
                   activeBck={activeBg}
                   suffixColor={navi.suffixColor}
                   isUrl={currentURL === navi.href}
+                  auth={auth}
                 />
+              ) : (
+                ''
               );
             }
-            return (
+            return auth?.user?.roles.find((role) => navi.allowedRoles.includes(role)) ? (
               <NavSingleItem
                 key={navi.id}
                 //toggle={() => toggle(navi.id)}
@@ -70,6 +69,8 @@ const HorizontalSidebar = () => {
                 suffixColor={navi.suffixColor}
                 icon={navi.icon}
               />
+            ) : (
+              ''
             );
           })}
         </Nav>
