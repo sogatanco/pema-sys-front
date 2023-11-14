@@ -97,7 +97,16 @@ const BoardTask = ({ data, projectId, refetch }) => {
           <div key={td.task_id} className="board">
             <div className="board-header">
               <div className="d-flex gap-2" style={{ height: 'max-content' }}>
-                <Badge color="info">#{i + 1}</Badge>
+                <Badge
+                  color="info"
+                  className={`bg-light-${
+                    td.status === 0 ? 'primary' : td.status === 1 ? 'warning' : 'success'
+                  } text-${
+                    td.status === 0 ? 'primary' : td.status === 1 ? 'warning' : 'success'
+                  } fw-bold`}
+                >
+                  #{i + 1}
+                </Badge>
                 {parseInt(td.status, 10) === 4 && (
                   <Badge color="danger">
                     <i className="bi-pencil-square mr-4" style={{ fontSize: '12px' }}></i>
@@ -153,7 +162,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
                       )}
                     </div>
                     <div key={td.task_id}>
-                      {auth?.user.employe_id === td.employe_id && (
+                      {auth?.user.employe_id === td.employe_id.toString() && (
                         <ActionMenu
                           menuOptions={menuOptions}
                           taskId={td.task_id}

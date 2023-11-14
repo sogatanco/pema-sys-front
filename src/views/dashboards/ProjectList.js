@@ -6,6 +6,7 @@ import useAxios from '../../hooks/useAxios';
 import CircularPercentage from '../../components/atoms/circularPercentage/CircularPercentage';
 import user1 from '../../assets/images/users/user1.jpg';
 import useAuth from '../../hooks/useAuth';
+import IndoDate from '../../utils/IndoDate';
 
 const ProjectList = () => {
   const { auth } = useAuth();
@@ -73,7 +74,7 @@ const ProjectList = () => {
                         <small className="text-muted" style={{ fontSize: '12px' }}>
                           Deadline{' '}
                         </small>
-                        <small>{p.end_date}</small>
+                        <small>{IndoDate(p.current_stage.end_date)}</small>
                       </div>
                       <span
                         className="badge text-info bg-light-info rounded-pill d-inline-block fw-bold"

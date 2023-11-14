@@ -179,7 +179,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
     e.target.reset();
   };
 
-  const fileUrl = process.env.REACT_APP_FILEURL;
+  const fileUrl = process.env.REACT_APP_BASEURL_DEV;
 
   return (
     <>
@@ -398,7 +398,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                   {task.task_parent === null ? (
                     <div className="status">
                       <span className="badge bg-light-success text-primary rounded-pill d-inline-block fw-bold">
-                        Task {task.status}
+                        Task
                       </span>
                       {task?.status === 0 ? (
                         <Badge color="info">To Do</Badge>

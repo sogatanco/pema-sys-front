@@ -111,7 +111,7 @@ const TaskForm = (props) => {
               <i className="bi-person-plus-fill"></i>
               <span>{assignedEmployees?.length || 0}</span>
             </button>
-            <TooltipHover title="Assigne" id={2} />
+            <TooltipHover title="Assigne" id="2" />
           </div>
           <div className="footer">
             <div className="option">

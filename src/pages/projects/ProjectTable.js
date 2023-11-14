@@ -109,9 +109,9 @@ const ProjectTables = ({ nav }) => {
                     </td>
                     <td className="text-muted">{p.project_number}</td>
                     <td className="text-muted">{p.level_desc}</td>
-                    <td className="text-muted">{`${p?.start_date?.split('-')[2]}-${
-                      p?.start_date?.split('-')[1]
-                    }-${p?.start_date?.split('-')[0]}`}</td>
+                    <td className="text-muted">{`${p?.current_stage?.start_date?.split('-')[2]}-${
+                      p?.current_stage?.start_date?.split('-')[1]
+                    }-${p?.current_stage?.start_date?.split('-')[0]}`}</td>
                     <td>
                       {p.status === 'new' && (
                         <span className="badge bg-light-info text-info rounded-pill d-inline-block fw-bold">
@@ -120,7 +120,7 @@ const ProjectTables = ({ nav }) => {
                       )}
                       {p.status === 'ongoing' && (
                         <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">
-                          Ongoing
+                          {p?.current_stage?.phase}
                         </span>
                       )}
                       {p.status === 'done' && (

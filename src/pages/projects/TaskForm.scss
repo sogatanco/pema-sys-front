@@ -11,6 +11,11 @@
 
 .new-task {
   z-index: 1;
+
+  .body {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 .datepicker-toggle {

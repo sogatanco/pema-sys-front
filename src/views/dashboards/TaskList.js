@@ -70,7 +70,7 @@ const TaskList = () => {
                 <div
                   className={`d-flex col-sm-${
                     auth?.user.roles.includes('Director') ? '11' : '12'
-                  } justify-content-between align-items-center p-2 rounded-3 link-item-bordered`}
+                  } justify-content-between align-items-center p-2 rounded-3 link-item-bordered bg-white`}
                   style={{ border: '1px dashed #21C1D6' }}
                 >
                   <Link

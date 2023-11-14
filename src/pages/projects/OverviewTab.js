@@ -27,15 +27,10 @@ import newDate from '../../utils/formatDate';
 import useAuth from '../../hooks/useAuth';
 import { alert } from '../../components/atoms/Toast';
 import TooltipHover from '../../components/atoms/TooltipHover';
+import IndoDate from '../../utils/IndoDate';
+import rupiah from '../../utils/rupiah';
 
 const animatedComponents = makeAnimated();
-
-const rupiah = (number) => {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-  }).format(number);
-};
 
 const remaininDays = (endDate) => {
   const todayDate = new Date();
@@ -56,7 +51,9 @@ const remaininDays = (endDate) => {
 
   const diff = deadline.getTime() - today.getTime();
 
-  return diff / (1000 * 3600 * 24);
+  const result = diff / (1000 * 3600 * 24);
+
+  return result;
 };
 
 const OverviewTab = () => {
@@ -68,6 +65,8 @@ const OverviewTab = () => {
   const [listEmployee, setListEmploye] = useState();
   const [loading, setLoading] = useState(false);
   const [bst, setBst] = useState([]);
+  const [activePhase, setActivePhase] = useState(undefined);
+  const [selectedSchema, setSelectedSchema] = useState('');
   const [taskByStatus, setTaskByStatus] = useState({
     todo: 0,
     inprogress: 0,
@@ -111,6 +110,8 @@ const OverviewTab = () => {
       underReview: underReviewFiltered?.length,
       done: doneFiltered?.length,
     });
+
+    setActivePhase(data?.current_stage.phase_id);
   }, [data]);
 
   useEffect(() => {
@@ -145,6 +146,8 @@ const OverviewTab = () => {
           project_id: projectId,
           new_pic: newPic.value,
           file: bst[0],
+          // jika fase projek adalah planning
+          schema: activePhase === 2 ? selectedSchema : '',
         },
         {
           headers: {
@@ -175,14 +178,16 @@ const OverviewTab = () => {
       ) : (
         <Row>
           <Col lg="8">
-            <Card>
+            <Card className="rounded-3 mb-3">
               <CardBody>
                 <div>
                   <CardTitle tag="h5" className="text-dark fw-bold">
                     Description
                   </CardTitle>
                 </div>
-                <div className="ms-auto mt-3 mt-md-0">{data.goals}</div>
+                <div className="ms-auto mt-3 mt-md-0">
+                  {data?.current_stage !== null && data.current_stage.desc}
+                </div>
                 <div className="d-flex justify-content-between mt-3">
                   <div className="d-flex flex-column">
                     <small className="text-muted">Level</small>
@@ -191,7 +196,7 @@ const OverviewTab = () => {
                   <div className="d-flex flex-column col-4">
                     <small className="text-muted">Base</small>
                     <div className="d-flex">
-                      <span className="text-dark">
+                      <span className="wtext-dark">
                         {data?.base_description.trim().length > 25
                           ? `${data?.base_description.substring(0, 25)}...`
                           : data?.base_description}
@@ -206,11 +211,15 @@ const OverviewTab = () => {
                   </div>
                   <div className="d-flex flex-column">
                     <small className="text-muted">Start date</small>
-                    <span className="text-dark">{data.start_date}</span>
+                    <span className="text-dark">
+                      {IndoDate(data?.current_stage !== null && data.current_stage.start_date)}
+                    </span>
                   </div>
                   <div className="d-flex flex-column">
                     <small className="text-muted">Deadline</small>
-                    <span className="text-dark">{data.end_date}</span>
+                    <span className="text-dark">
+                      {IndoDate(data?.current_stage !== null && data.current_stage.end_date)}
+                    </span>
                   </div>
                 </div>
                 <div
@@ -242,7 +251,7 @@ const OverviewTab = () => {
                 </div>
               </CardBody>
             </Card>
-            <Card>
+            <Card className="rounded-3">
               <CardBody>
                 <div>
                   <CardTitle tag="h5" className="text-dark fw-bold">
@@ -310,7 +319,7 @@ const OverviewTab = () => {
             </Card>
           </Col>
           <Col lg="4">
-            <Card>
+            <Card className="rounded-3 mb-3">
               <CardBody>
                 <CardTitle tag="h5" className="d-flex justify-content-between fw-bold">
                   Project Active
@@ -326,13 +335,17 @@ const OverviewTab = () => {
                 />
               </CardBody>
             </Card>
-            <Card>
+            <Card className="rounded-3">
               <CardBody>
                 <div className="overall-process">
                   <div className="overall-child">
                     <div>
                       <h6 className="text-muted">Remaining days</h6>
-                      <span className="text-danger">{remaininDays(data.end_date).toFixed()}</span>
+                      <span className="text-danger">
+                        {remaininDays(
+                          data?.current_stage !== null && data.current_stage.end_date,
+                        ).toFixed()}
+                      </span>
                     </div>
                     <MaterialIcon icon="timer"></MaterialIcon>
                   </div>
@@ -438,10 +451,29 @@ const OverviewTab = () => {
                     <option value="">Done</option>
                   </Input>
                 </FormGroup>
+                {/* current stage is Planning */}
+                {activePhase === 2 && (
+                  <FormGroup>
+                    <Label>Schema</Label>
+                    <Input
+                      type="select"
+                      id="base_id"
+                      name="base_id"
+                      defaultValue="a"
+                      onChange={(e) => setSelectedSchema(e.target.value)}
+                    >
+                      <option value="a" disabled>
+                        Select
+                      </option>
+                      <option value="jo">JO</option>
+                      <option value="jv">JV</option>
+                    </Input>
+                  </FormGroup>
+                )}
+                {/* current stage is Planning */}
                 <FormGroup>
                   <Label>PIC</Label>
                   <Select
-                    closeMenuOnSelect={false}
                     components={animatedComponents}
                     options={listEmployee}
                     onChange={(choice) => setNewPic(choice)}
