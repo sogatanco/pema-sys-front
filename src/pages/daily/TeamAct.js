@@ -12,19 +12,26 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Col,
+  Row,
+  Container,
 } from 'reactstrap';
 import useAxios from '../../hooks/useAxios';
 import { alert } from '../../components/atoms/Toast';
+import TopCardsData from '../../views/dashboards/TopCardsData';
 
 const TeamAct = () => {
   const [filterby, setFilterby] = useState('today');
   const [modal, setModal] = useState(false);
   const [assignee, SetAssignee] = useState();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [todo, setTodo] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [done, setDone] = useState(0);
   const toggle1 = () => setDropdownOpen((prevState) => !prevState);
   const api = useAxios();
-  const { data, refetch } = useQuery({
-    queryKey: ['cat'],
+  const { data, refetch, isLoading } = useQuery({
+    queryKey: ['catdfhds'],
     queryFn: () =>
       api.get(`dapi/myteam/activities/${filterby}`).then((res) => {
         return res.data.data;
@@ -46,26 +53,72 @@ const TeamAct = () => {
     refetch();
   }, [filterby]);
 
+<<<<<<< HEAD
+  useEffect(() => {
+    const todofFiltered = data?.filter((act) => parseInt(act.progress, 10) === 0);
+    const progressFiltered = data?.filter(
+      (act) => parseInt(act.progress, 10) > 0 && parseInt(act.progress, 10) < 100,
+    );
+    const doneFiltered = data?.filter((act) => parseInt(act.progress, 10) === 100);
+    setTodo(todofFiltered?.length);
+    setProgress(progressFiltered?.length);
+    setDone(doneFiltered?.length);
+  }, [data]);
+=======
   console.log(data);
+>>>>>>> 43f53dc589d855fb16672cbcbc26d3ef71ed32a7
 
   return (
     <>
       <Card>
         <CardBody>
           <div className="d-flex justify-content-end">
-            <Dropdown isOpen={dropdownOpen} toggle={toggle1} className="mb-3">
-              <DropdownToggle caret>
-                <MaterialIcon icon="filter_alt" />
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem onClick={() => handleFiltere('today')}>Today</DropdownItem>
-                <DropdownItem onClick={() => handleFiltere('yesterday')}>Yesterday</DropdownItem>
-                <DropdownItem onClick={() => handleFiltere('week')}>This Week</DropdownItem>
-                <DropdownItem onClick={() => handleFiltere('month')}>This Month</DropdownItem>
-                <DropdownItem onClick={() => handleFiltere('year')}>This Years</DropdownItem>
-                <DropdownItem onClick={() => handleFiltere('all')}>All The Time</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <Container>
+              <Row>
+                <Col>
+                  <TopCardsData
+                    bg="danger"
+                    icon="play-circle"
+                    title={todo}
+                    subtitle="Todo Activity"
+                    loading={isLoading}
+                  />
+                </Col>
+                <Col>
+                  <TopCardsData
+                    bg="warning"
+                    icon="arrow-repeat"
+                    title={progress}
+                    subtitle="On Process"
+                    loading={isLoading}
+                  />
+                </Col>
+                <Col>
+                  <TopCardsData
+                    bg="success"
+                    icon="check-circle"
+                    title={done}
+                    subtitle="Done Activity"
+                    loading={isLoading}
+                  />
+                </Col>
+              </Row>
+            </Container>
+            <div>
+              <Dropdown isOpen={dropdownOpen} toggle={toggle1} className="mb-3">
+                <DropdownToggle caret>
+                  <MaterialIcon icon="filter_alt" />
+                </DropdownToggle>
+                <DropdownMenu>
+                  <DropdownItem onClick={() => handleFiltere('today')}>Today</DropdownItem>
+                  <DropdownItem onClick={() => handleFiltere('yesterday')}>Yesterday</DropdownItem>
+                  <DropdownItem onClick={() => handleFiltere('week')}>This Week</DropdownItem>
+                  <DropdownItem onClick={() => handleFiltere('month')}>This Month</DropdownItem>
+                  <DropdownItem onClick={() => handleFiltere('year')}>This Years</DropdownItem>
+                  <DropdownItem onClick={() => handleFiltere('all')}>All The Time</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
           </div>
           {data?.length > 0 ? (
             <Table striped className="mt-2" id="printablediv">

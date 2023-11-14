@@ -14,10 +14,14 @@ const ProfilePage = Loadable(lazy(() => import('../pages/profile')));
 
 /***** Daily ****/
 const DailyPage = Loadable(lazy(() => import('../pages/daily')));
+<<<<<<< HEAD
+const AssetPage = Loadable(lazy(() => import('../pages/asset')));
+=======
 /***** Daily ****/
 
 /***** Projects ****/
 const ProjectPage = Loadable(lazy(() => import('../pages/projects')));
+>>>>>>> 43f53dc589d855fb16672cbcbc26d3ef71ed32a7
 const ProjectDetail = Loadable(lazy(() => import('../pages/projects/ProjectDetail')));
 const ProjectTaskList = Loadable(lazy(() => import('../pages/projects/AllTask')));
 /***** Projects ****/
@@ -100,6 +104,11 @@ const ThemeRoutes = [
             path: 'daily',
             name: 'Daily',
             element: <DailyPage />,
+          },
+          {
+            path: 'inventory',
+            name: 'Inventory',
+            element: <AssetPage />,
           },
           {
             path: 'projects/details/:projectId',
