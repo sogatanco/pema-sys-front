@@ -20,6 +20,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
   const api = useAxios();
   const { projectId } = useParams();
   const [actionMenu, setActionMenu] = useState(false);
+  const [isBusiness, setIsBusiness] = useState();
 
   const queryParams = new URLSearchParams(window.location.search);
 
@@ -73,6 +74,14 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
       }),
   });
 
+  useEffect(() => {
+    if (data?.category === 'business') {
+      setIsBusiness(true);
+    } else {
+      setIsBusiness(false);
+    }
+  }, [data]);
+
   const BoardAllowedRoles = ['Staff', 'Manager'];
   const MembersAllowedRoles = ['Staff', 'Manager', 'Director'];
   const ActivitiesAllowedRoles = ['Manager', 'Director'];
@@ -81,8 +90,6 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
   const BASTAndReviewNotAllowedRoles = 'Presdir';
   const ReviewTaskAllowedRoles = ['Manager', 'Director'];
   const HandoverAllowedRoles = ['Manager'];
-
-  console.log(data);
 
   return (
     <Col>
@@ -188,28 +195,41 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                     <h5 className="fw-bold">{data?.project_name}</h5>
                   </Col>
                 </Row>
-                <Row lg="12">
-                  <Col sm="12" md="4">
+                {isBusiness ? (
+                  <Row lg="12">
+                    <Col sm="12" md="4">
+                      <div className="d-flex align-items-center gap-2">
+                        <MaterialIcon icon="manage_accounts" style={{ fontSize: '18px' }} />
+                        <small>{data?.current_stage?.partner}</small>
+                      </div>
+                    </Col>
+                    <Col sm="12" md="4">
+                      <div className="d-flex align-items-center gap-2">
+                        <MaterialIcon icon="handshake" style={{ fontSize: '18px' }} />
+                        <small>
+                          {data?.current_stage?.schema === 'jo'
+                            ? 'Join Operational'
+                            : data?.current_stage?.schema === 'jv'
+                            ? 'Join Venture'
+                            : '-'}
+                        </small>
+                      </div>
+                    </Col>
+                    <Col sm="12" md="4">
+                      <div className="d-flex align-items-center gap-2">
+                        <MaterialIcon icon="play_circle_outline" style={{ fontSize: '18px' }} />
+                        <small>{data?.current_stage?.phase}</small>
+                      </div>
+                    </Col>
+                  </Row>
+                ) : (
+                  <Row lg="12">
                     <div className="d-flex align-items-center gap-2">
-                      <MaterialIcon icon="manage_accounts" style={{ fontSize: '18px' }} />
-                      <small>{data?.current_stage.partner}</small>
+                      <MaterialIcon icon="work_off" style={{ fontSize: '18px' }} />
+                      <small>Non-business</small>
                     </div>
-                  </Col>
-                  <Col sm="12" md="4">
-                    <div className="d-flex align-items-center gap-2">
-                      <MaterialIcon icon="handshake" style={{ fontSize: '18px' }} />
-                      <small>
-                        {data?.current_stage.schema === 'jo' ? 'Join Operational' : 'Join Venture'}
-                      </small>
-                    </div>
-                  </Col>
-                  <Col sm="12" md="4">
-                    <div className="d-flex align-items-center gap-2">
-                      <MaterialIcon icon="play_circle_outline" style={{ fontSize: '18px' }} />
-                      <small>{data?.current_stage.phase}</small>
-                    </div>
-                  </Col>
-                </Row>
+                  </Row>
+                )}
               </Col>
               <Col lg="4" className="d-flex align-items-center justify-content-end">
                 <div className="d-flex align-items-center gap-2">
@@ -225,7 +245,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                       <span className="badge text-primary bg-light-primary rounded-pill d-inline-block fw-bold">
                         <div className="d-flex justify-content-center gap-1 align-items-center">
                           <MaterialIcon icon="play_circle_outline" style={{ fontSize: '12px' }} />
-                          {data?.current_stage?.phase}
+                          {data?.current_stage??.phase}
                         </div>
                       </span>
                     )} */}

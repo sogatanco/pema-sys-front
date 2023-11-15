@@ -67,6 +67,7 @@ const OverviewTab = () => {
   const [bst, setBst] = useState([]);
   const [activePhase, setActivePhase] = useState(undefined);
   const [selectedSchema, setSelectedSchema] = useState('');
+  const [isBusiness, setIsBusiness] = useState();
   const [taskByStatus, setTaskByStatus] = useState({
     todo: 0,
     inprogress: 0,
@@ -111,7 +112,12 @@ const OverviewTab = () => {
       done: doneFiltered?.length,
     });
 
-    setActivePhase(data?.current_stage.phase_id);
+    setActivePhase(data?.current_stage?.phase_id);
+    if (data?.category === 'business') {
+      setIsBusiness(true);
+    } else {
+      setIsBusiness(false);
+    }
   }, [data]);
 
   useEffect(() => {
@@ -186,7 +192,7 @@ const OverviewTab = () => {
                   </CardTitle>
                 </div>
                 <div className="ms-auto mt-3 mt-md-0">
-                  {data?.current_stage !== null && data.current_stage.desc}
+                  {isBusiness ? data.current_stage?.desc : data?.goals}
                 </div>
                 <div className="d-flex justify-content-between mt-3">
                   <div className="d-flex flex-column">
@@ -212,13 +218,13 @@ const OverviewTab = () => {
                   <div className="d-flex flex-column">
                     <small className="text-muted">Start date</small>
                     <span className="text-dark">
-                      {IndoDate(data?.current_stage !== null && data.current_stage.start_date)}
+                      {IndoDate(data?.current_stage && data.current_stage?.start_date)}
                     </span>
                   </div>
                   <div className="d-flex flex-column">
                     <small className="text-muted">Deadline</small>
                     <span className="text-dark">
-                      {IndoDate(data?.current_stage !== null && data.current_stage.end_date)}
+                      {IndoDate(data?.current_stage !== null && data.current_stage?.end_date)}
                     </span>
                   </div>
                 </div>
@@ -343,7 +349,7 @@ const OverviewTab = () => {
                       <h6 className="text-muted">Remaining days</h6>
                       <span className="text-danger">
                         {remaininDays(
-                          data?.current_stage !== null && data.current_stage.end_date,
+                          data?.current_stage !== null && data.current_stage?.end_date,
                         ).toFixed()}
                       </span>
                     </div>
@@ -375,7 +381,7 @@ const OverviewTab = () => {
                 </div>
               </CardBody>
             </Card>
-            {auth.user.roles.includes('Manager') && (
+            {isBusiness && auth.user.roles.includes('Manager') && (
               <Card>
                 <Button
                   type="button"

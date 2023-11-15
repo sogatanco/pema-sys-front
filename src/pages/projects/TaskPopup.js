@@ -179,7 +179,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
     e.target.reset();
   };
 
-  const fileUrl = process.env.REACT_APP_BASEURL_DEV;
+  const fileUrl = process.env.REACT_APP_BASEURL;
 
   return (
     <>

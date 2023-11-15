@@ -36,8 +36,7 @@ const SidebarData = [
       },
     ],
   },
-<<<<<<< HEAD
- 
+
   { caption: 'Inventory' },
   {
     title: 'Inventory',
@@ -47,7 +46,6 @@ const SidebarData = [
     ddType: 'two-column',
     collapisble: true,
   },
-=======
   { caption: 'Ticket' },
   {
     title: 'Ticket',
@@ -112,7 +110,6 @@ const SidebarData = [
   //   ddType: 'two-column',
   //   collapisble: true,
   // },
->>>>>>> 43f53dc589d855fb16672cbcbc26d3ef71ed32a7
 ];
 
 export default SidebarData;

@@ -44,7 +44,7 @@ const HandoverTab = () => {
       }),
   });
 
-  const fileUrl = process.env.REACT_APP_BASEURL_DEV;
+  const fileUrl = process.env.REACT_APP_BASEURL;
 
   const handleConfirm = async (e) => {
     e.preventDefault();

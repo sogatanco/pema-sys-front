@@ -74,7 +74,7 @@ const ProjectList = () => {
                         <small className="text-muted" style={{ fontSize: '12px' }}>
                           Deadline{' '}
                         </small>
-                        <small>{IndoDate(p.current_stage.end_date)}</small>
+                        <small>{IndoDate(p.current_stage?.end_date)}</small>
                       </div>
                       <span
                         className="badge text-info bg-light-info rounded-pill d-inline-block fw-bold"
