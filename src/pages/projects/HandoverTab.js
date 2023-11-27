@@ -151,7 +151,7 @@ const HandoverTab = () => {
                 Next stage:{' '}
                 {data?.current_stage?.phase === 1
                   ? 'Planning'
-                  : data?.current_stage.phase === 2
+                  : data?.current_stage?.phase === 2
                   ? 'Execution, Control & Monitoring'
                   : ''}
               </h6>

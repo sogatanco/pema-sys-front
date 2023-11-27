@@ -144,25 +144,24 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                 </div>
               </Link>
             )}
-          {auth?.user?.roles.find((role) => ReviewTaskAllowedRoles.includes(role)) &&
-            !auth?.user?.roles.includes(BASTAndReviewNotAllowedRoles) && (
-              <>
-                <Link
-                  className={`${navActive === 5 && 'active'} text-muted fw-bold`}
-                  onClick={() => setNavActive(5)}
+          {auth?.user?.roles.find((role) => ReviewTaskAllowedRoles.includes(role)) && (
+            <>
+              <Link
+                className={`${navActive === 5 && 'active'} text-muted fw-bold`}
+                onClick={() => setNavActive(5)}
+              >
+                Review{' '}
+                <div
+                  color="danger"
+                  className={`count ${
+                    currentTotalReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
+                  }`}
                 >
-                  Review{' '}
-                  <div
-                    color="danger"
-                    className={`count ${
-                      currentTotalReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
-                    }`}
-                  >
-                    {currentTotalReview?.length}
-                  </div>
-                </Link>
-              </>
-            )}
+                  {currentTotalReview?.length}
+                </div>
+              </Link>
+            </>
+          )}
           {auth?.user?.roles.find((role) => HandoverAllowedRoles.includes(role)) && (
             <Link
               className={`${navActive === 6 && 'active'} text-muted fw-bold`}
@@ -199,26 +198,62 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                   <Row lg="12">
                     <Col sm="12" md="4">
                       <div className="d-flex align-items-center gap-2">
-                        <MaterialIcon icon="manage_accounts" style={{ fontSize: '18px' }} />
-                        <small>{data?.current_stage?.partner}</small>
+                        <MaterialIcon
+                          icon="manage_accounts"
+                          className="text-muted"
+                          style={{ fontSize: '28px' }}
+                        />
+                        <div className="d-flex flex-column">
+                          <span
+                            className="text-muted"
+                            style={{ fontSize: '10px', marginBottom: '-4px' }}
+                          >
+                            Partner
+                          </span>
+                          <small className="fw-bold">{data?.current_stage?.partner || '-'}</small>
+                        </div>
                       </div>
                     </Col>
                     <Col sm="12" md="4">
                       <div className="d-flex align-items-center gap-2">
-                        <MaterialIcon icon="handshake" style={{ fontSize: '18px' }} />
-                        <small>
-                          {data?.current_stage?.schema === 'jo'
-                            ? 'Join Operational'
-                            : data?.current_stage?.schema === 'jv'
-                            ? 'Join Venture'
-                            : '-'}
-                        </small>
+                        <MaterialIcon
+                          icon="handshake"
+                          className="text-muted"
+                          style={{ fontSize: '28px' }}
+                        />
+                        <div className="d-flex flex-column">
+                          <span
+                            className="text-muted"
+                            style={{ fontSize: '10px', marginBottom: '-4px' }}
+                          >
+                            Schema
+                          </span>
+                          <small className="fw-bold">
+                            {data?.current_stage?.schema === 'jo'
+                              ? 'Join Operational'
+                              : data?.current_stage?.schema === 'jv'
+                              ? 'Join Venture'
+                              : '-'}
+                          </small>
+                        </div>
                       </div>
                     </Col>
                     <Col sm="12" md="4">
                       <div className="d-flex align-items-center gap-2">
-                        <MaterialIcon icon="play_circle_outline" style={{ fontSize: '18px' }} />
-                        <small>{data?.current_stage?.phase}</small>
+                        <MaterialIcon
+                          icon="play_circle_outline"
+                          className="text-muted"
+                          style={{ fontSize: '28px' }}
+                        />
+                        <div className="d-flex flex-column">
+                          <span
+                            className="text-muted"
+                            style={{ fontSize: '10px', marginBottom: '-4px' }}
+                          >
+                            Phase
+                          </span>
+                          <small className="fw-bold">{data?.current_stage?.phase}</small>
+                        </div>
                       </div>
                     </Col>
                   </Row>
@@ -226,7 +261,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                   <Row lg="12">
                     <div className="d-flex align-items-center gap-2">
                       <MaterialIcon icon="work_off" style={{ fontSize: '18px' }} />
-                      <small>Non-business</small>
+                      <small className="fw-bold">Non-business</small>
                     </div>
                   </Row>
                 )}
@@ -237,7 +272,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                     className="d-flex flex-column align-items-end"
                     style={{ marginLeft: '10px' }}
                   >
-                    <small>{data?.pic_active.first_name}</small>
+                    <small className="fw-bold">{data?.pic_active.first_name}</small>
                     <span className="fw-bold" style={{ fontSize: '14px' }}>
                       {data?.pic_active.organization_name}
                     </span>

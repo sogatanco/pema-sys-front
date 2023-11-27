@@ -68,6 +68,8 @@ const OverviewTab = () => {
   const [activePhase, setActivePhase] = useState(undefined);
   const [selectedSchema, setSelectedSchema] = useState('');
   const [isBusiness, setIsBusiness] = useState();
+  const [partnerOptions, setPartnerOptions] = useState([]);
+  const [selectedPartner, setSelectedPartner] = useState(undefined);
   const [taskByStatus, setTaskByStatus] = useState({
     todo: 0,
     inprogress: 0,
@@ -120,14 +122,14 @@ const OverviewTab = () => {
     }
   }, [data]);
 
-  useEffect(() => {
-    async function fetsHistory() {
-      await api
-        .get(`api/project/${projectId}/history`)
-        .then((res) => setHistory(res.data.data))
-        .catch((err) => console.log(err));
-    }
+  const fetsHistory = async () => {
+    await api
+      .get(`api/project/${projectId}/history`)
+      .then((res) => setHistory(res.data.data))
+      .catch((err) => console.log(err));
+  };
 
+  useEffect(() => {
     fetsHistory();
   }, [projectId]);
 
@@ -151,9 +153,10 @@ const OverviewTab = () => {
         {
           project_id: projectId,
           new_pic: newPic.value,
-          file: bst[0],
+          file: bst,
           // jika fase projek adalah planning
           schema: activePhase === 2 ? selectedSchema : '',
+          partner: activePhase === 2 ? selectedPartner : '',
         },
         {
           headers: {
@@ -162,6 +165,7 @@ const OverviewTab = () => {
         },
       )
       .then(() => {
+        fetsHistory();
         alert('success', 'BAST is under review');
       })
       .catch((err) => console.log(err));
@@ -170,6 +174,16 @@ const OverviewTab = () => {
   };
 
   const allTaskPermission = ['Manager', 'Director'];
+
+  useEffect(() => {
+    async function fetchPartnerOptions() {
+      await api
+        .get(`api/project/partner/options`)
+        .then((res) => setPartnerOptions(res.data.data))
+        .catch((err) => console.log(err));
+    }
+    fetchPartnerOptions();
+  }, []);
 
   return (
     <>
@@ -459,22 +473,46 @@ const OverviewTab = () => {
                 </FormGroup>
                 {/* current stage is Planning */}
                 {activePhase === 2 && (
-                  <FormGroup>
-                    <Label>Schema</Label>
-                    <Input
-                      type="select"
-                      id="base_id"
-                      name="base_id"
-                      defaultValue="a"
-                      onChange={(e) => setSelectedSchema(e.target.value)}
-                    >
-                      <option value="a" disabled>
-                        Select
-                      </option>
-                      <option value="jo">JO</option>
-                      <option value="jv">JV</option>
-                    </Input>
-                  </FormGroup>
+                  <>
+                    {data?.current_stage?.partner === null && (
+                      <FormGroup>
+                        <Label for="partner">Partner</Label>
+                        <Input
+                          type="select"
+                          id="partner"
+                          name="partner"
+                          defaultValue="pa"
+                          onChange={(e) => setSelectedPartner(e.target.value)}
+                        >
+                          <option disabled value="pa">
+                            - Select -
+                          </option>
+                          {partnerOptions.length > 0 &&
+                            partnerOptions.map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.name}
+                              </option>
+                            ))}
+                        </Input>
+                      </FormGroup>
+                    )}
+                    <FormGroup>
+                      <Label>Schema</Label>
+                      <Input
+                        type="select"
+                        id="base_id"
+                        name="base_id"
+                        defaultValue="a"
+                        onChange={(e) => setSelectedSchema(e.target.value)}
+                      >
+                        <option value="a" disabled>
+                          Select
+                        </option>
+                        <option value="jo">JO</option>
+                        <option value="jv">JV</option>
+                      </Input>
+                    </FormGroup>
+                  </>
                 )}
                 {/* current stage is Planning */}
                 <FormGroup>

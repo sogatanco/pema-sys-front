@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import {
   Badge,
   Button,
@@ -63,6 +63,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
 
   useEffect(() => {
     setTaskTemp({
+      approval_id: task?.approval_id,
       task_title: task?.task_title,
       task_desc: task?.task_desc,
       task_progress: task?.task_progress,
@@ -70,23 +71,23 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
       end_date: task?.end_date,
     });
 
-    setAssignedEmployees([
-      {
-        label: task.first_name,
-        value: task.employe_id,
-      },
-    ]);
-    // if (task?.pics) {
-    //   setAssignedEmployees(
-    //     result(task.pics).map((pic) => ({
-    //       label: pic.first_name,
-    //       value: pic.employe_id,
-    //     })),
-    //   );
-    // }
+    // setAssignedEmployees([
+    //   {
+    //     label: task.first_name,
+    //     value: task.employe_id,
+    //   },
+    // ]);
+    if (task?.pics) {
+      setAssignedEmployees(
+        task.pics.map((pic) => ({
+          label: pic.first_name,
+          value: pic.employe_id,
+        })),
+      );
+    }
 
     async function fetchHistory() {
-      await api.get(`api/task/history/${task?.task_id}/${task?.employe_id}`).then((res) => {
+      await api.get(`api/task/history/${task?.task_id}`).then((res) => {
         setHistory(res.data.data);
       });
     }
@@ -139,7 +140,11 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then((res) => task?.files?.push(res.data.file));
+      .then((res) => {
+        task?.files?.push(res.data.file);
+        // alert('success', 'File has been uploaded.');
+      })
+      .catch((err) => console.log(err));
     setFiles([]);
     setUploading(false);
   };
@@ -193,7 +198,8 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
           ) : (
             <div className="popup-body">
               <div className="left">
-                {auth?.user.employe_id !== task.employe_id.toString() || mode === 'activities' ? (
+                {/* {auth?.user.employe_id !== task.employe_id.toString() || mode === 'activities' ? ( */}
+                {mode === 'activities' ? (
                   <>
                     <>
                       <div className="top">
@@ -203,36 +209,42 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                         </div>
                         <div className="date">
                           <h6>Due Date</h6>
-                          <span>{taskTemp?.end_date || ''}</span>
+                          <span>{taskTemp?.end_date || '-'}</span>
                         </div>
                       </div>
                       <div className="bottom mt-3">
                         <FormGroup>
-                          <Label>Task Title</Label>
-                          <Input type="text" value={taskTemp?.task_title || ''} readOnly disabled />
+                          <Label htmlFor="taskTitle">Task Title</Label>
+                          <Input
+                            type="text"
+                            id="taskTitle"
+                            name="taskTitle"
+                            value={taskTemp?.task_title || ''}
+                            readOnly
+                            disabled
+                          />
                         </FormGroup>
                         <FormGroup>
-                          <Label>Description</Label>
+                          <Label htmlFor="taskDesc">Description</Label>
                           <Input
                             type="textarea"
+                            id="taskDesc"
+                            name="taskDesc"
                             value={taskTemp?.task_desc || ''}
                             readOnly
                             disabled
                           />
                         </FormGroup>
                         <FormGroup>
-                          <Label>PIC</Label>
+                          <span>PICs</span>
                           <br></br>
                           <div className="d-flex flex-column">
-                            {/* {assignedEmployees.map((em, i) => (
+                            {assignedEmployees.map((em, i) => (
                               <div key={em.value} className="d-flex gap-3">
                                 <span>{i + 1}.</span>
                                 <span>{em.label}</span>
                               </div>
-                            ))} */}
-                            <div className="d-flex gap-3">
-                              <span>{task.pics?.length > 0 && task?.pics[0].first_name}</span>
-                            </div>
+                            ))}
                           </div>
                         </FormGroup>
                       </div>
@@ -302,24 +314,33 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                           value={taskTemp?.task_desc || ''}
                           onChange={(e) => setTaskTemp({ ...taskTemp, task_desc: e.target.value })}
                         />
-                        {task?.subtasks?.length > 0 ? (
-                          ''
-                        ) : (
-                          <div className="d-flex gap-2 justify-content-between">
-                            <div className="col-sm-10">
-                              <Input
-                                type="range"
-                                defaultValue={task.task_progress}
-                                onChange={(e) =>
-                                  setTaskTemp({ ...taskTemp, task_progress: e.target.value })
-                                }
-                              />
-                            </div>
-                            <div className="col-sm-1 d-flex justify-content-end">
-                              {taskTemp?.task_progress}%
-                            </div>
-                          </div>
-                        )}
+                        {task?.subtasks?.length > 0
+                          ? ''
+                          : task?.pics?.map(
+                              (pic) =>
+                                pic.employe_id.toString() === auth?.user.employe_id && (
+                                  <div
+                                    className="d-flex gap-2 justify-content-between"
+                                    key={pic.id}
+                                  >
+                                    <div className="col-sm-10">
+                                      <Input
+                                        type="range"
+                                        defaultValue={task.task_progress}
+                                        onChange={(e) =>
+                                          setTaskTemp({
+                                            ...taskTemp,
+                                            task_progress: e.target.value,
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                    <div className="col-sm-1 d-flex justify-content-end">
+                                      {taskTemp?.task_progress}%
+                                    </div>
+                                  </div>
+                                ),
+                            )}
                       </div>
                       <div className="d-flex justify-content-between align-items-center mt-3">
                         <div className="d-flex align-items-center gap-3">
@@ -340,7 +361,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                       </div>
                     </form>
                     <form onSubmit={handleUpload}>
-                      <div className="d-flex justify-content-between align-items-center">
+                      <div className="d-flex justify-content-between align-items-center bg-light px-2 rounded-3 mt-2">
                         <div className="d-flex align-items-center gap-1">
                           <div className="pt-2" id="tooltip-3">
                             <Label for="attach">
@@ -349,6 +370,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                             <input
                               type="file"
                               id="attach"
+                              name="attach"
                               hidden
                               onChange={(e) => setFiles(e.target.files)}
                               required
@@ -441,81 +463,79 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                         </div>
                         <small>{task && newDate(task.created_at)}</small>
                       </div>
-                      {sortHistoryByDate(popContent)?.map((h, i) => (
-                        <div key={h?.created_at}>
-                          {h?.approval_id ? (
-                            <>
-                              <div className="history-item">
-                                <div className="comment-name">
-                                  {h?.status === 0 && i > 0 ? (
+                      {sortHistoryByDate(popContent)?.map((h, i) =>
+                        h?.approval_id ? (
+                          <Fragment key={newDate(h?.created_at)}>
+                            <div className="history-item">
+                              <div className="comment-name">
+                                {h?.status === 0 && i > 0 ? (
+                                  <span>
+                                    <strong>{h?.pic_task}</strong> change task to To Do
+                                  </span>
+                                ) : h?.status === 0 ? (
+                                  <span>
+                                    <strong>{h?.pic_task}</strong> was assigned
+                                  </span>
+                                ) : h?.status === 1 ? (
+                                  <span>
+                                    <strong>{h?.pic_task}</strong> change task to In Progress
+                                  </span>
+                                ) : h?.status === 2 ? (
+                                  <span>
+                                    <strong>{h?.pic_task}</strong> change task to Review
+                                  </span>
+                                ) : h?.status === 3 ? (
+                                  <span>
+                                    <strong>{h?.status_by} </strong> task approved
+                                  </span>
+                                ) : (
+                                  <>
                                     <span>
-                                      <strong>{h?.pic_task}</strong> change task to To Do
+                                      <strong>{h?.status_by} </strong>change task to Revision
                                     </span>
-                                  ) : h?.status === 0 ? (
-                                    <span>
-                                      <strong>{h?.pic_task}</strong> was assigned
-                                    </span>
-                                  ) : h?.status === 1 ? (
-                                    <span>
-                                      <strong>{h?.pic_task}</strong> change task to In Progress
-                                    </span>
-                                  ) : h?.status === 2 ? (
-                                    <span>
-                                      <strong>{h?.pic_task}</strong> change task to Review
-                                    </span>
-                                  ) : h?.status === 3 ? (
-                                    <span>
-                                      <strong>{h?.status_by} </strong> task approved
-                                    </span>
-                                  ) : (
-                                    <>
-                                      <span>
-                                        <strong>{h?.status_by} </strong>change task to Revision
-                                      </span>
-                                    </>
-                                  )}
-                                </div>
-                                <small>{newDate(h?.created_at)}</small>
+                                  </>
+                                )}
                               </div>
-                              {(h?.status === 3 || h?.status === 4) && (
-                                <div className="comment-item mt-1">
-                                  <div className="comment-user ">
-                                    <div
-                                      className={`comment-teks ${
-                                        h?.status === 3 ? 'text-success' : 'text-warning'
-                                      }`}
-                                    >
-                                      <small style={{ fontWeight: '600' }}>
-                                        {h?.status === 3 ? 'Comment' : 'Notes'}
-                                      </small>
-                                      {h.notes}
-                                    </div>
+                              <small>{newDate(h?.created_at)}</small>
+                            </div>
+                            {(h?.status === 3 || h?.status === 4) && (
+                              <div className="comment-item mt-1">
+                                <div className="comment-user ">
+                                  <div
+                                    className={`comment-teks ${
+                                      h?.status === 3 ? 'text-success' : 'text-warning'
+                                    }`}
+                                  >
+                                    <small style={{ fontWeight: '600' }}>
+                                      {h?.status === 3 ? 'Comment' : 'Notes'}
+                                    </small>
+                                    {h.notes}
                                   </div>
                                 </div>
-                              )}
-                            </>
-                          ) : (
-                            <div key={h?.comment_id} className="comment-item">
-                              <div className="comment-user">
-                                <img
-                                  src={user1}
-                                  className="rounded-circle"
-                                  alt="avatar"
-                                  width="35"
-                                  height="35"
-                                />
-                                <div key={h?.comment_id} className="comment-teks">
-                                  <small style={{ fontWeight: '600' }}>{h?.first_name}</small>
-                                  {h?.comment}
-                                  <div className="comment-time">
-                                    <small>{newDate(h?.created_at)}</small>
-                                  </div>
+                              </div>
+                            )}
+                          </Fragment>
+                        ) : (
+                          <div key={h?.comment_id} className="comment-item">
+                            <div className="comment-user">
+                              <img
+                                src={user1}
+                                className="rounded-circle"
+                                alt="avatar"
+                                width="35"
+                                height="35"
+                              />
+                              <div key={h?.comment_id} className="comment-teks">
+                                <small style={{ fontWeight: '600' }}>{h?.first_name}</small>
+                                {h?.comment}
+                                <div className="comment-time">
+                                  <small>{newDate(h?.created_at)}</small>
                                 </div>
                               </div>
                             </div>
-                          )}
-                        </div>
-                      ))}
+                          </div>
+                        ),
+                      )}
                     </>
                   ) : (
                     'Loading...'

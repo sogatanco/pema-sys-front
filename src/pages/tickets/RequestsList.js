@@ -7,7 +7,7 @@ import useAxios from '../../hooks/useAxios';
 const RequestsList = () => {
   const api = useAxios();
 
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data, refetch } = useQuery({
     queryKey: ['requestlist'],
     queryFn: () =>
       // api.get(`api/task/${auth?.user.employe_id}/recent/activity`).then((res) => {
@@ -34,7 +34,7 @@ const RequestsList = () => {
               ) : error ? (
                 'Something went wrong.'
               ) : data.length > 0 ? (
-                <TicketTable {...{ data }} tab="requests" />
+                <TicketTable {...{ data, refetch }} tab="requests" />
               ) : (
                 <div className="d-flex justify-content-center">No data yet.</div>
               )}

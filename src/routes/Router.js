@@ -21,6 +21,7 @@ const AssetPage = Loadable(lazy(() => import('../pages/asset')));
 const ProjectPage = Loadable(lazy(() => import('../pages/projects')));
 const ProjectDetail = Loadable(lazy(() => import('../pages/projects/ProjectDetail')));
 const ProjectTaskList = Loadable(lazy(() => import('../pages/projects/AllTask')));
+const ProjectReport = Loadable(lazy(() => import('../pages/projects/Report')));
 /***** Projects ****/
 
 /***** Tickets ****/
@@ -175,6 +176,19 @@ const ThemeRoutes = [
     ],
   },
   // LOGIN ROUTE
+
+  // report page
+  {
+    path: '/',
+    children: [
+      {
+        path: 'projects/:projectId/task-report',
+        name: 'Task Report',
+        element: <ProjectReport />,
+      },
+    ],
+  },
+  // report page
 
   // Unauthorized
   {

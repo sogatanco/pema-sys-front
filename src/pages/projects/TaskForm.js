@@ -4,6 +4,7 @@ import { Button, Input, Modal, ModalBody, ModalHeader, Spinner } from 'reactstra
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import { useNavigate } from 'react-router-dom';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import './TaskForm.scss';
@@ -21,6 +22,7 @@ const TaskForm = (props) => {
   // const [files, setFiles] = useState([]);
 
   const animatedComponents = makeAnimated();
+  const navigate = useNavigate();
 
   const toggle = () => {
     setModal(!modal);
@@ -44,7 +46,6 @@ const TaskForm = (props) => {
       {
         value: auth.user.employe_id,
         label: auth.user.first_name,
-        isFixed: false,
       },
     ]);
   }, []);
@@ -84,6 +85,15 @@ const TaskForm = (props) => {
         },
       })
       .then(() => {
+        if (auth?.user.roles.includes('Manager')) {
+          const arrayId = [];
+          assignedEmployees.map((em) => arrayId.push(em.value));
+          if (!arrayId.includes(auth?.user.employe_id)) {
+            navigate('?to=activities');
+          }
+        } else {
+          navigate('');
+        }
         alert('create', 'New task has been created.');
       })
       .catch((err) => console.log(err.message));
@@ -170,7 +180,6 @@ const TaskForm = (props) => {
             isMulti
             defaultValue={assignedEmployees}
             options={listEmployee}
-            isClearable={assignedEmployees.some((v) => !v.isFixed)}
             onChange={(choice) => setAssignedEmployees(choice)}
           />
         </ModalBody>

@@ -13,7 +13,7 @@ const items = [
   },
   {
     id: 2,
-    label: 'Requests',
+    label: 'Support Requests',
     countable: true,
   },
 ];

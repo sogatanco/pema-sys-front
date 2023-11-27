@@ -10,6 +10,7 @@ import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import { alert } from '../../components/atoms/Toast';
 import CircularPercentage from '../../components/atoms/circularPercentage/CircularPercentage';
+import TooltipHover from '../../components/atoms/TooltipHover';
 
 // const result = (emId) =>
 //   emId.filter(
@@ -162,14 +163,18 @@ const BoardTask = ({ data, projectId, refetch }) => {
                       )}
                     </div>
                     <div key={td.task_id}>
-                      {auth?.user.employe_id === td.employe_id.toString() && (
-                        <ActionMenu
-                          menuOptions={menuOptions}
-                          taskId={td.task_id}
-                          status={parseInt(td.status, 10)}
-                          action={handleTaskStatus}
-                          progress={td.task_progress}
-                        />
+                      {td.pics.map(
+                        (pic) =>
+                          pic.employe_id.toString() === auth?.user.employe_id && (
+                            <ActionMenu
+                              key={td.task_id}
+                              menuOptions={menuOptions}
+                              taskId={td.task_id}
+                              status={parseInt(td.status, 10)}
+                              action={handleTaskStatus}
+                              progress={td.task_progress}
+                            />
+                          ),
                       )}
                     </div>
                   </div>
@@ -214,8 +219,8 @@ const BoardTask = ({ data, projectId, refetch }) => {
                           value={st.task_progress}
                           color="success"
                           style={{ fontSize: '10px', height: '12px' }}
-                        />
-                        <div className={`num ${st.task_progress > 52 && 'white'}`}>
+                          />
+                          <div className={`num ${st.task_progress > 52 && 'white'}`}>
                           {st.task_progress}%
                         </div> */}
                     </div>
@@ -249,25 +254,30 @@ const BoardTask = ({ data, projectId, refetch }) => {
                     ) : (
                       <div></div>
                     )}
-                    <div className="member">
-                      <img
-                        key={td.employe_id}
-                        src={user1}
-                        className="rounded-circle"
-                        alt="avatar"
-                        width="35"
-                        height="35"
-                      />
-                      {/* {td.pics.map((pic) => (
-                        <img
-                          key={pic.employe_id}
-                          src={user1}
-                          className="rounded-circle"
-                          alt="avatar"
-                          width="35"
-                          height="35"
-                        />
-                      ))} */}
+                    <div className="member-2">
+                      <div className="member-item">
+                        {td?.pics?.map(
+                          (pic, idx) =>
+                            idx < 2 && (
+                              <div key={pic.id} className="ava-img">
+                                <img
+                                  id={`tooltip-${pic.id}`}
+                                  src={user1}
+                                  className="rounded-circle"
+                                  alt="avatar"
+                                  width="35"
+                                  height="35"
+                                />
+                                <TooltipHover title={pic.first_name} id={pic.id.toString()} />
+                              </div>
+                            ),
+                        )}
+                        {td?.pics?.length > 2 && (
+                          <div className="member-plus bg-light-info text-info fw-bold">
+                            +{td.pics.length - 2}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </>
                 )}

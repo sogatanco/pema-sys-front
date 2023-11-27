@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import NewProjectModal from './NewProjectModal';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
+import DataTable from '../../components/datatable/DataTable';
 
 const ProjectTables = ({ nav }) => {
   const { auth } = useAuth();
@@ -80,56 +81,57 @@ const ProjectTables = ({ nav }) => {
               <h6>Something went wrong.</h6>
             </div>
           ) : data.length > 0 ? (
-            <Table className="no-wrap mt-3 align-middle" hover borderless style={{ zIndex: '-1' }}>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Projects</th>
-                  <th>Numbers</th>
-                  <th>Levels</th>
-                  <th>Start at</th>
-                  <th>Status</th>
-                  {/* <th>Action</th> */}
-                </tr>
-              </thead>
-              <tbody style={{ overflow: 'hidden' }}>
-                {data?.map((p, i) => (
-                  <tr key={p.project_id} className="border-top">
-                    <td>{i + 1}.</td>
-                    <td className="text-success">
-                      <Link
-                        className="fw-bold"
-                        to={`details/${p.project_id}`}
-                        style={{ textDecoration: 'none' }}
-                      >
-                        {p.project_name}
-                      </Link>
-                      <br></br>
-                      <span className="fs-7 text-muted fw-bold">{p.organization_name}</span>
-                    </td>
-                    <td className="text-muted">{p.project_number}</td>
-                    <td className="text-muted">{p.level_desc}</td>
-                    <td className="text-muted">{`${p?.current_stage?.start_date?.split('-')[2]}-${
-                      p?.current_stage?.start_date?.split('-')[1]
-                    }-${p?.current_stage?.start_date?.split('-')[0]}`}</td>
-                    <td>
-                      {p.status === 'new' && (
-                        <span className="badge bg-light-info text-info rounded-pill d-inline-block fw-bold">
-                          New
-                        </span>
-                      )}
-                      {p.status === 'ongoing' && (
-                        <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">
-                          {p?.current_stage?.phase}
-                        </span>
-                      )}
-                      {p.status === 'done' && (
-                        <span className="badge bg-light-success text-success rounded-pill d-inline-block fw-bold">
-                          Done
-                        </span>
-                      )}
-                    </td>
-                    {/* <td width="5" align="center">
+            <DataTable>
+              <Table className="no-wrap mt-3 align-middle" hover bordered style={{ zIndex: '-1' }}>
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>Projects</th>
+                    <th>Numbers</th>
+                    <th>Levels</th>
+                    <th>Start at</th>
+                    <th>Status</th>
+                    {/* <th>Action</th> */}
+                  </tr>
+                </thead>
+                <tbody style={{ overflow: 'hidden' }}>
+                  {data?.map((p, i) => (
+                    <tr key={p.project_id} className="border-top">
+                      <td>{i + 1}.</td>
+                      <td className="text-success">
+                        <Link
+                          className="fw-bold"
+                          to={`details/${p.project_id}`}
+                          style={{ textDecoration: 'none' }}
+                        >
+                          {p.project_name}
+                        </Link>
+                        <br></br>
+                        <span className="fs-7 text-muted fw-bold">{p.organization_name}</span>
+                      </td>
+                      <td className="text-muted">{p.project_number}</td>
+                      <td className="text-muted">{p.level_desc}</td>
+                      <td className="text-muted">{`${p?.current_stage?.start_date?.split('-')[2]}-${
+                        p?.current_stage?.start_date?.split('-')[1]
+                      }-${p?.current_stage?.start_date?.split('-')[0]}`}</td>
+                      <td>
+                        {p.status === 'new' && (
+                          <span className="badge bg-light-info text-info rounded-pill d-inline-block fw-bold">
+                            New
+                          </span>
+                        )}
+                        {p.status === 'ongoing' && (
+                          <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">
+                            {p?.current_stage?.phase}
+                          </span>
+                        )}
+                        {p.status === 'done' && (
+                          <span className="badge bg-light-success text-success rounded-pill d-inline-block fw-bold">
+                            Done
+                          </span>
+                        )}
+                      </td>
+                      {/* <td width="5" align="center">
                       {auth?.user.employe_id === p.created_by ? (
                         <div className="action-table">
                           <button
@@ -170,10 +172,11 @@ const ProjectTables = ({ nav }) => {
                         '-'
                       )}
                     </td> */}
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </DataTable>
           ) : (
             <div className="d-flex justify-content-center">
               <h6>No project yet.</h6>

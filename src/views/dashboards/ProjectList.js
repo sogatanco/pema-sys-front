@@ -80,7 +80,7 @@ const ProjectList = () => {
                         className="badge text-info bg-light-info rounded-pill d-inline-block fw-bold"
                         style={{ textTransform: 'capitalize' }}
                       >
-                        {p.status}
+                        {p.category}
                       </span>
                       <div className="d-flex gap-1 justify-content-center align-items-center">
                         {/* <div className="d-flex flex-column">
