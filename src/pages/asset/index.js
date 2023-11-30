@@ -5,8 +5,8 @@ import Asset from './Asset';
 const index = () => {
   return (
     <>
-    <BreadCrumbs />
-    <Asset></Asset>
+      <BreadCrumbs />
+      <Asset></Asset>
     </>
   );
 };

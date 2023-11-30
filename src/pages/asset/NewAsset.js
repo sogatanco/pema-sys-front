@@ -1,41 +1,123 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import Select from 'react-select';
+import dayjs from 'dayjs';
 import makeAnimated from 'react-select/animated';
 import { Button, Modal, ModalHeader, ModalBody, FormGroup, Label, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
-import useAuth from '../../hooks/useAuth';
+import { useQueries } from '@tanstack/react-query';
+import useAxios from '../../hooks/useAxios';
+import { alert } from '../../components/atoms/Toast';
 
 const animatedComponents = makeAnimated();
 
-const NewAsset = ({ categories, employees }) => {
-  const { auth } = useAuth();
+const NewAsset = ({  refetch }) => {
+
   const [modal, setModal] = useState(false);
+  const [categories, setCategories]=useState([]);
+  const [employees, setemployees]=useState([]);
 
   const [inName, setInName] = useState('');
   const [inType, setInType] = useState('');
   const [inPrice, setInPrice] = useState('');
-  const [inCurrent, setInCurrent] = useState('');
   const [inLocation, setInLocation] = useState('');
   const [inAmount, setInAmount] = useState('');
   const [inImage, setInImage] = useState('');
   const [inVendor, setInVendor] = useState('');
-  const [inAcquisition, setInAcquisition] = useState('');
+  const [inAcquisition, setInAcquisition] = React.useState('');
   const [assignedEmployees, setAssignedEmployees] = useState([]);
 
   const toggle = () => {
     setModal(!modal);
   };
 
-  const saveData = () => {
-    const assigne = [];
-    assignedEmployees.map((r) => assigne.push(`//${r.value}//`));
-    console.log(assigne.toLocaleString());
-    console.log(inPrice);
-    console.log(inName);
-    console.log(inCurrent);
-    console.log(inAmount);
-    console.log(inAcquisition);
-    console.log(inImage);
+  const valueSubmit = {
+    name: '',
+    type: '',
+    price: 0,
+    vendor: '',
+    acquisition: dayjs(),
+    file: '',
+    location: '',
+    responsible: '',
+    amount: 0,
+  };
+  const api = useAxios();
+
+  const re = useQueries({
+    queries: [
+      {
+        queryKey: ['category', 0],
+        queryFn: () =>
+          api.get(`dapi/inven/category`).then((res) => {
+            return res.data.data;
+          }),
+      },
+      {
+        queryKey: ['assigne', 1],
+        queryFn: () =>
+          api.get(`api/employe/assignment-list`).then((res) => {
+            return res.data.data;
+          }),
+      },
+    ],
+  });
+
+  useEffect(() => {
+    setCategories(re[0].data);
+    setemployees(re[1].data);
+  }, [re[0].data, re[1].data]);
+
+  const saveData = async () => {
+    
+    if (
+      inName !== '' &&
+      inType !== '' &&
+      inPrice !== '' &&
+      inAcquisition !== '' &&
+      inImage !== '' &&
+      inAmount !== '' &&
+      inLocation !== '' &&
+      assignedEmployees?.length !== 0
+    ) {
+      const assigne = [];
+      assignedEmployees.map((r) => assigne.push(`//${r?.value}//`));
+      valueSubmit.name = inName;
+      valueSubmit.type = inType;
+      valueSubmit.price = inPrice;
+      valueSubmit.vendor = inVendor;
+      valueSubmit.acquisition = dayjs(inAcquisition);
+      valueSubmit.file = inImage;
+      valueSubmit.amount = inAmount;
+      valueSubmit.location = inLocation;
+      valueSubmit.responsible = assigne.toLocaleString();
+      refetch();
+      await api
+        .post(`dapi/inven/add`, valueSubmit)
+        .then((res) => {
+          console.log(res)
+          if (res?.data?.success) {
+            toggle();
+            refetch();
+            alert('success', `Submitted Succesfully !`);
+            setInName('');
+            setInType('');
+            setInPrice('');
+            setInVendor('');
+            setInAcquisition('');
+            setInImage('');
+            setInAmount('');
+            setInLocation('');
+            setAssignedEmployees([]);
+          }
+        })
+        .catch((err) => {
+          toggle();
+          alert('error', err);
+        });
+    } else {
+      toggle();
+      alert('error', `Fields Can't Be Empty !!`);
+    }
   };
 
   const getBase64 = (file) => {
@@ -66,14 +148,11 @@ const NewAsset = ({ categories, employees }) => {
 
   return (
     <>
-      {auth?.user.roles.includes('PicAsset') ? (
-        <Button color="dark" onClick={toggle}>
-          New Inventory
+    
+        <Button color="dark" outline onClick={toggle}>
+          + New Inventory
         </Button>
-      ) : (
-        ''
-      )}
-
+     
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>New Inventory Data</ModalHeader>
         <ModalBody>
@@ -111,7 +190,7 @@ const NewAsset = ({ categories, employees }) => {
             <Input
               id="in_harga_beli"
               name="in_harga_beli"
-              type="text"
+              type="number"
               onChange={(e) => setInPrice(e.target.value)}
               value={inPrice}
             />
@@ -130,16 +209,6 @@ const NewAsset = ({ categories, employees }) => {
             />
           </FormGroup>
 
-          <FormGroup>
-            <Label for="in_harga_sekarang">Current Price</Label>
-            <Input
-              id="in_harga_sekarang"
-              name="in_harga_sekarang"
-              type="text"
-              onChange={(e) => setInCurrent(e.target.value)}
-              value={inCurrent}
-            />
-          </FormGroup>
 
           <FormGroup>
             <Label for="time">Acquisition Time</Label>
@@ -148,6 +217,7 @@ const NewAsset = ({ categories, employees }) => {
               name="date"
               placeholder="date placeholder"
               type="date"
+              // defaultValue={inAcquisition}
               onChange={(e) => setInAcquisition(e.target.value)}
               value={inAcquisition}
             />
@@ -158,7 +228,8 @@ const NewAsset = ({ categories, employees }) => {
             <Input
               id="in_amount"
               name="in_amount"
-              type="text"
+              type="number"
+              min="1"
               onChange={(e) => setInAmount(e.target.value)}
               value={inAmount}
             />
@@ -166,7 +237,13 @@ const NewAsset = ({ categories, employees }) => {
 
           <FormGroup>
             <Label for="file">Inventory Image</Label>
-            <Input id="file" name="file" type="file" onChange={(e) => handleFileChange(e)} accept="image/*" />
+            <Input
+              id="file"
+              name="file"
+              type="file"
+              onChange={(e) => handleFileChange(e)}
+              accept="image/*"
+            />
           </FormGroup>
 
           <FormGroup>
@@ -195,7 +272,9 @@ const NewAsset = ({ categories, employees }) => {
 
           <FormGroup>
             <div className="d-grid gap-2 mt-4">
-              <Button onClick={() => saveData()}>Save Data</Button>
+              <Button type="submit" onClick={() => saveData()}>
+                Save Data
+              </Button>
             </div>
           </FormGroup>
         </ModalBody>
@@ -205,8 +284,7 @@ const NewAsset = ({ categories, employees }) => {
 };
 
 NewAsset.propTypes = {
-  categories: PropTypes.array,
-  employees: PropTypes.array,
+  refetch: PropTypes.func,
 };
 
 export default NewAsset;

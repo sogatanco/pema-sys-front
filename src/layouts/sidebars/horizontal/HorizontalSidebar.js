@@ -41,7 +41,7 @@ const HorizontalSidebar = () => {
               );
             }
             if (navi.children) {
-              return auth?.user.roles.find((role) => navi.allowedRoles.includes(role)) ? (
+              return auth?.user.roles.find((role) => navi?.allowedRoles?.includes(role)) ? (
                 <NavSubItem
                   key={navi.id}
                   icon={navi.icon}
@@ -58,10 +58,9 @@ const HorizontalSidebar = () => {
                 ''
               );
             }
-            return auth?.user?.roles.find((role) => navi.allowedRoles.includes(role)) ? (
+            return auth?.user?.roles.find((role) => navi?.allowedRoles?.includes(role)) ? (
               <NavSingleItem
                 key={navi.id}
-                //toggle={() => toggle(navi.id)}
                 className={location.pathname === navi.href ? 'activeLink' : ''}
                 to={navi.href}
                 title={navi.title}
