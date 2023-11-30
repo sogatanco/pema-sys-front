@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Badge,
   Button,
@@ -42,10 +42,13 @@ const ReviewBastTab = ({ setTotalBastReview }) => {
     queryKey: ['bast-review'],
     queryFn: () =>
       api.get(`api/project/${projectId}/${auth?.user.employe_id}/bast/review`).then((res) => {
-        setTotalBastReview(res.data.data);
         return res.data.data;
       }),
   });
+
+  useEffect(() => {
+    setTotalBastReview(10);
+  }, [data]);
 
   const handleForm = (modeRes, oldPicP, notifToId, byEmploye) => {
     setModal(true);

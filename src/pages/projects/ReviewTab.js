@@ -115,7 +115,7 @@ const ReviewTab = ({ setTotalReview }) => {
                 <div className="">
                   {task.files.length > 0
                     ? task.files.map((f, idx) => (
-                        <div key={f.file_id} className="d-flex gap-3">
+                        <div key={f.file_name} className="d-flex gap-3">
                           <span>{idx + 1}.</span>
                           <Link
                             className="file-link"

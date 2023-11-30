@@ -7,10 +7,14 @@ import {
   CardBody,
   CardTitle,
   Col,
+  FormGroup,
+  Input,
+  Label,
   Modal,
   ModalBody,
   ModalFooter,
   ModalHeader,
+  Row,
   Spinner,
 } from 'reactstrap';
 import { Link, useParams } from 'react-router-dom';
@@ -23,6 +27,7 @@ import { alert } from '../../components/atoms/Toast';
 const HandoverTab = () => {
   const [modal, setModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [newStage, setNewStage] = useState({});
   const { auth } = useAuth();
   const { projectId } = useParams();
   const api = useAxios();
@@ -39,12 +44,13 @@ const HandoverTab = () => {
       }),
   });
 
-  const fileUrl = process.env.REACT_APP_FILEURL;
+  const fileUrl = process.env.REACT_APP_BASEURL;
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (e) => {
+    e.preventDefault();
     setLoading(true);
     api
-      .get(`api/project/${data?.history_id}/confirm`)
+      .post(`api/project/${data?.history_id}/confirm`, newStage)
       .then((res) => {
         refetch();
         alert('success', res.data.message);
@@ -54,6 +60,10 @@ const HandoverTab = () => {
       });
     setModal(false);
     setLoading(false);
+  };
+
+  const handleChange = (e) => {
+    setNewStage((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   return (
@@ -134,30 +144,66 @@ const HandoverTab = () => {
       </Col>
       <Modal isOpen={modal} toggle={toggle.bind(null)} size="md" fade={false} centered>
         <ModalHeader toggle={toggle.bind(null)}>Confirmation</ModalHeader>
-        <ModalBody className="d-flex justify-content-center">
-          Do you want to accept this project?
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" outline onClick={toggle.bind(null)}>
-            Cancel
-          </Button>
-          <Button
-            type="button"
-            color="success"
-            disabled={loading}
-            className="d-flex gap-1 align-items-center"
-            onClick={handleConfirm}
-          >
-            {loading ? (
-              <>
-                <Spinner className="me-2" size="sm" color="light" />
-                Sending
-              </>
-            ) : (
-              'Yes'
-            )}
-          </Button>
-        </ModalFooter>
+        <form onSubmit={handleConfirm}>
+          <ModalBody>
+            <div className="d-flex justify-content-center">
+              <h6 className="fw-bold">
+                Next stage:{' '}
+                {data?.current_stage?.phase === 1
+                  ? 'Planning'
+                  : data?.current_stage?.phase === 2
+                  ? 'Execution, Control & Monitoring'
+                  : ''}
+              </h6>
+            </div>
+            <FormGroup>
+              <Label htmlFor="desc_stage">Description</Label>
+              <Input
+                type="textarea"
+                name="desc_stage"
+                id="desc_stage"
+                placeholder="stage description here.."
+                rows="3"
+                onChange={handleChange}
+              />
+            </FormGroup>
+            <Row>
+              <Col md="6">
+                <FormGroup>
+                  <Label for="start_date">Start date</Label>
+                  <Input type="date" id="start_date" name="start_date" onChange={handleChange} />
+                </FormGroup>
+              </Col>
+              <Col md="6">
+                <FormGroup>
+                  <Label for="end_date">End date</Label>
+                  <Input type="date" id="end_date" name="end_date" onChange={handleChange} />
+                </FormGroup>
+              </Col>
+            </Row>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" outline onClick={toggle.bind(null)}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              color="success"
+              disabled={loading}
+              className="d-flex gap-1 align-items-center"
+              // onClick={handleConfirm}
+            >
+              {loading ? (
+                <>
+                  <Spinner className="me-2" size="sm" color="light" />
+                  Sending
+                </>
+              ) : (
+                'Send'
+              )}
+            </Button>
+          </ModalFooter>
+        </form>
       </Modal>
     </>
   );

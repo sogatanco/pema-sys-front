@@ -53,7 +53,6 @@ const TeamAct = () => {
     refetch();
   }, [filterby]);
 
-
   useEffect(() => {
     const todofFiltered = data?.filter((act) => parseInt(act.progress, 10) === 0);
     const progressFiltered = data?.filter(
@@ -64,9 +63,7 @@ const TeamAct = () => {
     setProgress(progressFiltered?.length);
     setDone(doneFiltered?.length);
   }, [data]);
-
   console.log(data);
-
 
   return (
     <>

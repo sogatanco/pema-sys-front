@@ -17,10 +17,9 @@ import { useQueries } from '@tanstack/react-query';
 import useAxios from '../../hooks/useAxios';
 import { alert } from '../../components/atoms/Toast';
 
-
 const filt = createFilterOptions();
 
-const Newtask = ({refetch}) => {
+const Newtask = ({ refetch }) => {
   const [activities, setActivities] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
   const [value, setValue] = React.useState(null);
@@ -42,34 +41,31 @@ const Newtask = ({refetch}) => {
   const api = useAxios();
   const submit = async (e) => {
     e.preventDefault();
-   if(value?.activity && category?.id){
-  
-    activityValueSubmit.activity = value?.activity;
-    activityValueSubmit.start = dayjs(star);
-    activityValueSubmit.end = dayjs(end);
-    activityValueSubmit.category = category?.id;
-    activityValueSubmit.progress = progress;
-    activityValueSubmit.poin = actpoin;
-    e.preventDefault();
-    await api
-      .post(`dapi/activit`, activityValueSubmit)
-      .then(() => {
-        alert('success', `Data has been submitted !`);
-        setValue(null);
-        setCategory(null);
-        setProgress(0);
-        setStar(dayjs());
-        setEnd(dayjs());
-        refetch();
-      })
-      .catch((err) => {
-        alert('error', err);
-      });
-   }else{
-
-    alert('error', `Fields Can't Be Empty !!`);
-    
-   }
+    if (value?.activity && category?.id) {
+      activityValueSubmit.activity = value?.activity;
+      activityValueSubmit.start = dayjs(star);
+      activityValueSubmit.end = dayjs(end);
+      activityValueSubmit.category = category?.id;
+      activityValueSubmit.progress = progress;
+      activityValueSubmit.poin = actpoin;
+      e.preventDefault();
+      await api
+        .post(`dapi/activit`, activityValueSubmit)
+        .then(() => {
+          alert('success', `Data has been submitted !`);
+          setValue(null);
+          setCategory(null);
+          setProgress(0);
+          setStar(dayjs());
+          setEnd(dayjs());
+          refetch();
+        })
+        .catch((err) => {
+          alert('error', err);
+        });
+    } else {
+      alert('error', `Fields Can't Be Empty !!`);
+    }
   };
 
   const addForm = async (e) => {
@@ -247,6 +243,6 @@ const Newtask = ({refetch}) => {
 };
 
 Newtask.propTypes = {
-  refetch: PropTypes.func
+  refetch: PropTypes.func,
 };
 export default Newtask;

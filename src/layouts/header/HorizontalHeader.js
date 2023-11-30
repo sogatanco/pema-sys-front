@@ -9,7 +9,6 @@ import {
   Button,
   Container,
 } from 'reactstrap';
-import * as Icon from 'react-feather';
 import { Bell } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -88,7 +87,7 @@ const HorizontalHeader = () => {
           {/******************************/}
           <UncontrolledDropdown className="mega-dropdown mx-1">
             <DropdownToggle className="bg-transparent border-0" color={topbarColor}>
-              <Icon.Grid size={18} />
+              {/* <Icon.Grid size={18} /> */}
             </DropdownToggle>
             <DropdownMenu>
               <MegaDD />

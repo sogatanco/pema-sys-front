@@ -25,6 +25,7 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
   const [newProject, setNewProject] = useState({});
   const [division, setDivision] = useState({});
   const [options, setOptions] = useState({});
+  const [partnerOptions, setPartnerOptions] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const api = useAxios();
@@ -43,9 +44,16 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
         .then((res) => setOptions(res.data))
         .catch((err) => console.log(err));
     }
+    async function fetchPartnerOptions() {
+      await api
+        .get(`api/project/partner/options`)
+        .then((res) => setPartnerOptions(res.data.data))
+        .catch((err) => console.log(err));
+    }
 
     fetchBusinessOptions();
     fetchDIvision();
+    fetchPartnerOptions();
   }, []);
 
   const handleChange = (e) => {
@@ -87,16 +95,6 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
             />
           </FormGroup>
           <FormGroup>
-            <Label for="division">Division</Label>
-            <Input
-              type="text"
-              name="division"
-              readOnly
-              disabled
-              value={division.organization_name}
-            />
-          </FormGroup>
-          <FormGroup>
             <Label htmlFor="project_name">Project name</Label>
             <Input
               type="text"
@@ -134,33 +132,109 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
           <Row>
             <Col md="6">
               <FormGroup>
-                <Label htmlFor="estimated_income">Estimated income</Label>
-                <InputGroup>
-                  <InputGroupText>Rp.</InputGroupText>
-                  <Input
-                    type="text"
-                    id="estimated_income"
-                    name="estimated_income"
-                    onChange={handleChange}
-                  />
-                </InputGroup>
+                <Label for="level_id">Activity level</Label>
+                <Input
+                  type="select"
+                  id="level_id"
+                  name="level_id"
+                  defaultValue="al"
+                  onChange={handleChange}
+                >
+                  <option disabled value="al">
+                    - Select -
+                  </option>
+                  {options?.activity_level?.map((al) => (
+                    <option key={al.level_id} value={al.level_id}>
+                      {al.level_desc}
+                    </option>
+                  ))}
+                </Input>
               </FormGroup>
             </Col>
             <Col md="6">
               <FormGroup>
-                <Label htmlFor="estimated_cost">Estimated cost</Label>
-                <InputGroup>
-                  <InputGroupText>Rp.</InputGroupText>
-                  <Input
-                    type="text"
-                    id="estimated_cost"
-                    name="estimated_cost"
-                    onChange={handleChange}
-                  />
-                </InputGroup>
+                <Label for="category">Category</Label>
+                <Input
+                  type="select"
+                  id="category"
+                  name="category"
+                  defaultValue="cat"
+                  onChange={handleChange}
+                >
+                  <option disabled value="cat">
+                    - Select -
+                  </option>
+                  <option value="business">Business</option>
+                  <option value="non-business">Non-business</option>
+                </Input>
               </FormGroup>
             </Col>
           </Row>
+          {newProject?.category === 'business' && (
+            <>
+              <FormGroup>
+                <Label for="partner">Partner</Label>
+                <Input
+                  type="select"
+                  id="partner"
+                  name="partner"
+                  defaultValue="pa"
+                  onChange={handleChange}
+                >
+                  <option disabled value="pa">
+                    - Select -
+                  </option>
+                  {partnerOptions.length > 0 &&
+                    partnerOptions.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                </Input>
+              </FormGroup>
+              <FormGroup>
+                <Label htmlFor="desc">Description for Initiation & Definition phase</Label>
+                <Input
+                  type="textarea"
+                  id="desc"
+                  name="desc"
+                  placeholder="Description of the phase here"
+                  rows="3"
+                  onChange={handleChange}
+                />
+              </FormGroup>
+              <Row>
+                <Col md="6">
+                  <FormGroup>
+                    <Label htmlFor="estimated_income">Estimated income</Label>
+                    <InputGroup>
+                      <InputGroupText>Rp.</InputGroupText>
+                      <Input
+                        type="text"
+                        id="estimated_income"
+                        name="estimated_income"
+                        onChange={handleChange}
+                      />
+                    </InputGroup>
+                  </FormGroup>
+                </Col>
+                <Col md="6">
+                  <FormGroup>
+                    <Label htmlFor="estimated_cost">Estimated cost</Label>
+                    <InputGroup>
+                      <InputGroupText>Rp.</InputGroupText>
+                      <Input
+                        type="text"
+                        id="estimated_cost"
+                        name="estimated_cost"
+                        onChange={handleChange}
+                      />
+                    </InputGroup>
+                  </FormGroup>
+                </Col>
+              </Row>
+            </>
+          )}
           <Row>
             <Col md="6">
               <FormGroup>
@@ -214,29 +288,6 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
                       ))}
                     </>
                   )}
-                </Input>
-              </FormGroup>
-            </Col>
-          </Row>
-          <Row>
-            <Col md="6">
-              <FormGroup>
-                <Label for="level_id">Activity level</Label>
-                <Input
-                  type="select"
-                  id="level_id"
-                  name="level_id"
-                  defaultValue="al"
-                  onChange={handleChange}
-                >
-                  <option disabled value="al">
-                    - Select -
-                  </option>
-                  {options?.activity_level?.map((al) => (
-                    <option key={al.level_id} value={al.level_id}>
-                      {al.level_desc}
-                    </option>
-                  ))}
                 </Input>
               </FormGroup>
             </Col>

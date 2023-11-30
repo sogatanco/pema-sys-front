@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useParams } from 'react-router-dom';
-import { Col } from 'reactstrap';
+import { Card, CardBody, Col, Row } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
 import useAxios from '../../hooks/useAxios';
@@ -14,12 +14,13 @@ const allowedRolesForBastReview = ['Director'];
 
 const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) => {
   const [currentTotalReview, setCurrentTotalReview] = useState('');
-  const [currentTotalBastReview, setCurrentTotalBastReview] = useState('');
+  const [currentTotalBastReview, setCurrentTotalBastReview] = useState(0);
   const { auth } = useAuth();
   const { roles } = auth.user;
   const api = useAxios();
   const { projectId } = useParams();
   const [actionMenu, setActionMenu] = useState(false);
+  const [isBusiness, setIsBusiness] = useState();
 
   const queryParams = new URLSearchParams(window.location.search);
 
@@ -55,7 +56,9 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
     async function fetchTotalBastReview() {
       await api
         .get(`api/project/${projectId}/${auth?.user.employe_id}/bast/review`)
-        .then((res) => setCurrentTotalBastReview(res.data.data))
+        .then((res) => {
+          setCurrentTotalBastReview(res.data.data);
+        })
         .catch((err) => console.log(err));
     }
     if (roles?.find((role) => allowedRolesForBastReview.includes(role))) {
@@ -70,6 +73,14 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
         return res.data.data;
       }),
   });
+
+  useEffect(() => {
+    if (data?.category === 'business') {
+      setIsBusiness(true);
+    } else {
+      setIsBusiness(false);
+    }
+  }, [data]);
 
   const BoardAllowedRoles = ['Staff', 'Manager'];
   const MembersAllowedRoles = ['Staff', 'Manager', 'Director'];
@@ -126,34 +137,31 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                 <div
                   color="danger"
                   className={`count ${
-                    currentTotalBastReview?.length > 0
-                      ? 'bg-danger text-white'
-                      : 'bg-light text-dark'
+                    currentTotalBastReview ? 'bg-danger text-white' : 'bg-light text-dark'
                   }`}
                 >
                   {currentTotalBastReview?.length}
                 </div>
               </Link>
             )}
-          {auth?.user?.roles.find((role) => ReviewTaskAllowedRoles.includes(role)) &&
-            !auth?.user?.roles.includes(BASTAndReviewNotAllowedRoles) && (
-              <>
-                <Link
-                  className={`${navActive === 5 && 'active'} text-muted fw-bold`}
-                  onClick={() => setNavActive(5)}
+          {auth?.user?.roles.find((role) => ReviewTaskAllowedRoles.includes(role)) && (
+            <>
+              <Link
+                className={`${navActive === 5 && 'active'} text-muted fw-bold`}
+                onClick={() => setNavActive(5)}
+              >
+                Review{' '}
+                <div
+                  color="danger"
+                  className={`count ${
+                    currentTotalReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
+                  }`}
                 >
-                  Review{' '}
-                  <div
-                    color="danger"
-                    className={`count ${
-                      currentTotalReview?.length > 0 ? 'bg-danger text-white' : 'bg-light text-dark'
-                    }`}
-                  >
-                    {currentTotalReview?.length}
-                  </div>
-                </Link>
-              </>
-            )}
+                  {currentTotalReview?.length}
+                </div>
+              </Link>
+            </>
+          )}
           {auth?.user?.roles.find((role) => HandoverAllowedRoles.includes(role)) && (
             <Link
               className={`${navActive === 6 && 'active'} text-muted fw-bold`}
@@ -173,57 +181,149 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
         </div>
         <h3 className="fw-bold">{isLoading ? 'Loading..' : data?.project_number}</h3>
       </Col>
-      <Col md="12" className="d-flex justify-content-between bg-white p-3 mb-3 rounded-2">
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <>
-            <div className="d-flex align-items-center gap-1">
-              <img src={user1} className="rounded-circle" alt="avatar" width="35" height="35" />
-              <div className="d-flex flex-column" style={{ marginLeft: '10px' }}>
-                <small className="fw-bold">{data?.pic_active.first_name}</small>
-                <small>{data?.pic_active.position_name}</small>
-              </div>
-            </div>
-            <div className="d-flex align-items-center gap-1">
-              <div className="d-flex flex-column align-items-end">
-                <h5 className="mb-0 fw-bold">{data?.project_name}</h5>
-                <span className="badge text-dark bg-light rounded-pill d-inline-block fw-bold">
-                  Stage: ?
-                </span>
-              </div>
-              {auth?.user.first_name === data?.created_by ? (
-                <div className="action-table">
-                  <button type="button" className="btn d-flex" onClick={() => setActionMenu(true)}>
-                    <MaterialIcon icon="more_vert" />
-                  </button>
-                  {actionMenu && (
-                    <>
-                      <div className="action-overlay" onClick={() => setActionMenu(false)} />
-                      <div className="action-options">
-                        <Link to="/" className="text-muted">
-                          <MaterialIcon icon="update" />
-                          Update
-                        </Link>
-                        <button
-                          type="button"
-                          className="text-muted fw-bold"
-                          onClick={() => setActionMenu(undefined)}
-                        >
-                          <MaterialIcon icon="delete" />
-                          Delete
-                        </button>
+
+      <Card className="rounded-3 mb-3">
+        <CardBody>
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <Row>
+              <Col lg="8">
+                <Row md="12">
+                  <Col>
+                    <h5 className="fw-bold">{data?.project_name}</h5>
+                  </Col>
+                </Row>
+                {isBusiness ? (
+                  <Row lg="12">
+                    <Col sm="12" md="4">
+                      <div className="d-flex align-items-center gap-2">
+                        <MaterialIcon
+                          icon="manage_accounts"
+                          className="text-muted"
+                          style={{ fontSize: '28px' }}
+                        />
+                        <div className="d-flex flex-column">
+                          <span
+                            className="text-muted"
+                            style={{ fontSize: '10px', marginBottom: '-4px' }}
+                          >
+                            Partner
+                          </span>
+                          <small className="fw-bold">{data?.current_stage?.partner || '-'}</small>
+                        </div>
                       </div>
-                    </>
+                    </Col>
+                    <Col sm="12" md="4">
+                      <div className="d-flex align-items-center gap-2">
+                        <MaterialIcon
+                          icon="handshake"
+                          className="text-muted"
+                          style={{ fontSize: '28px' }}
+                        />
+                        <div className="d-flex flex-column">
+                          <span
+                            className="text-muted"
+                            style={{ fontSize: '10px', marginBottom: '-4px' }}
+                          >
+                            Schema
+                          </span>
+                          <small className="fw-bold">
+                            {data?.current_stage?.schema === 'jo'
+                              ? 'Join Operational'
+                              : data?.current_stage?.schema === 'jv'
+                              ? 'Join Venture'
+                              : '-'}
+                          </small>
+                        </div>
+                      </div>
+                    </Col>
+                    <Col sm="12" md="4">
+                      <div className="d-flex align-items-center gap-2">
+                        <MaterialIcon
+                          icon="play_circle_outline"
+                          className="text-muted"
+                          style={{ fontSize: '28px' }}
+                        />
+                        <div className="d-flex flex-column">
+                          <span
+                            className="text-muted"
+                            style={{ fontSize: '10px', marginBottom: '-4px' }}
+                          >
+                            Phase
+                          </span>
+                          <small className="fw-bold">{data?.current_stage?.phase}</small>
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                ) : (
+                  <Row lg="12">
+                    <div className="d-flex align-items-center gap-2">
+                      <MaterialIcon icon="work_off" style={{ fontSize: '18px' }} />
+                      <small className="fw-bold">Non-business</small>
+                    </div>
+                  </Row>
+                )}
+              </Col>
+              <Col lg="4" className="d-flex align-items-center justify-content-end">
+                <div className="d-flex align-items-center gap-2">
+                  <div
+                    className="d-flex flex-column align-items-end"
+                    style={{ marginLeft: '10px' }}
+                  >
+                    <small className="fw-bold">{data?.pic_active.first_name}</small>
+                    <span className="fw-bold" style={{ fontSize: '14px' }}>
+                      {data?.pic_active.organization_name}
+                    </span>
+                    {/* {data?.category === 'business' && (
+                      <span className="badge text-primary bg-light-primary rounded-pill d-inline-block fw-bold">
+                        <div className="d-flex justify-content-center gap-1 align-items-center">
+                          <MaterialIcon icon="play_circle_outline" style={{ fontSize: '12px' }} />
+                          {data?.current_stage??.phase}
+                        </div>
+                      </span>
+                    )} */}
+                  </div>
+                  <img src={user1} className="rounded-circle" alt="avatar" width="35" height="35" />
+                  {auth?.user.first_name === data?.created_by ? (
+                    <div className="action-table">
+                      <button
+                        type="button"
+                        className="btn d-flex"
+                        onClick={() => setActionMenu(true)}
+                      >
+                        <MaterialIcon icon="more_vert" />
+                      </button>
+                      {actionMenu && (
+                        <>
+                          <div className="action-overlay" onClick={() => setActionMenu(false)} />
+                          <div className="action-options">
+                            <Link to="/" className="text-muted">
+                              <MaterialIcon icon="update" />
+                              Update
+                            </Link>
+                            <button
+                              type="button"
+                              className="text-muted fw-bold"
+                              onClick={() => setActionMenu(undefined)}
+                            >
+                              <MaterialIcon icon="delete" />
+                              Delete
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    ''
                   )}
                 </div>
-              ) : (
-                ''
-              )}
-            </div>
-          </>
-        )}
-      </Col>
+              </Col>
+            </Row>
+          )}
+        </CardBody>
+      </Card>
     </Col>
   );
 };

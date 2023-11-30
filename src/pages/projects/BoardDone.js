@@ -9,7 +9,10 @@ const BoardDone = ({ data, isLoading, error, refetch, isRefetching }) => {
 
   return (
     <Col lg="4" className="mt-1">
-      <h4>Done ({data?.length})</h4>
+      <div className="d-flex align-items-center justify-content-between bg-light-success text-success py-2 px-3 mb-2 rounded-2">
+        <span className="fw-bold">Done</span>
+        <span className="fw-bold">{data?.length}</span>
+      </div>
       {isLoading ? (
         'Loading...'
       ) : error ? (

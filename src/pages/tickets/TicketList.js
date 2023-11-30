@@ -143,7 +143,9 @@ const TicketList = () => {
                         defaultValue="choose"
                         onChange={(e) => setSubject(e.target.value)}
                       >
-                        <option value="choose">Choose...</option>
+                        <option value="choose" disabled>
+                          Choose...
+                        </option>
                         <option value="request">Request</option>
                         <option value="troubleshoot">Troubleshoot</option>
                       </Input>
@@ -187,11 +189,21 @@ const TicketList = () => {
                         defaultValue="choose"
                         onChange={(e) => setPriority(e.target.value)}
                       >
-                        <option value="choose">Choose...</option>
+                        <option value="choose" disabled>
+                          Choose...
+                        </option>
                         <option value="minor">Minor</option>
                         <option value="major">Major</option>
                         <option value="emergency">Emergency</option>
                       </Input>
+                    </Col>
+                  </Row>
+                </FormGroup>
+                <FormGroup>
+                  <Row>
+                    <Label sm="3">Attachment</Label>
+                    <Col sm="9">
+                      <Input type="file" onChange={(e) => setPriority(e.target.value)} />
                     </Col>
                   </Row>
                 </FormGroup>

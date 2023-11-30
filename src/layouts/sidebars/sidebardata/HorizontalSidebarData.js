@@ -36,9 +36,22 @@ const SidebarData = [
       },
     ],
   },
+<<<<<<< HEAD
  
  
 
+=======
+
+  { caption: 'Inventory' },
+  {
+    title: 'Inventory',
+    href: '/inventory',
+    id: 3,
+    icon: <MaterialIcon icon="grid_view" />,
+    ddType: 'two-column',
+    collapisble: true,
+  },
+>>>>>>> dcb6baf1bf9536123964981edb3dea60786584c7
   { caption: 'Ticket' },
   {
     title: 'Ticket',
@@ -114,7 +127,10 @@ const SidebarData = [
   //   ddType: 'two-column',
   //   collapisble: true,
   // },
+<<<<<<< HEAD
 
+=======
+>>>>>>> dcb6baf1bf9536123964981edb3dea60786584c7
 ];
 
 export default SidebarData;

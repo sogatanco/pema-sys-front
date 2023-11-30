@@ -27,15 +27,10 @@ import newDate from '../../utils/formatDate';
 import useAuth from '../../hooks/useAuth';
 import { alert } from '../../components/atoms/Toast';
 import TooltipHover from '../../components/atoms/TooltipHover';
+import IndoDate from '../../utils/IndoDate';
+import rupiah from '../../utils/rupiah';
 
 const animatedComponents = makeAnimated();
-
-const rupiah = (number) => {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-  }).format(number);
-};
 
 const remaininDays = (endDate) => {
   const todayDate = new Date();
@@ -56,7 +51,9 @@ const remaininDays = (endDate) => {
 
   const diff = deadline.getTime() - today.getTime();
 
-  return diff / (1000 * 3600 * 24);
+  const result = diff / (1000 * 3600 * 24);
+
+  return result;
 };
 
 const OverviewTab = () => {
@@ -68,6 +65,11 @@ const OverviewTab = () => {
   const [listEmployee, setListEmploye] = useState();
   const [loading, setLoading] = useState(false);
   const [bst, setBst] = useState([]);
+  const [activePhase, setActivePhase] = useState(undefined);
+  const [selectedSchema, setSelectedSchema] = useState('');
+  const [isBusiness, setIsBusiness] = useState();
+  const [partnerOptions, setPartnerOptions] = useState([]);
+  const [selectedPartner, setSelectedPartner] = useState(undefined);
   const [taskByStatus, setTaskByStatus] = useState({
     todo: 0,
     inprogress: 0,
@@ -111,16 +113,23 @@ const OverviewTab = () => {
       underReview: underReviewFiltered?.length,
       done: doneFiltered?.length,
     });
+
+    setActivePhase(data?.current_stage?.phase_id);
+    if (data?.category === 'business') {
+      setIsBusiness(true);
+    } else {
+      setIsBusiness(false);
+    }
   }, [data]);
 
-  useEffect(() => {
-    async function fetsHistory() {
-      await api
-        .get(`api/project/${projectId}/history`)
-        .then((res) => setHistory(res.data.data))
-        .catch((err) => console.log(err));
-    }
+  const fetsHistory = async () => {
+    await api
+      .get(`api/project/${projectId}/history`)
+      .then((res) => setHistory(res.data.data))
+      .catch((err) => console.log(err));
+  };
 
+  useEffect(() => {
     fetsHistory();
   }, [projectId]);
 
@@ -144,7 +153,10 @@ const OverviewTab = () => {
         {
           project_id: projectId,
           new_pic: newPic.value,
-          file: bst[0],
+          file: bst,
+          // jika fase projek adalah planning
+          schema: activePhase === 2 ? selectedSchema : '',
+          partner: activePhase === 2 ? selectedPartner : '',
         },
         {
           headers: {
@@ -153,6 +165,7 @@ const OverviewTab = () => {
         },
       )
       .then(() => {
+        fetsHistory();
         alert('success', 'BAST is under review');
       })
       .catch((err) => console.log(err));
@@ -161,6 +174,16 @@ const OverviewTab = () => {
   };
 
   const allTaskPermission = ['Manager', 'Director'];
+
+  useEffect(() => {
+    async function fetchPartnerOptions() {
+      await api
+        .get(`api/project/partner/options`)
+        .then((res) => setPartnerOptions(res.data.data))
+        .catch((err) => console.log(err));
+    }
+    fetchPartnerOptions();
+  }, []);
 
   return (
     <>
@@ -175,14 +198,16 @@ const OverviewTab = () => {
       ) : (
         <Row>
           <Col lg="8">
-            <Card>
+            <Card className="rounded-3 mb-3">
               <CardBody>
                 <div>
                   <CardTitle tag="h5" className="text-dark fw-bold">
                     Description
                   </CardTitle>
                 </div>
-                <div className="ms-auto mt-3 mt-md-0">{data.goals}</div>
+                <div className="ms-auto mt-3 mt-md-0">
+                  {isBusiness ? data.current_stage?.desc : data?.goals}
+                </div>
                 <div className="d-flex justify-content-between mt-3">
                   <div className="d-flex flex-column">
                     <small className="text-muted">Level</small>
@@ -191,7 +216,7 @@ const OverviewTab = () => {
                   <div className="d-flex flex-column col-4">
                     <small className="text-muted">Base</small>
                     <div className="d-flex">
-                      <span className="text-dark">
+                      <span className="wtext-dark">
                         {data?.base_description.trim().length > 25
                           ? `${data?.base_description.substring(0, 25)}...`
                           : data?.base_description}
@@ -206,11 +231,15 @@ const OverviewTab = () => {
                   </div>
                   <div className="d-flex flex-column">
                     <small className="text-muted">Start date</small>
-                    <span className="text-dark">{data.start_date}</span>
+                    <span className="text-dark">
+                      {IndoDate(data?.current_stage && data.current_stage?.start_date)}
+                    </span>
                   </div>
                   <div className="d-flex flex-column">
                     <small className="text-muted">Deadline</small>
-                    <span className="text-dark">{data.end_date}</span>
+                    <span className="text-dark">
+                      {IndoDate(data?.current_stage !== null && data.current_stage?.end_date)}
+                    </span>
                   </div>
                 </div>
                 <div
@@ -242,7 +271,7 @@ const OverviewTab = () => {
                 </div>
               </CardBody>
             </Card>
-            <Card>
+            <Card className="rounded-3">
               <CardBody>
                 <div>
                   <CardTitle tag="h5" className="text-dark fw-bold">
@@ -310,7 +339,7 @@ const OverviewTab = () => {
             </Card>
           </Col>
           <Col lg="4">
-            <Card>
+            <Card className="rounded-3 mb-3">
               <CardBody>
                 <CardTitle tag="h5" className="d-flex justify-content-between fw-bold">
                   Project Active
@@ -326,13 +355,17 @@ const OverviewTab = () => {
                 />
               </CardBody>
             </Card>
-            <Card>
+            <Card className="rounded-3">
               <CardBody>
                 <div className="overall-process">
                   <div className="overall-child">
                     <div>
                       <h6 className="text-muted">Remaining days</h6>
-                      <span className="text-danger">{remaininDays(data.end_date).toFixed()}</span>
+                      <span className="text-danger">
+                        {remaininDays(
+                          data?.current_stage !== null && data.current_stage?.end_date,
+                        ).toFixed()}
+                      </span>
                     </div>
                     <MaterialIcon icon="timer"></MaterialIcon>
                   </div>
@@ -362,7 +395,7 @@ const OverviewTab = () => {
                 </div>
               </CardBody>
             </Card>
-            {auth.user.roles.includes('Manager') && (
+            {isBusiness && auth.user.roles.includes('Manager') && (
               <Card>
                 <Button
                   type="button"
@@ -438,10 +471,53 @@ const OverviewTab = () => {
                     <option value="">Done</option>
                   </Input>
                 </FormGroup>
+                {/* current stage is Planning */}
+                {activePhase === 2 && (
+                  <>
+                    {data?.current_stage?.partner === null && (
+                      <FormGroup>
+                        <Label for="partner">Partner</Label>
+                        <Input
+                          type="select"
+                          id="partner"
+                          name="partner"
+                          defaultValue="pa"
+                          onChange={(e) => setSelectedPartner(e.target.value)}
+                        >
+                          <option disabled value="pa">
+                            - Select -
+                          </option>
+                          {partnerOptions.length > 0 &&
+                            partnerOptions.map((p) => (
+                              <option key={p.id} value={p.id}>
+                                {p.name}
+                              </option>
+                            ))}
+                        </Input>
+                      </FormGroup>
+                    )}
+                    <FormGroup>
+                      <Label>Schema</Label>
+                      <Input
+                        type="select"
+                        id="base_id"
+                        name="base_id"
+                        defaultValue="a"
+                        onChange={(e) => setSelectedSchema(e.target.value)}
+                      >
+                        <option value="a" disabled>
+                          Select
+                        </option>
+                        <option value="jo">JO</option>
+                        <option value="jv">JV</option>
+                      </Input>
+                    </FormGroup>
+                  </>
+                )}
+                {/* current stage is Planning */}
                 <FormGroup>
                   <Label>PIC</Label>
                   <Select
-                    closeMenuOnSelect={false}
                     components={animatedComponents}
                     options={listEmployee}
                     onChange={(choice) => setNewPic(choice)}
