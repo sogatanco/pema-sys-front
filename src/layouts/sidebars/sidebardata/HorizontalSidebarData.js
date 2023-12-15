@@ -37,15 +37,7 @@ const SidebarData = [
     ],
   },
 
-  { caption: 'Inventory' },
-  {
-    title: 'Inventory',
-    href: '/inventory',
-    id: 3,
-    icon: <MaterialIcon icon="grid_view" />,
-    ddType: 'two-column',
-    collapisble: true,
-  },
+  
   { caption: 'Ticket' },
   {
     title: 'Ticket',
@@ -54,6 +46,17 @@ const SidebarData = [
     icon: <MaterialIcon icon="description" />,
     collapisble: true,
     allowedRoles: ['Employee'],
+  },
+
+  { caption: 'Inventory' },
+  {
+    title: 'Inventory',
+    href: '/inventory',
+    id: 4,
+    icon: <MaterialIcon icon="grid_view" />,
+    ddType: 'two-column',
+    allowedRoles: ['Employee'],
+    collapisble: true,
   },
   // { caption: 'Form' },
   // {

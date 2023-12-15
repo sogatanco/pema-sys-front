@@ -61,7 +61,6 @@ const HorizontalSidebar = () => {
             return auth?.user?.roles.find((role) => navi?.allowedRoles?.includes(role)) ? (
               <NavSingleItem
                 key={navi.id}
-                //toggle={() => toggle(navi.id)}
                 className={location.pathname === navi.href ? 'activeLink' : ''}
                 to={navi.href}
                 title={navi.title}
