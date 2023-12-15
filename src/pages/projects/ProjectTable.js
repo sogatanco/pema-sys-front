@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, CardBody, CardTitle, Table, Col, Button } from 'reactstrap';
+import { Card, CardBody, CardTitle, Col, Button } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
 import { Link } from 'react-router-dom';
@@ -8,6 +8,7 @@ import NewProjectModal from './NewProjectModal';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import DataTable from '../../components/datatable/DataTable';
+import './ProjectTable.scss';
 
 const ProjectTables = ({ nav }) => {
   const { auth } = useAuth();
@@ -47,7 +48,7 @@ const ProjectTables = ({ nav }) => {
     <div>
       <Card>
         <CardBody style={{ position: 'relative' }}>
-          <Col className="d-flex justify-content-between" col="12">
+          <Col className="d-flex justify-content-between mb-3" col="12">
             <div className="">
               <CardTitle tag="h5" className="fw-bold">
                 {nav === 1 || auth?.user.roles.includes('Director') ? 'All' : 'My'} Project Listing
@@ -82,7 +83,7 @@ const ProjectTables = ({ nav }) => {
             </div>
           ) : data.length > 0 ? (
             <DataTable>
-              <Table className="no-wrap mt-3 align-middle" hover bordered style={{ zIndex: '-1' }}>
+              <table className="rounded-corners">
                 <thead>
                   <tr>
                     <th>No.</th>
@@ -175,7 +176,7 @@ const ProjectTables = ({ nav }) => {
                     </tr>
                   ))}
                 </tbody>
-              </Table>
+              </table>
             </DataTable>
           ) : (
             <div className="d-flex justify-content-center">

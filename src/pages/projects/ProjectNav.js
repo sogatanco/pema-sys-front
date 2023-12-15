@@ -93,8 +93,8 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
 
   return (
     <Col>
-      <Col md="12" className="d-flex justify-content-between mb-3 align-items-center">
-        <div className="project-nav">
+      <Col className="d-flex justify-content-between gap-3 mb-3 align-items-center">
+        <div className="project-nav overflow-auto">
           <Link
             className={`${navActive === 1 && 'active'} text-muted fw-bold`}
             onClick={() => setNavActive(1)}
@@ -190,13 +190,11 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
             <Row>
               <Col lg="8">
                 <Row md="12">
-                  <Col>
-                    <h5 className="fw-bold">{data?.project_name}</h5>
-                  </Col>
+                  <h5 className="fw-bold">{data?.project_name}</h5>
                 </Row>
                 {isBusiness ? (
                   <Row lg="12">
-                    <Col sm="12" md="4">
+                    <Col sm="12 mb-2" md="4">
                       <div className="d-flex align-items-center gap-2">
                         <MaterialIcon
                           icon="manage_accounts"
@@ -214,7 +212,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                         </div>
                       </div>
                     </Col>
-                    <Col sm="12" md="4">
+                    <Col sm="12 mb-2" md="4">
                       <div className="d-flex align-items-center gap-2">
                         <MaterialIcon
                           icon="handshake"
@@ -238,7 +236,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                         </div>
                       </div>
                     </Col>
-                    <Col sm="12" md="4">
+                    <Col sm="12 mb-2" md="4">
                       <div className="d-flex align-items-center gap-2">
                         <MaterialIcon
                           icon="play_circle_outline"

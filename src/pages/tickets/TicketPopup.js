@@ -177,7 +177,7 @@ const TicketPopup = ({ ticket, isOpen, setIsOpen, refetch }) => {
                       </div>
                     </div>
                     <div className="d-flex flex-column gap-1 bg-light p-2 rounded-3">
-                      {ticket.status === 'closed' ? (
+                      {ticket.status === 'closed' || ticket.status === 'onprocess' ? (
                         <small>Assigned to:</small>
                       ) : (
                         <small>Assign to:</small>

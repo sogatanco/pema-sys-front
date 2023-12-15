@@ -57,7 +57,7 @@ const TicketList = () => {
       await api
         .get(`api/employe/assignment-list`)
         .then((res) => {
-          setListEmployee(res.data.data);
+          setListEmployee(res.data.data.filter((employee) => employee?.roles.includes('Manager')));
         })
         .catch((err) => console.log(err));
     }
@@ -97,7 +97,7 @@ const TicketList = () => {
               <Col className="d-flex justify-content-between" col="12">
                 <div className="">
                   <CardTitle tag="h5" className="fw-bold">
-                    Ticket Listing
+                    Tickets Listing
                   </CardTitle>
                 </div>
                 <Button

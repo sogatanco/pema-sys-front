@@ -1,9 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useLocation, useParams } from 'react-router-dom';
-import { Badge, Button, Card, CardBody, Col, Input, Spinner, Table } from 'reactstrap';
+import { Link, useLocation, useParams } from 'react-router-dom';
+import { Badge, Button, Card, CardBody, Col, Input, Row, Spinner } from 'reactstrap';
 import MaterialIcon from '@material/react-material-icon';
 import { PDFDownloadLink } from '@react-pdf/renderer';
+import Popover from '@mui/material/Popover';
+import Typography from '@mui/material/Typography';
 import useAxios from '../../hooks/useAxios';
 import TaskPopup from './TaskPopup';
 import user1 from '../../assets/images/users/user1.jpg';
@@ -11,6 +13,7 @@ import useAuth from '../../hooks/useAuth';
 import { alert } from '../../components/atoms/Toast';
 import PDFFile from './PDFFile';
 import TooltipHover from '../../components/atoms/TooltipHover';
+import './ProjectTable.scss';
 // import TooltipHover from '../../components/atoms/TooltipHover';
 
 // const result = (emId) =>
@@ -80,12 +83,25 @@ const ActivityTab = () => {
   }, [auth]);
 
   const handleSearch = (value) => {
-    const filteredItems = data.filter((item) =>
+    const filterByTitle = data.filter((item) =>
       item.task_title.toLowerCase().includes(value.toLowerCase()),
     );
 
-    setFilterSearch(filteredItems);
+    setFilterSearch(filterByTitle);
   };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   return (
     <>
@@ -98,8 +114,8 @@ const ActivityTab = () => {
               'Something went wrong.'
             ) : (
               <>
-                <Col>
-                  <div className="d-flex justify-content-between gap-3">
+                <Row>
+                  <Col sm="12 mb-2" md="6">
                     <div className="d-flex gap-2">
                       <Button
                         type="button"
@@ -120,7 +136,9 @@ const ActivityTab = () => {
                         Filters
                       </Button>
                     </div>
-                    <div className="d-flex gap-3 col-md-6">
+                  </Col>
+                  <Col sm="12" md="6">
+                    <div className="d-flex gap-3 col-md-6 w-100">
                       <div className="w-100 position-relative">
                         <Input
                           type="text"
@@ -130,12 +148,43 @@ const ActivityTab = () => {
                           onChange={(e) => handleSearch(e.target.value)}
                         />
                         <div className="position-absolute top-0 end-0 h-100 p-1">
-                          <button
+                          <Button
                             type="button"
-                            className="btn btn-light w-100 h-100 border-0 rounded-3"
+                            className="btn btn-light w-100 h-100 border-0 rounded-3 text-muted"
+                            aria-describedby={id}
+                            variant="contained"
+                            onClick={handleClick}
                           >
                             <MaterialIcon icon="more_horiz" style={{ fontSize: '16px' }} />
-                          </button>
+                          </Button>
+                          <Popover
+                            id={id}
+                            open={open}
+                            anchorEl={anchorEl}
+                            onClick={handleClose}
+                            anchorOrigin={{
+                              vertical: 'bottom',
+                              horizontal: 'left',
+                            }}
+                            transformOrigin={{
+                              vertical: 'top',
+                              horizontal: 'center',
+                            }}
+                          >
+                            <Typography sx={{ p: 2 }}>
+                              <Col>
+                                <Row>
+                                  <Link to="#">Task</Link>
+                                </Row>
+                                <Row>
+                                  <Link to="#">Employee</Link>
+                                </Row>
+                                <Row>
+                                  <Link to="#">Date</Link>
+                                </Row>
+                              </Col>
+                            </Typography>
+                          </Popover>
                         </div>
                       </div>
                       {auth?.user.roles.find((role) => reportTaskAllowedRoles.includes(role)) && (
@@ -166,20 +215,20 @@ const ActivityTab = () => {
                         } */}
                           <Button
                             type="button"
-                            className="btn btn-light-info text-info rounded-3"
+                            className="btn btn-light-info text-info rounded-3 d-flex py-2"
                             // size="lg"
                           >
-                            <MaterialIcon icon="file_download" style={{ fontSize: '16px' }} />
+                            <MaterialIcon icon="file_download" style={{ fontSize: '18px' }} />
                             {/* Report */}
                           </Button>
                         </PDFDownloadLink>
                       )}
                     </div>
-                  </div>
-                </Col>
-                <Col>
+                  </Col>
+                </Row>
+                <Col sm="12 overflow-auto">
                   <h6 className="fw-bold mt-3">List of tasks from {projectTitle?.division}</h6>
-                  <Table className="no-wrap mt-0 align-middle rounded-3" bordered hover>
+                  <table className="rounded-corners">
                     <thead>
                       <tr>
                         <th width="30">#</th>
@@ -195,11 +244,8 @@ const ActivityTab = () => {
                         filterSearch?.map((ts, idx) => (
                           <Fragment key={ts.task_id}>
                             <tr>
-                              <td style={{ backgroundColor: '#f9f9f9' }}>{idx + 1}.</td>
-                              <td
-                                style={{ backgroundColor: '#f9f9f9', cursor: 'pointer' }}
-                                onClick={() => openPopup(ts)}
-                              >
+                              <td>{idx + 1}.</td>
+                              <td style={{ cursor: 'pointer' }} onClick={() => openPopup(ts)}>
                                 <span style={{ fontWeight: '600' }}>{ts.task_title}</span>
                                 <br></br>
                                 <Badge color="light" className="text-muted">
@@ -211,7 +257,7 @@ const ActivityTab = () => {
                                   {ts.comments}
                                 </Badge>
                               </td>
-                              <td style={{ backgroundColor: '#f9f9f9' }}>
+                              <td>
                                 {ts.status === 0 ? (
                                   <Badge color="light" className="text-dark">
                                     To Do
@@ -228,13 +274,13 @@ const ActivityTab = () => {
                                   <Badge color="danger">Revision</Badge>
                                 )}
                               </td>
-                              <td style={{ backgroundColor: '#f9f9f9' }}>
+                              <td>
                                 <span className="badge bg-light-success text-primary rounded-pill d-inline-block fw-bold">
-                                  {ts?.task_progress.toFixed()}%
+                                  {ts?.task_progress?.toFixed()}%
                                 </span>
                               </td>
-                              <td style={{ backgroundColor: '#f9f9f9' }}>
-                                <div className="member-2">
+                              <td>
+                                <div className="members">
                                   <div className="member-item">
                                     {ts?.pics?.map(
                                       (pic, i) =>
@@ -317,11 +363,11 @@ const ActivityTab = () => {
                                   </td>
                                   <td>
                                     <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">
-                                      {st?.task_progress.toFixed()}%
+                                      {st?.task_progress?.toFixed()}%
                                     </span>
                                   </td>
                                   <td>
-                                    <div className="member-2">
+                                    <div className="members">
                                       <div className="member-item">
                                         {st?.pics?.map(
                                           (pic, i) =>
@@ -382,7 +428,7 @@ const ActivityTab = () => {
                         </tr>
                       )}
                     </tbody>
-                  </Table>
+                  </table>
                 </Col>
               </>
             )}

@@ -1,0 +1,34 @@
+table.rounded-corners {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: separate;
+  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  overflow: hidden;
+}
+
+table.rounded-corners th,
+table.rounded-corners td {
+  padding: 10px 6px;
+}
+
+table.rounded-corners th,
+table.rounded-corners td:not(:nth-child(2)) {
+  text-align: center;
+}
+
+table.rounded-corners tbody tr:hover {
+  background-color: rgb(244, 244, 244);
+}
+
+/* Apply a border to the right of all but the last column */
+table.rounded-corners th:not(:last-child),
+table.rounded-corners td:not(:last-child) {
+  border-right: 1px solid #dee2e6;
+}
+
+/* Apply a border to the bottom of all but the last row */
+
+table.rounded-corners > tbody > tr > td {
+  border-top: 1px solid #dee2e6;
+}
