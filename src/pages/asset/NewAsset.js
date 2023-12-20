@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import dayjs from 'dayjs';
 import makeAnimated from 'react-select/animated';
@@ -10,11 +10,10 @@ import { alert } from '../../components/atoms/Toast';
 
 const animatedComponents = makeAnimated();
 
-const NewAsset = ({  refetch }) => {
-
+const NewAsset = ({ refetch }) => {
   const [modal, setModal] = useState(false);
-  const [categories, setCategories]=useState([]);
-  const [employees, setemployees]=useState([]);
+  const [categories, setCategories] = useState([]);
+  const [employees, setemployees] = useState([]);
 
   const [inName, setInName] = useState('');
   const [inType, setInType] = useState('');
@@ -68,7 +67,6 @@ const NewAsset = ({  refetch }) => {
   }, [re[0].data, re[1].data]);
 
   const saveData = async () => {
-    
     if (
       inName !== '' &&
       inType !== '' &&
@@ -94,7 +92,7 @@ const NewAsset = ({  refetch }) => {
       await api
         .post(`dapi/inven/add`, valueSubmit)
         .then((res) => {
-          console.log(res)
+          console.log(res);
           if (res?.data?.success) {
             toggle();
             refetch();
@@ -148,11 +146,10 @@ const NewAsset = ({  refetch }) => {
 
   return (
     <>
-    
-        <Button color="dark" outline onClick={toggle}>
-          + New Inventory
-        </Button>
-     
+      <Button color="dark" outline onClick={toggle}>
+        + New Inventory
+      </Button>
+
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>New Inventory Data</ModalHeader>
         <ModalBody>
@@ -208,7 +205,6 @@ const NewAsset = ({  refetch }) => {
               value={inVendor}
             />
           </FormGroup>
-
 
           <FormGroup>
             <Label for="time">Acquisition Time</Label>
