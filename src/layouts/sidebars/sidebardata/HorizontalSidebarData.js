@@ -58,6 +58,35 @@ const SidebarData = [
     allowedRoles: ['Employee'],
     collapisble: true,
   },
+  { caption: 'Vendor' },
+  {
+    title: 'Vendor',
+    id: 5,
+    icon: <MaterialIcon icon="diversity_3" />,
+    ddType: 'two-column',
+    allowedRoles: ['AdminVendor'],
+    collapisble: true,
+    children: [
+      {
+        title: 'Dashboard',
+        href: '/pro',
+        allowedRoles: ['AdminVendor'],
+        icon: <MaterialIcon icon="dashboard" />,
+      },
+      {
+        title: 'Company List',
+        href: '/vendor/company',
+        allowedRoles: ['AdminVendor'],
+        icon: <MaterialIcon icon="business" />,
+      },
+      {
+        title: 'Tender List',
+        href: '/daily',
+        allowedRoles: ['AdminVendor'],
+        icon: <MaterialIcon icon="rebase_edit" />,
+      },
+    ],
+  },
   // { caption: 'Form' },
   // {
   //   title: 'Form',
