@@ -73,6 +73,7 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
       })
       .catch((err) => {
         console.log(err);
+        alert('error', 'Something went wrong.');
       });
 
     setModal(false);

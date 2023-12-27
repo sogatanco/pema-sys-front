@@ -141,6 +141,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
         },
       })
       .then((res) => {
+        // eslint-disable-next-line no-unused-expressions
         task?.files?.push(res.data.file);
         // alert('success', 'File has been uploaded.');
       })
@@ -185,6 +186,8 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
   };
 
   const fileUrl = process.env.REACT_APP_BASEURL;
+
+  console.log('tasssssk:', task);
 
   return (
     <>

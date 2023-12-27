@@ -15,12 +15,12 @@ import {
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
-import AuthLogo from '../../layouts/logo/AuthLogo';
 import { ReactComponent as LeftBg } from '../../assets/images/bg/login-bgleft.svg';
 import { ReactComponent as RightBg } from '../../assets/images/bg/login-bg-right.svg';
 import { AuthContext } from '../../context/AuthContext';
 import useAuth from '../../hooks/useAuth';
 import useAxios from '../../hooks/useAxios';
+import AuthLogo from '../../layouts/logo/AuthLogo';
 
 const Login = () => {
   const { auth } = useAuth();
