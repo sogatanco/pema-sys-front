@@ -33,6 +33,10 @@ const ProjectReport = Loadable(lazy(() => import('../pages/projects/Report')));
 const TicketPage = Loadable(lazy(() => import('../pages/tickets')));
 /***** Tickets ****/
 
+/***** Vendor ****/
+const VendorCompanyPage = Loadable(lazy(() => import('../pages/vendor/Company')));
+/***** Vendor ****/
+
 /***** Forms ****/
 const PentryPage = Loadable(lazy(() => import('../pages/form/Pentry')));
 const AtkPage = Loadable(lazy(() => import('../pages/form/Atk')));
@@ -70,6 +74,7 @@ const ROLES = {
 };
 
 const formAllowedRoles = ['Picpentry', 'Picatk'];
+const vendorAllowedRoles=['AdminVendor'];
 const reportAllowedRoles = ['Picpentry', 'Picatk'];
 
 /*****Routes******/
@@ -132,6 +137,18 @@ const ThemeRoutes = [
             path: 'tickets',
             name: 'Tickets',
             element: <TicketPage />,
+          },
+          {
+            path: 'vendor',
+            name: 'Vendor',
+            element: <RequireAuth allowedRoles={vendorAllowedRoles} />,
+            children: [
+              {
+                path: 'company',
+                name: 'company',
+                element: <VendorCompanyPage />,
+              },
+            ]
           },
           {
             path: 'forms',
