@@ -31,8 +31,8 @@ const Request = () => {
 
   return (
     <>
-      <RequestItem title="Company Data Requests" data={submitList} />
-      <RequestItem title="Company Update Data Requests" data={updateList} />
+      <RequestItem title="Company Data Requests" data={submitList} source="submit" />
+      <RequestItem title="Company Update Data Requests" data={updateList} source="update" />
     </>
   );
 };

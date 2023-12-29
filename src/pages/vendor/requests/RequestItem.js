@@ -15,7 +15,7 @@ import {
   ModalHeader,
 } from 'reactstrap';
 
-const RequestItem = ({ title, data }) => {
+const RequestItem = ({ title, data, source }) => {
   const [modal, setModal] = useState(false);
   const [modal4, setModal4] = useState(false);
   const [selectedId, setSelectedId] = useState();
@@ -56,7 +56,7 @@ const RequestItem = ({ title, data }) => {
                 <div className="d-flex justify-content-between rounded-3 px-3 py-3 align-items-center text-dark bg-light">
                   <h4 className="fw-bold">{item.nama_perusahaan}</h4>
                   <div className="d-flex gap-3">
-                    <Link to={`check/${item.id}`}>
+                    <Link to={`check/${item.id}?source=${source}`}>
                       <Button type="button" color="secondary">
                         Document
                       </Button>
@@ -120,6 +120,7 @@ const RequestItem = ({ title, data }) => {
 };
 
 RequestItem.propTypes = {
+  source: PropTypes.string,
   title: PropTypes.string,
   data: PropTypes.array,
 };

@@ -3,11 +3,26 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Badge from '@mui/material/Badge';
-import React from 'react';
-import { Button, Card, CardBody, Col } from 'reactstrap';
+import React, { useState } from 'react';
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Input,
+  Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from 'reactstrap';
 import PropTypes from 'prop-types';
 
 const TabMui = ({ activeTab, setActiveTab, items, panels, children }) => {
+  const [modal, setModal] = useState(false);
+  const toggle = () => {
+    setModal(!modal);
+  };
   const handleActive = (event, val) => {
     setActiveTab(val);
   };
@@ -43,7 +58,26 @@ const TabMui = ({ activeTab, setActiveTab, items, panels, children }) => {
             </TabList>
           </Col>
           <Col md="1" className="d-flex justify-content-end">
-            <Button type="button">Aksi</Button>
+            <Button type="button" color="warning" outline onClick={toggle.bind(null)}>
+              Revisi
+            </Button>
+            <Modal isOpen={modal} toggle={toggle.bind(null)} centered>
+              <ModalHeader toggle={toggle.bind(null)}>Revisi</ModalHeader>
+              <ModalBody>
+                <div className="d-flex flex-column ">
+                  <Label htmlFor="comment">Komentar</Label>
+                  <Input type="textarea" id="comment" rows="10" name="comment"></Input>
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" onClick={toggle.bind(null)}>
+                  Kirim
+                </Button>
+                <Button color="secondary" outline onClick={toggle.bind(null)}>
+                  Cancel
+                </Button>
+              </ModalFooter>
+            </Modal>
           </Col>
         </div>
       </Card>
