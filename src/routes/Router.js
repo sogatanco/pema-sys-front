@@ -153,7 +153,7 @@ const ThemeRoutes = [
                 name: 'Dashboard',
                 element: <DashboardPage />,
               },
-              {
+              { 
                 path: 'company/:companyId',
                 name: 'company detail',
                 element: <VendorCompanyDetail />,

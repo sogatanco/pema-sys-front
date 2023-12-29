@@ -36,7 +36,7 @@ const CompanyList = ({ companies }) => {
     },
     {
       name: 'Action',
-      selector: (row) => (<Button size='sm' href={`/vendor/company/${row.id}`} color='dark' >Detail</Button>)
+      selector: (row) => (<Button size='sm' href={`/vendor/requests/check/${row.id}`} color='dark' >Detail</Button>)
     },
   ];
 
