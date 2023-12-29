@@ -11,8 +11,6 @@ import useAxios from '../../hooks/useAxios';
 import Review from './Review';
 import TeamAct from './TeamAct';
 
-
-
 const Home = () => {
   const [value, setValue] = React.useState('1');
   const handleChange = (event, newValue) => {
@@ -21,7 +19,7 @@ const Home = () => {
 
   const api = useAxios();
 
-  const {data, refetch } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['todos'],
     queryFn: () =>
       api.get(`dapi/mustreview`).then((res) => {
@@ -80,18 +78,17 @@ const Home = () => {
               }
               value="3"
             />
-
           </TabList>
         </Card>
 
         <TabPanel value="1" className="ps-0 pe-0">
           <Daily></Daily>
         </TabPanel>
-        <TabPanel value="2"  className="ps-0 pe-0">
+        <TabPanel value="2" className="ps-0 pe-0">
           <TeamAct></TeamAct>
         </TabPanel>
         <TabPanel value="3" className="ps-0 pe-0">
-        <Review misal={data} {...{ refetch}}></Review>
+          <Review misal={data} {...{ refetch }}></Review>
         </TabPanel>
       </TabContext>
     </>

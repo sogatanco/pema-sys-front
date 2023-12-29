@@ -37,7 +37,6 @@ const SidebarData = [
     ],
   },
 
-  
   { caption: 'Ticket' },
   {
     title: 'Ticket',
@@ -84,6 +83,18 @@ const SidebarData = [
         href: '/daily',
         allowedRoles: ['AdminVendor'],
         icon: <MaterialIcon icon="rebase_edit" />,
+      },
+      {
+        title: 'Requests',
+        href: 'vendor/requests',
+        allowedRoles: ['AdminVendor'],
+        icon: <MaterialIcon icon="fact_check" />,
+      },
+      {
+        title: 'New Tender',
+        href: 'vendor/new-tender',
+        allowedRoles: ['AdminVendor'],
+        icon: <MaterialIcon icon="library_add" />,
       },
     ],
   },

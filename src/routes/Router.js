@@ -35,6 +35,9 @@ const TicketPage = Loadable(lazy(() => import('../pages/tickets')));
 
 /***** Vendor ****/
 const VendorCompanyPage = Loadable(lazy(() => import('../pages/vendor/Company')));
+const RequestPage = Loadable(lazy(() => import('../pages/vendor/requests/Request')));
+const VerificationPage = Loadable(lazy(() => import('../pages/vendor/checks/DocumentCheck')));
+const NewTenderPage = Loadable(lazy(() => import('../pages/vendor/tender/NewTender')));
 /***** Vendor ****/
 
 /***** Forms ****/
@@ -74,7 +77,7 @@ const ROLES = {
 };
 
 const formAllowedRoles = ['Picpentry', 'Picatk'];
-const vendorAllowedRoles=['AdminVendor'];
+const vendorAllowedRoles = ['AdminVendor'];
 const reportAllowedRoles = ['Picpentry', 'Picatk'];
 
 /*****Routes******/
@@ -148,7 +151,22 @@ const ThemeRoutes = [
                 name: 'company',
                 element: <VendorCompanyPage />,
               },
-            ]
+              {
+                path: 'requests',
+                name: 'Requests',
+                element: <RequestPage />,
+              },
+              {
+                path: 'requests/check/:id',
+                name: 'Verification',
+                element: <VerificationPage />,
+              },
+              {
+                path: 'new-tender',
+                name: 'New Tender',
+                element: <NewTenderPage />,
+              },
+            ],
           },
           {
             path: 'forms',
