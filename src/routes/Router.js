@@ -34,6 +34,7 @@ const TicketPage = Loadable(lazy(() => import('../pages/tickets')));
 /***** Tickets ****/
 
 /***** Vendor ****/
+const DashboardPage = Loadable(lazy(() => import('../pages/vendor/dashboard/Dashboard')));
 const VendorCompanyPage = Loadable(lazy(() => import('../pages/vendor/Company')));
 const RequestPage = Loadable(lazy(() => import('../pages/vendor/requests/Request')));
 const VerificationPage = Loadable(lazy(() => import('../pages/vendor/checks/DocumentCheck')));
@@ -147,6 +148,11 @@ const ThemeRoutes = [
             name: 'Vendor',
             element: <RequireAuth allowedRoles={vendorAllowedRoles} />,
             children: [
+              {
+                path: '',
+                name: 'Dashboard',
+                element: <DashboardPage />,
+              },
               {
                 path: 'company/:companyId',
                 name: 'company detail',

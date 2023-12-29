@@ -22,10 +22,10 @@ const TabOfficial = ({ companyId }) => {
     'Something went wrong.'
   ) : (
     <>
-      <Table hover>
+      <Table hover bordered>
         <thead>
           <tr>
-            <th>No.</th>
+            <th width="50">#</th>
             <th>Nama</th>
             <th>Jabatan</th>
           </tr>
@@ -41,7 +41,7 @@ const TabOfficial = ({ companyId }) => {
         </tbody>
       </Table>
 
-      <FileView filename="File struktur dan NPWP jajaran Direksi/Komisaris Perusahaan" />
+      <FileView filename="File Struktur dan NPWP Jajaran Direksi/Komisaris Perusahaan" />
     </>
   );
 };

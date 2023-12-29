@@ -68,7 +68,7 @@ const SidebarData = [
     children: [
       {
         title: 'Dashboard',
-        href: '/pro',
+        href: '/vendor/',
         allowedRoles: ['AdminVendor'],
         icon: <MaterialIcon icon="dashboard" />,
       },

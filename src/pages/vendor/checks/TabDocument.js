@@ -4,6 +4,17 @@ import PropTypes from 'prop-types';
 import useAxios from '../../../hooks/useAxios';
 import FileView from '../../../components/fileview/FileView';
 
+const fileName = [
+  'File Company Profil',
+  'File KTP Pengurus',
+  'File SK Kemenkumham',
+  'File Fakta Integritas',
+  'File SPT 3 Tahun Terakhir',
+  'File Laporan Pajak 3 Bulan Terakhir',
+  'File Laporan Keuangan 3 Tahun Terakhir',
+  'File Rekening Koran 3 Bulan Terakhir',
+];
+
 const TabDocument = ({ companyId }) => {
   const [akta, setAkta] = useState();
   const [izin, setIzin] = useState();
@@ -39,7 +50,7 @@ const TabDocument = ({ companyId }) => {
           <Table hover bordered>
             <thead>
               <tr>
-                <th>#</th>
+                <th width="50">#</th>
                 <th>Nomor</th>
                 <th>Terbit</th>
                 <th>Notaris</th>
@@ -74,7 +85,7 @@ const TabDocument = ({ companyId }) => {
           <Table hover bordered>
             <thead>
               <tr>
-                <th>#</th>
+                <th width="50">#</th>
                 <th>Nomor</th>
                 <th>Izin</th>
                 <th>Terbit</th>
@@ -104,9 +115,9 @@ const TabDocument = ({ companyId }) => {
         )}
       </Col>
       {dokumen?.length > 0
-        ? dokumen.map((dok) => (
-            <Col key={dok.name} className="mt-4">
-              <FileView filename={dok.name} />
+        ? dokumen.map((dok, i) => (
+            <Col sm="12" md="8" key={dok.name} className="mt-4">
+              <FileView filename={fileName[i]} />
             </Col>
           ))
         : ''}
