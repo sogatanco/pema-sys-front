@@ -38,6 +38,7 @@ const VendorCompanyPage = Loadable(lazy(() => import('../pages/vendor/Company'))
 const RequestPage = Loadable(lazy(() => import('../pages/vendor/requests/Request')));
 const VerificationPage = Loadable(lazy(() => import('../pages/vendor/checks/DocumentCheck')));
 const NewTenderPage = Loadable(lazy(() => import('../pages/vendor/tender/NewTender')));
+const VendorCompanyDetail = Loadable(lazy(() => import('../pages/vendor/CompanyDetail')));
 /***** Vendor ****/
 
 /***** Forms ****/
@@ -147,9 +148,14 @@ const ThemeRoutes = [
             element: <RequireAuth allowedRoles={vendorAllowedRoles} />,
             children: [
               {
+                path: 'company/:companyId',
+                name: 'company detail',
+                element: <VendorCompanyDetail />,
+              },
+              {
                 path: 'company',
                 name: 'company',
-                element: <VendorCompanyPage />,
+                element: <VendorCompanyPage/>,
               },
               {
                 path: 'requests',
