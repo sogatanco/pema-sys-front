@@ -27,12 +27,16 @@ const CompanyList = ({ companies }) => {
       selector: (row) => row.alamat || '-',
     },
     {
+      name: 'Status',
+      selector: (row) => row.status_verifikasi ,
+    },
+    {
       name: 'Phone Number',
       selector: (row) => row.telepon || '-',
     },
     {
       name: 'Action',
-      selector: (row) => row.nama_perusahaan,
+      selector: (row) => (<Button size='sm' href={`/vendor/requests/check/${row.id}`} color='dark' >Detail</Button>)
     },
   ];
 
