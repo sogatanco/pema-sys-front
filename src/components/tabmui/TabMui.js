@@ -43,7 +43,7 @@ const TabMui = ({ activeTab, setActiveTab, items, panels, children }) => {
             </TabList>
           </Col>
           <Col md="1" className="d-flex justify-content-end">
-            <Button type="button">Approve</Button>
+            <Button type="button">Aksi</Button>
           </Col>
         </div>
       </Card>

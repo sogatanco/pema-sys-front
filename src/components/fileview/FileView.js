@@ -16,7 +16,7 @@ const FileView = ({ title, filename }) => {
             <span className="fw-bold">{filename}</span>
           </div>
           <div className="d-flex p-2">
-            <Button type="button" color="light" block className="d-flex">
+            <Button type="button" size="sm" color="light" block className="d-flex">
               Preview
             </Button>
           </div>
