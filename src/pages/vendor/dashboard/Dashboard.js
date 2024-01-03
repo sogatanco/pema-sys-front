@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { Card, CardBody, Row, Col } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import useAxios from '../../../hooks/useAxios';
 import BreadCrumbs from '../../../layouts/breadcrumbs/BreadCrumbs';
 
@@ -24,6 +25,7 @@ const Dashboard = () => {
           <Card className="mb-2">
             <CardBody>
               <strong>{d.nama_tender}</strong>
+              <Link to={`update-tender/${d.id_tender}`}>Update</Link>
             </CardBody>
           </Card>
           <Card>

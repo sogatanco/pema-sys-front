@@ -9,7 +9,7 @@ const Request = () => {
 
   const api = useAxios();
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['request-list'],
     queryFn: () =>
       api.get(`dapi/vendor/request-list`).then((res) => {
@@ -31,8 +31,18 @@ const Request = () => {
 
   return (
     <>
-      <RequestItem title="Company Data Requests" data={submitList} source="submit" />
-      <RequestItem title="Company Update Data Requests" data={updateList} source="update" />
+      <RequestItem
+        title="Company Data Requests"
+        data={submitList}
+        source="submit"
+        refetch={refetch}
+      />
+      <RequestItem
+        title="Company Update Data Requests"
+        data={updateList}
+        source="update"
+        refetch={refetch}
+      />
     </>
   );
 };

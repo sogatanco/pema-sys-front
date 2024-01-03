@@ -13,14 +13,18 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
+  Spinner,
 } from 'reactstrap';
+import useAxios from '../../../hooks/useAxios';
+import { alert } from '../../../components/atoms/Toast';
 
-const RequestItem = ({ title, data, source }) => {
+const RequestItem = ({ title, data, source, refetch }) => {
   const [modal, setModal] = useState(false);
   const [modal4, setModal4] = useState(false);
   const [selectedId, setSelectedId] = useState();
   const [selectedEmail, setSelectedEmail] = useState();
   const [selectedName, setSelectedName] = useState();
+  const [isApproving, setIsApproving] = useState(false);
   const toggle = () => {
     setModal(!modal);
   };
@@ -28,6 +32,8 @@ const RequestItem = ({ title, data, source }) => {
   const toggle4 = () => {
     setModal4(!modal4);
   };
+
+  const api = useAxios();
 
   const handleEmailPopup = (id, email) => {
     setModal(true);
@@ -41,7 +47,18 @@ const RequestItem = ({ title, data, source }) => {
     setSelectedName(name);
   };
 
-  console.log(selectedId);
+  const handleApprove = async () => {
+    setIsApproving(true);
+    await api
+      .put(`dapi/vendor/${selectedId}/update-status?val=terverifikasi`)
+      .then(() => {
+        refetch();
+        alert('success', `Data Perusahaan ${selectedName} telah terverifikasi.`);
+      })
+      .catch((err) => console.log(err));
+    setModal4(false);
+    setIsApproving(false);
+  };
 
   return (
     <Col lg="12">
@@ -101,9 +118,18 @@ const RequestItem = ({ title, data, source }) => {
                         </div>
                       </ModalBody>
                       <ModalFooter>
-                        <Button color="primary" onClick={toggle4.bind(null)}>
-                          Ya
-                        </Button>
+                        {isApproving ? (
+                          <Button type="button" color="primary" disabled>
+                            <div className="d-flex align-items-center gap-2">
+                              <Spinner size="sm" />
+                              Loading..
+                            </div>
+                          </Button>
+                        ) : (
+                          <Button type="button" color="primary" onClick={handleApprove}>
+                            Ya
+                          </Button>
+                        )}
                         <Button color="secondary" onClick={toggle4.bind(null)}>
                           Cancel
                         </Button>
@@ -123,6 +149,7 @@ RequestItem.propTypes = {
   source: PropTypes.string,
   title: PropTypes.string,
   data: PropTypes.array,
+  refetch: PropTypes.func,
 };
 
 export default RequestItem;

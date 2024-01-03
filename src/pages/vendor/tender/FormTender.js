@@ -1,17 +1,83 @@
-import React from 'react';
-import { Button, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import React, { useState } from 'react';
+import { Button, Col, Form, FormGroup, Input, Label, Row, Spinner } from 'reactstrap';
 import PropTypes from 'prop-types';
+import useAxios from '../../../hooks/useAxios';
+import useAuth from '../../../hooks/useAuth';
+import { alert } from '../../../components/atoms/Toast';
 
 const FormTender = ({ tenderUmum, pascaKualifikasi }) => {
+  const { auth } = useAuth();
+  const [values, setValues] = useState();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [documentsCheck, setDocumentsCheck] = useState({
+    dok_fakta_integritas: false,
+    dok_formulir_isian_kualifikasi: false,
+    dok_hse_plan: false,
+    dok_jaminan_penawaran: false,
+    dok_kelengkapan_izin_usaha: false,
+    dok_list_peralatan: false,
+    dok_listmanpower_plus_cv: false,
+    dok_metode_pelaksanaan: false,
+    dok_penawaran_komersial: false,
+    dok_perhitungan_tkdn: false,
+    dok_qaqc_plan: false,
+    dok_schedule_pekerjaan: false,
+    dok_struktur_organisasi_pekerjaan: false,
+    dok_surat_penyampaian_penawaran: false,
+    dok_wajib_lainnya: false,
+  });
+
+  const api = useAxios();
+
+  const handleInput = (e) => {
+    setValues((prev) => ({
+      ...prev,
+      [e.target.id]: e.target.value,
+    }));
+  };
+
+  const handleChecked = (e) => {
+    setDocumentsCheck((prev) => ({
+      ...prev,
+      [e.target.id]: e.target.checked,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    values.user_id = auth.user.employe_id;
+    values.pilihan_tender = 'eksternal project';
+    values.centang_dok_wajib = documentsCheck;
+    values.dok_tender = 'dok tender.pdf';
+    values.dok_deskripsi_tender = 'dokdesk tender.pdf';
+    await api
+      .post('dapi/vendor/tender', values)
+      .then(() => alert('success', 'New tender has been created.'))
+      .catch(() => {
+        alert('error', 'Something went wrong.');
+      });
+    setIsSubmitting(false);
+  };
+
   return (
     <Row className="mt-3">
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <Row>
           <Col md="6">
             <FormGroup>
-              <Label htmlFor="metode">Metode Pengadaan</Label>
-              <Input type="select" name="metode" id="metode">
-                <option value="umur">Umum</option>
+              <Label htmlFor="metode_pengadaan">Metode Pengadaan</Label>
+              <Input
+                type="select"
+                name="metode_pengadaan"
+                id="metode_pengadaan"
+                onChange={handleInput}
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  - Pilih -
+                </option>
+                <option value="umum">Umum</option>
                 <option value="terbatas">Terbatas</option>
                 <option value="pengadaan langsung">Pengadaan Langsung</option>
                 <option value="penunjukkan langsung">Penunjukkan Langsung</option>
@@ -20,7 +86,16 @@ const FormTender = ({ tenderUmum, pascaKualifikasi }) => {
             {tenderUmum && (
               <FormGroup>
                 <Label htmlFor="sistem_kualifikasi">Sistem Kualifikasi</Label>
-                <Input type="select" name="sistem_kualifikasi" id="sistem_kualifikasi">
+                <Input
+                  type="select"
+                  name="sistem_kualifikasi"
+                  id="sistem_kualifikasi"
+                  onChange={handleInput}
+                  defaultValue=""
+                >
+                  <option value="" disabled>
+                    - Pilih -
+                  </option>
                   <option value="pasca kualifikasi">Pasca Kualifikasi</option>
                   <option value="pra kualifikasi">Pra Kualifikasi</option>
                 </Input>
@@ -28,38 +103,48 @@ const FormTender = ({ tenderUmum, pascaKualifikasi }) => {
             )}
             <FormGroup>
               <Label htmlFor="nama_tender">Nama Tender</Label>
-              <Input type="text" name="nama_tender" id="nama_tender" />
+              <Input type="text" name="nama_tender" id="nama_tender" onChange={handleInput} />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="lokasi">Lokasi Pekerjaan</Label>
-              <Input type="text" name="lokasi" id="lokasi" />
+              <Input type="text" name="lokasi" id="lokasi" onChange={handleInput} />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="tgl_pendaftaran">Tanggal Pendaftaran</Label>
-              <Input type="text" name="tgl_pendaftaran" id="tgl_pendaftaran" />
+              <Input
+                type="text"
+                name="tgl_pendaftaran"
+                id="tgl_pendaftaran"
+                onChange={handleInput}
+              />
             </FormGroup>
             {tenderUmum ? (
-              <FormGroup>
-                <Label htmlFor="masa_sanggah">Masa Sanggah</Label>
-                <Input type="select" name="masa_sanggah" id="masa_sanggah">
-                  <option value="ada">Ada</option>
-                  <option value="tidak ada">Tidak Ada</option>
-                </Input>
-              </FormGroup>
+              ''
             ) : (
               <>
                 <FormGroup>
-                  <Label htmlFor="tipe_penyedia">Tipe Penyedia</Label>
-                  <Input type="select" name="tipe_penyedia" id="tipe_penyedia">
+                  <Label htmlFor="jenis_pengadaan">Jenis Pengadaan</Label>
+                  <Input
+                    type="select"
+                    name="jenis_pengadaan"
+                    id="jenis_pengadaan"
+                    onChange={handleInput}
+                    defaultValue=""
+                  >
+                    <option value="" disabled></option>
                     <option value="barang">Barang</option>
                     <option value="jasa">Jasa</option>
-                    <option value="barang dan jasa">barang dan Jasa</option>
+                    <option value="jasa konstruksi">Jasa Konstruksi</option>
+                    <option value="jasa konsultasi">Jasa Konsultasi</option>
                   </Input>
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="bidang_usaha">Bidang Usaha Penyedia</Label>
-                  <Input type="select" name="bidang_usaha" id="bidang_usaha">
-                    <option value="barang">ambil dari db</option>
+                  <Label htmlFor="kbli">Nomor KBLI</Label>
+                  <Input type="select" name="kbli" id="kbli" onChange={handleInput} defaultValue="">
+                    <option value="" disabled>
+                      - Pilih -
+                    </option>
+                    <option value="12345678">12345678 - ABCD</option>
                   </Input>
                 </FormGroup>
               </>
@@ -69,43 +154,55 @@ const FormTender = ({ tenderUmum, pascaKualifikasi }) => {
             {tenderUmum && (
               <>
                 <FormGroup>
-                  <Label htmlFor="tipe_penyedia">Tipe Penyedia</Label>
-                  <Input type="select" name="tipe_penyedia" id="tipe_penyedia">
+                  <Label htmlFor="jenis_pengadaan">Jenis Pengadaan</Label>
+                  <Input
+                    type="select"
+                    name="jenis_pengadaan"
+                    id="jenis_pengadaan"
+                    onChange={handleInput}
+                    defaultValue=""
+                  >
+                    <option value="" disabled>
+                      - Pilih -
+                    </option>
                     <option value="barang">Barang</option>
                     <option value="jasa">Jasa</option>
-                    <option value="barang dan jasa">barang dan Jasa</option>
+                    <option value="jasa konstruksi">Jasa Konstruksi</option>
+                    <option value="jasa konsultasi">Jasa Konsultasi</option>
                   </Input>
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="bidang_usaha">Bidang Usaha Penyedia</Label>
-                  <Input type="select" name="bidang_usaha" id="bidang_usaha">
-                    <option value="barang">ambil dari db</option>
+                  <Label htmlFor="kbli">Nomor KBLI</Label>
+                  <Input type="select" name="kbli" id="kbli" onChange={handleInput} defaultValue="">
+                    <option value="" disabled>
+                      - Pilih -
+                    </option>
+                    <option value="12345678">12345678 - ABCD</option>
                   </Input>
                 </FormGroup>
               </>
             )}
             <FormGroup>
               <Label htmlFor="hps">HPS</Label>
-              <Input type="text" name="hps" id="hps" />
-            </FormGroup>
-            <FormGroup>
-              <Label htmlFor="kbli">NIB Penyedia</Label>
-              <Input type="select" name="kbli" id="kbli">
-                <option value="">ambil dari db</option>
-              </Input>
+              <Input type="text" name="hps" id="hps" onChange={handleInput} />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="dok_tender">Dokumen Tender</Label>
-              <Input type="file" name="dok_tender" id="dok_tender" />
+              <Input type="file" name="dok_tender" id="dok_tender" onChange={handleInput} />
             </FormGroup>
             <FormGroup>
               <Label htmlFor="dok_deskripsi_tender">Dokumen Deskripsi Tender</Label>
-              <Input type="file" name="dok_deskripsi_tender" id="dok_deskripsi_tender" />
+              <Input
+                type="file"
+                name="dok_deskripsi_tender"
+                id="dok_deskripsi_tender"
+                onChange={handleInput}
+              />
             </FormGroup>
             {!tenderUmum && (
               <FormGroup>
                 <Label htmlFor="perusahaan">Perusahaan Yang Ditunjuk</Label>
-                <Input type="select" name="perusahaan" id="perusahaan">
+                <Input type="select" name="perusahaan" id="perusahaan" onChange={handleInput}>
                   <option value="">ambil dari db</option>
                 </Input>
               </FormGroup>
@@ -121,82 +218,94 @@ const FormTender = ({ tenderUmum, pascaKualifikasi }) => {
             <Row>
               <Col md="6">
                 <FormGroup check>
-                  <Input type="checkbox" id="check1" />
-                  <Label check htmlFor="check1" className="form-label">
+                  <Input
+                    type="checkbox"
+                    id="dok_surat_penyampaian_penawaran"
+                    onChange={handleChecked}
+                  />
+                  <Label check htmlFor="dok_surat_penyampaian_penawaran" className="form-label">
                     Surat Penyampaian Penawaran
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check2" />
-                  <Label check htmlFor="check2" className="form-label">
+                  <Input
+                    type="checkbox"
+                    id="dok_formulir_isian_kualifikasi"
+                    onChange={handleChecked}
+                  />
+                  <Label check htmlFor="dok_formulir_isian_kualifikasi" className="form-label">
                     Formulir Isian Kualifikasi
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check3" />
-                  <Label check htmlFor="check3" className="form-label">
+                  <Input type="checkbox" id="dok_fakta_integritas" onChange={handleChecked} />
+                  <Label check htmlFor="dok_fakta_integritas" className="form-label">
                     Pakta Integritas
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check4" />
-                  <Label check htmlFor="check4" className="form-label">
+                  <Input type="checkbox" id="dok_hse_plan" onChange={handleChecked} />
+                  <Label check htmlFor="dok_hse_plan" className="form-label">
                     HSE Plan
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check5" />
-                  <Label check htmlFor="check5" className="form-label">
+                  <Input type="checkbox" id="dok_listmanpower_plus_cv" onChange={handleChecked} />
+                  <Label check htmlFor="dok_listmanpower_plus_cv" className="form-label">
                     List Man Power + CV
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check6" />
-                  <Label check htmlFor="check6" className="form-label">
+                  <Input type="checkbox" id="dok_metode_pelaksanaan" onChange={handleChecked} />
+                  <Label check htmlFor="dok_metode_pelaksanaan" className="form-label">
                     Metode Pelaksanaan (Jasa)
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check7" />
-                  <Label check htmlFor="check7" className="form-label">
+                  <Input
+                    type="checkbox"
+                    id="dok_struktur_organisasi_pekerjaan"
+                    onChange={handleChecked}
+                  />
+                  <Label check htmlFor="dok_struktur_organisasi_pekerjaan" className="form-label">
                     Struktur Organisasi Pekerjaan
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check8" />
-                  <Label check htmlFor="check8" className="form-label">
+                  <Input type="checkbox" id="dok_wajib_lainnya" onChange={handleChecked} />
+                  <Label check htmlFor="dok_wajib_lainnya" className="form-label">
                     *Dokumen Wajib Lainnya
                   </Label>
                 </FormGroup>
               </Col>
               <Col md="6">
                 <FormGroup check>
-                  <Input type="checkbox" id="check9" />
-                  <Label check htmlFor="check9" className="form-label">
+                  <Input type="checkbox" id="dok_qaqc_plan" onChange={handleChecked} />
+                  <Label check htmlFor="dok_qaqc_plan" className="form-label">
                     QA/QC Plan
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check10" />
-                  <Label check htmlFor="check10" className="form-label">
+                  <Input type="checkbox" id="dok_perhitungan_tkdn" onChange={handleChecked} />
+                  <Label check htmlFor="dok_perhitungan_tkdn" className="form-label">
                     Perhitungan TKDN
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check11" />
-                  <Label check htmlFor="check11" className="form-label">
+                  <Input type="checkbox" id="dok_schedule_pekerjaan" onChange={handleChecked} />
+                  <Label check htmlFor="dok_schedule_pekerjaan" className="form-label">
                     Schedule Pekerjaan
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check12" />
-                  <Label check htmlFor="check12" className="form-label">
+                  <Input type="checkbox" id="dok_list_peralatan" onChange={handleChecked} />
+                  <Label check htmlFor="dok_list_peralatan" className="form-label">
                     List Peralatan
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check13" />
-                  <Label check htmlFor="check13" className="form-label">
+                  <Input type="checkbox" id="dok_kelengkapan_izin_usaha" onChange={handleChecked} />
+                  <Label check htmlFor="dok_kelengkapan_izin_usaha" className="form-label">
                     Kelengkapan Izin Usaha
                   </Label>
                 </FormGroup>
@@ -204,14 +313,18 @@ const FormTender = ({ tenderUmum, pascaKualifikasi }) => {
                 {pascaKualifikasi && (
                   <>
                     <FormGroup check>
-                      <Input type="checkbox" id="check14" />
-                      <Label check htmlFor="check14" className="form-label">
+                      <Input
+                        type="checkbox"
+                        id="dok_penawaran_komersial"
+                        onChange={handleChecked}
+                      />
+                      <Label check htmlFor="dok_penawaran_komersial" className="form-label">
                         Surat Penawaran Komersial
                       </Label>
                     </FormGroup>
                     <FormGroup check>
-                      <Input type="checkbox" id="check15" />
-                      <Label check htmlFor="check15" className="form-label">
+                      <Input type="checkbox" id="dok_jaminan_penawaran" onChange={handleChecked} />
+                      <Label check htmlFor="dok_jaminan_penawaran" className="form-label">
                         Jaminan Penawaran
                       </Label>
                     </FormGroup>
@@ -225,14 +338,14 @@ const FormTender = ({ tenderUmum, pascaKualifikasi }) => {
               <h4 className="fw-bold">Tahap II</h4>
               <Col md="6">
                 <FormGroup check>
-                  <Input type="checkbox" id="check14" />
-                  <Label check htmlFor="check14" className="form-label">
+                  <Input type="checkbox" id="dok_penawaran_komersial" onChange={handleChecked} />
+                  <Label check htmlFor="dok_penawaran_komersial" className="form-label">
                     Surat Penawaran Komersial
                   </Label>
                 </FormGroup>
                 <FormGroup check>
-                  <Input type="checkbox" id="check15" />
-                  <Label check htmlFor="check15" className="form-label">
+                  <Input type="checkbox" id="dok_penawaran_komersial" onChange={handleChecked} />
+                  <Label check htmlFor="dok_penawaran_komersial" className="form-label">
                     Jaminan Penawaran
                   </Label>
                 </FormGroup>
@@ -245,7 +358,18 @@ const FormTender = ({ tenderUmum, pascaKualifikasi }) => {
             <Button color="secondary" outline>
               Cancel
             </Button>
-            <Button color="success">Simpan</Button>
+            {isSubmitting ? (
+              <Button type="button" color="success" disabled>
+                <div className="d-flex align-items-center gap-2">
+                  <Spinner size="sm" />
+                  Menyimpan..
+                </div>
+              </Button>
+            ) : (
+              <Button type="submit" color="success" onClick={handleSubmit}>
+                Simpan
+              </Button>
+            )}
           </div>
         </div>
       </Form>

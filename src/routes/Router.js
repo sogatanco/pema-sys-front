@@ -39,6 +39,7 @@ const VendorCompanyPage = Loadable(lazy(() => import('../pages/vendor/Company'))
 const RequestPage = Loadable(lazy(() => import('../pages/vendor/requests/Request')));
 const VerificationPage = Loadable(lazy(() => import('../pages/vendor/checks/DocumentCheck')));
 const NewTenderPage = Loadable(lazy(() => import('../pages/vendor/tender/NewTender')));
+const UpdateTenderPage = Loadable(lazy(() => import('../pages/vendor/tender/EditTender')));
 const VendorCompanyDetail = Loadable(lazy(() => import('../pages/vendor/CompanyDetail')));
 /***** Vendor ****/
 
@@ -153,7 +154,7 @@ const ThemeRoutes = [
                 name: 'Dashboard',
                 element: <DashboardPage />,
               },
-              { 
+              {
                 path: 'company/:companyId',
                 name: 'company detail',
                 element: <VendorCompanyDetail />,
@@ -161,7 +162,7 @@ const ThemeRoutes = [
               {
                 path: 'company',
                 name: 'company',
-                element: <VendorCompanyPage/>,
+                element: <VendorCompanyPage />,
               },
               {
                 path: 'requests',
@@ -177,6 +178,11 @@ const ThemeRoutes = [
                 path: 'new-tender',
                 name: 'New Tender',
                 element: <NewTenderPage />,
+              },
+              {
+                path: 'update-tender',
+                name: 'Update Tender',
+                element: <UpdateTenderPage />,
               },
             ],
           },

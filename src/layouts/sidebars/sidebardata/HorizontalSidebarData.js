@@ -78,12 +78,12 @@ const SidebarData = [
         allowedRoles: ['AdminVendor'],
         icon: <MaterialIcon icon="business" />,
       },
-      {
-        title: 'Tender List',
-        href: '/daily',
-        allowedRoles: ['AdminVendor'],
-        icon: <MaterialIcon icon="rebase_edit" />,
-      },
+      // {
+      //   title: 'Tender List',
+      //   href: '/daily',
+      //   allowedRoles: ['AdminVendor'],
+      //   icon: <MaterialIcon icon="rebase_edit" />,
+      // },
       {
         title: 'Requests',
         href: 'vendor/requests',
