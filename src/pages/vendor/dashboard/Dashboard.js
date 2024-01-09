@@ -5,6 +5,7 @@ import { Card, CardBody, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import useAxios from '../../../hooks/useAxios';
 import BreadCrumbs from '../../../layouts/breadcrumbs/BreadCrumbs';
+import rupiah from '../../../utils/rupiah';
 
 const Dashboard = () => {
   const api = useAxios();
@@ -16,7 +17,7 @@ const Dashboard = () => {
         return res.data.data;
       }),
   });
-  // console.log(data)
+  console.log(data);
   return (
     <>
       <BreadCrumbs />
@@ -42,22 +43,24 @@ const Dashboard = () => {
                       <tr>
                         <td>Waktu Pendaftaran</td>
                         <td>:</td>
-                        <td>{d.batas_pendafaran}</td>
+                        <td>
+                          {d.tgl_pendaftaran} s/d {d.batas_pendaftaran}
+                        </td>
                       </tr>
                       <tr>
-                        <td>Type Penyedia</td>
+                        <td>Jenis Pengadaan</td>
                         <td>:</td>
-                        <td>{d.tipe_penyedia}</td>
+                        <td>{d.jenis_pengadaan}</td>
                       </tr>
                       <tr>
                         <td>HPS</td>
                         <td>:</td>
-                        <td>-</td>
+                        <td>{rupiah(d.hps)}</td>
                       </tr>
                       <tr>
-                        <td>NIB Penyedia</td>
+                        <td>Nomor KBLI</td>
                         <td>:</td>
-                        <td>-</td>
+                        <td>{d.kbli}</td>
                       </tr>
                       <tr>
                         <td>Sistem Kualifikasi</td>

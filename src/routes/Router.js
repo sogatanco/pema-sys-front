@@ -180,7 +180,7 @@ const ThemeRoutes = [
                 element: <NewTenderPage />,
               },
               {
-                path: 'update-tender',
+                path: 'update-tender/:id',
                 name: 'Update Tender',
                 element: <UpdateTenderPage />,
               },

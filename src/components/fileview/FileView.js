@@ -3,7 +3,7 @@ import { Button, Col, Row } from 'reactstrap';
 import MaterialIcon from '@material/react-material-icon';
 import PropTypes from 'prop-types';
 
-const FileView = ({ title, filename }) => {
+const FileView = ({ title, filename, mode, action }) => {
   return (
     <Row className="align-items-center mb-4">
       <span>{title}</span>
@@ -16,9 +16,15 @@ const FileView = ({ title, filename }) => {
             <span className="fw-bold">{filename}</span>
           </div>
           <div className="d-flex p-2">
-            <Button type="button" size="sm" color="light" block className="d-flex">
-              Preview
-            </Button>
+            {mode === 'preview' ? (
+              <Button type="button" size="sm" color="light" className="d-flex" onClick={action}>
+                Preview
+              </Button>
+            ) : (
+              <Button type="button" size="sm" color="secondary" className="d-flex" onClick={action}>
+                Edit
+              </Button>
+            )}
           </div>
         </div>
       </Col>
@@ -34,6 +40,8 @@ const FileView = ({ title, filename }) => {
 FileView.propTypes = {
   title: PropTypes.string,
   filename: PropTypes.string,
+  mode: PropTypes.string,
+  action: PropTypes.func,
 };
 
 export default FileView;
