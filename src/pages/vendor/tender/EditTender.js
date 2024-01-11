@@ -596,9 +596,11 @@ const EditTender = () => {
             </Row>
             <div className="d-flex justify-content-end">
               <div className="d-flex gap-3">
-                <Button color="secondary" outline>
-                  Cancel
-                </Button>
+                <Link to="/vendor">
+                  <Button type="button" color="secondary" outline>
+                    Cancel
+                  </Button>
+                </Link>
                 {isSaving ? (
                   <Button type="button" color="success" disabled>
                     <div className="d-flex align-items-center gap-2">

@@ -35,11 +35,13 @@ const DocumentCheck = () => {
 
   return (
     <TabMui items={tabItems} panels={tabItems} {...{ activeTab, setActiveTab }}>
-      {activeTab === 1 && <TabGeneral companyId={id} />}
-      {activeTab === 2 && <TabOfficial companyId={id} />}
-      {activeTab === 3 && <TabDocument companyId={id} />}
-      {activeTab === 4 && <TabPortfolio companyId={id} />}
-      {activeTab === 5 && <TabBusinessField companyId={id} />}
+      <>
+        {activeTab === 1 && <TabGeneral companyId={id} />}
+        {activeTab === 2 && <TabOfficial companyId={id} />}
+        {activeTab === 3 && <TabDocument companyId={id} />}
+        {activeTab === 4 && <TabPortfolio companyId={id} />}
+        {activeTab === 5 && <TabBusinessField companyId={id} />}
+      </>
     </TabMui>
   );
 };

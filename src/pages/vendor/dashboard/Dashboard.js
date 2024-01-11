@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import useAxios from '../../../hooks/useAxios';
 import BreadCrumbs from '../../../layouts/breadcrumbs/BreadCrumbs';
 import rupiah from '../../../utils/rupiah';
+import TenderCollapse from './TenderCollapse';
 
 const Dashboard = () => {
   const api = useAxios();
@@ -17,21 +18,23 @@ const Dashboard = () => {
         return res.data.data;
       }),
   });
-  console.log(data);
+
   return (
     <>
       <BreadCrumbs />
       {data?.map((d) => (
         <div key={d.id_tender}>
-          <Card className="mb-2">
+          <Card className="mb-2 rounded-3">
             <CardBody>
-              <strong>{d.nama_tender}</strong>
-              <Link to={`update-tender/${d.id_tender}`}>Update</Link>
+              <div className="d-flex">
+                <strong>{d.nama_tender}</strong>
+                <Link to={`update-tender/${d.id_tender}`}>Update</Link>
+              </div>
             </CardBody>
           </Card>
-          <Card>
+          <Card className="rounded-3">
             <CardBody>
-              <Row>
+              <Row className="mb-2">
                 <Col md="6">
                   <table width="100%">
                     <tbody>
@@ -72,6 +75,7 @@ const Dashboard = () => {
                 </Col>
                 <Col md="6">sdgsdg</Col>
               </Row>
+              <TenderCollapse tender={d.id_tender} />
             </CardBody>
           </Card>
         </div>

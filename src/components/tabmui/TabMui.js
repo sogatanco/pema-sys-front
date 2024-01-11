@@ -15,16 +15,43 @@ import {
   ModalBody,
   ModalFooter,
   ModalHeader,
+  Spinner,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
+import { alert } from '../atoms/Toast';
+import useAxios from '../../hooks/useAxios';
 
 const TabMui = ({ activeTab, setActiveTab, items, panels, children }) => {
+  const { id } = useParams();
   const [modal, setModal] = useState(false);
+  const [comment, setComment] = useState();
+  const [isApproving, setIsApproving] = useState(false);
   const toggle = () => {
     setModal(!modal);
   };
   const handleActive = (event, val) => {
     setActiveTab(val);
+  };
+
+  const api = useAxios();
+
+  const handleComment = (e) => {
+    setComment(e.target.value);
+  };
+
+  const handleRevisi = async () => {
+    setIsApproving(true);
+    await api
+      .post(`dapi/vendor/verifikasi/${id}`, { status: 'revisi', komentar: comment })
+      .then(() => {
+        alert('success', `Informasi revisi telah dikirim`);
+      })
+      .catch(() => {
+        alert('error', 'Gagal mengirim data');
+      });
+    setModal(false);
+    setIsApproving(false);
   };
 
   return (
@@ -39,6 +66,7 @@ const TabMui = ({ activeTab, setActiveTab, items, panels, children }) => {
             >
               {items?.map((item) => (
                 <Tab
+                  key={item.id}
                   label={
                     <Badge
                       badgeContent={0}
@@ -66,12 +94,30 @@ const TabMui = ({ activeTab, setActiveTab, items, panels, children }) => {
               <ModalBody>
                 <div className="d-flex flex-column ">
                   <Label htmlFor="comment">Komentar</Label>
-                  <Input type="textarea" id="comment" rows="10" name="comment"></Input>
+                  <Input
+                    type="textarea"
+                    id="comment"
+                    rows="10"
+                    name="comment"
+                    onChange={(e) => handleComment(e)}
+                  />
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="primary" onClick={toggle.bind(null)}>
-                  Kirim
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    handleRevisi();
+                  }}
+                >
+                  {isApproving ? (
+                    <div className="d-flex align-items-center gap-2">
+                      <Spinner size="sm" />
+                      Mengirim..
+                    </div>
+                  ) : (
+                    'Kirim'
+                  )}
                 </Button>
                 <Button color="secondary" outline onClick={toggle.bind(null)}>
                   Cancel
@@ -93,7 +139,7 @@ const TabMui = ({ activeTab, setActiveTab, items, panels, children }) => {
 };
 
 TabMui.propTypes = {
-  activeTab: PropTypes.number,
+  activeTab: PropTypes.string,
   setActiveTab: PropTypes.func,
   items: PropTypes.array,
   panels: PropTypes.array,
