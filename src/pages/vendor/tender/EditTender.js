@@ -13,6 +13,7 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
+import Select from 'react-select';
 import MaterialIcon from '@material/react-material-icon';
 import { Link, useParams } from 'react-router-dom';
 import useAxios from '../../../hooks/useAxios';
@@ -29,6 +30,8 @@ const EditTender = () => {
   const [dokDeskTenderHidden, setDokDeskTenderHidden] = useState(true);
   const [dokTenderFile, setDokTenderFile] = useState();
   const [dokDeskTenderFile, setDokDeskTenderFile] = useState();
+  const [kblis, setKblis] = useState([]);
+  const [kblisSelected, setKblisSelected] = useState([]);
   const [documentsCheck, setDocumentsCheck] = useState({
     dok_fakta_integritas: false,
     dok_formulir_isian_kualifikasi: false,
@@ -47,6 +50,8 @@ const EditTender = () => {
     dok_wajib_lainnya: false,
   });
 
+  const baseURL = process.env.REACT_APP_BASEURL;
+
   const api = useAxios();
 
   const { data, refetch } = useQuery({
@@ -56,6 +61,17 @@ const EditTender = () => {
         return res.data.data;
       }),
   });
+
+  useEffect(() => {
+    async function fetchKblis() {
+      await api
+        .get('dapi/vendor/masterkbli')
+        .then((res) => setKblis(res.data.data))
+        .catch((err) => console.log(err));
+    }
+
+    fetchKblis();
+  }, []);
 
   useEffect(() => {
     setTenderTemp(data);
@@ -119,10 +135,13 @@ const EditTender = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     setIsSaving(true);
+    const theKblis = [];
+    kblisSelected.map((item) => theKblis.push(item.value));
     tenderTemp.id = tenderTemp?.id_tender;
     tenderTemp.centang_dok_wajib = documentsCheck;
     tenderTemp.dok_tender = dokTenderFile;
     tenderTemp.dok_deskripsi_tender = dokDeskTenderFile;
+    tenderTemp.kbli = theKblis;
 
     await api
       .post('dapi/vendor/tender/update', tenderTemp)
@@ -252,12 +271,13 @@ const EditTender = () => {
                     </FormGroup>
                     <FormGroup>
                       <Label htmlFor="kbli">Nomor KBLI</Label>
-                      <Input type="select" name="kbli" id="kbli" onChange={handleInput} value="">
-                        <option value="" disabled>
-                          - Pilih -
-                        </option>
-                        <option value="12345678">12345678 - ABCD</option>
-                      </Input>
+                      <Select
+                        closeMenuOnSelect
+                        defaultValue={tenderTemp?.kbli_list}
+                        options={kblis}
+                        onChange={(choice) => setKblisSelected(choice)}
+                        isMulti
+                      />
                     </FormGroup>
                   </>
                 )}
@@ -282,12 +302,13 @@ const EditTender = () => {
                     </FormGroup>
                     <FormGroup>
                       <Label htmlFor="kbli">Nomor KBLI</Label>
-                      <Input type="select" name="kbli" id="kbli" onChange={handleInput} value="">
-                        <option value="" disabled>
-                          - Pilih -
-                        </option>
-                        <option value="12345678">12345678 - ABCD</option>
-                      </Input>
+                      <Select
+                        closeMenuOnSelect
+                        defaultValue={tenderTemp?.kbli_list}
+                        options={kblis}
+                        onChange={(choice) => setKblisSelected(choice)}
+                        isMulti
+                      />
                     </FormGroup>
                   </>
                 )}
@@ -315,7 +336,12 @@ const EditTender = () => {
                         />
                       ) : (
                         <Col className="py-2">
-                          <Link>File Dokumen Tender</Link>
+                          <Link
+                            to={`${baseURL}vendor_file/tender/${tenderTemp?.id_tender}/${tenderTemp?.dok_tender}`}
+                            target="_blank"
+                          >
+                            File Dokumen Tender
+                          </Link>
                         </Col>
                       )}
                     </FormGroup>
@@ -348,7 +374,12 @@ const EditTender = () => {
                         />
                       ) : (
                         <Col className="py-2">
-                          <Link>File Dokumen Deskripsi Tender</Link>
+                          <Link
+                            to={`${baseURL}vendor_file/tender/${tenderTemp?.id_tender}/${tenderTemp?.dok_deskripsi_tender}`}
+                            target="_blank"
+                          >
+                            File Dokumen Deskripsi Tender
+                          </Link>
                         </Col>
                       )}
                     </FormGroup>

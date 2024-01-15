@@ -41,6 +41,8 @@ const VerificationPage = Loadable(lazy(() => import('../pages/vendor/checks/Docu
 const NewTenderPage = Loadable(lazy(() => import('../pages/vendor/tender/NewTender')));
 const UpdateTenderPage = Loadable(lazy(() => import('../pages/vendor/tender/EditTender')));
 const VendorCompanyDetail = Loadable(lazy(() => import('../pages/vendor/CompanyDetail')));
+const VendorDocPreview = Loadable(lazy(() => import('../pages/vendor/DocumentPreview')));
+
 /***** Vendor ****/
 
 /***** Forms ****/
@@ -221,6 +223,11 @@ const ThemeRoutes = [
             ],
           },
         ],
+      },
+      {
+        path: 'preview',
+        name: 'Document Preview',
+        element: <VendorDocPreview />,
       },
     ],
   },

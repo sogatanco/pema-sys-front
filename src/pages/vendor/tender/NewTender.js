@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Button,
@@ -13,6 +13,7 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
+import Select from 'react-select';
 import useAxios from '../../../hooks/useAxios';
 import getBase64 from '../../../utils/generateFile';
 import { alert } from '../../../components/atoms/Toast';
@@ -24,6 +25,8 @@ const NewTender = () => {
   const [pascaKualifikasi, setPaskaKualifikasi] = useState(true);
   const [dokTenderFile, setDokTenderFile] = useState();
   const [dokDeskTenderFile, setDokDeskTenderFile] = useState();
+  const [kblis, setKblis] = useState([]);
+  const [kblisSelected, setKblisSelected] = useState([]);
 
   const [documentsCheck, setDocumentsCheck] = useState({
     dok_fakta_integritas: false,
@@ -44,6 +47,17 @@ const NewTender = () => {
   });
 
   const api = useAxios();
+
+  useEffect(() => {
+    async function fetchKblis() {
+      await api
+        .get('dapi/vendor/masterkbli')
+        .then((res) => setKblis(res.data.data))
+        .catch((err) => console.log(err));
+    }
+
+    fetchKblis();
+  }, []);
 
   const handleInput = (e) => {
     setValues((prev) => ({
@@ -92,19 +106,27 @@ const NewTender = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    values.pilihan_tender = 'eksternal project';
-    values.centang_dok_wajib = documentsCheck;
-    values.dok_tender = dokTenderFile;
-    values.dok_deskripsi_tender = dokDeskTenderFile;
-    await api
-      .post('dapi/vendor/tender', values)
-      .then(() => {
-        alert('success', 'New tender has been created.');
-        document.getElementById('new-tender').reset();
-      })
-      .catch(() => {
-        alert('error', 'Something went wrong.');
-      });
+    const theKblis = [];
+    kblisSelected.map((item) => theKblis.push(item.value));
+    if (values) {
+      values.pilihan_tender = 'eksternal project';
+      values.centang_dok_wajib = documentsCheck;
+      values.dok_tender = dokTenderFile;
+      values.dok_deskripsi_tender = dokDeskTenderFile;
+      values.kbli = theKblis;
+
+      await api
+        .post('dapi/vendor/tender', values)
+        .then(() => {
+          alert('success', 'New tender has been created.');
+          document.getElementById('new-tender').reset();
+        })
+        .catch(() => {
+          alert('error', 'Something went wrong.');
+        });
+    } else {
+      alert('error', 'Tidak ada data yang diisi');
+    }
     setIsSubmitting(false);
   };
 
@@ -251,7 +273,7 @@ const NewTender = () => {
                       </FormGroup>
                       <FormGroup>
                         <Label htmlFor="kbli">Nomor KBLI</Label>
-                        <Input
+                        {/* <Input
                           type="select"
                           name="kbli"
                           id="kbli"
@@ -262,13 +284,19 @@ const NewTender = () => {
                             - Pilih -
                           </option>
                           <option value="12345678">12345678 - ABCD</option>
-                        </Input>
+                        </Input> */}
+                        <Select
+                          closeMenuOnSelect
+                          options={kblis}
+                          onChange={(choice) => setKblisSelected(choice)}
+                          isMulti
+                        />
                       </FormGroup>
                     </>
                   )}
                   <FormGroup>
                     <Label htmlFor="hps">HPS</Label>
-                    <Input type="text" name="hps" id="hps" onChange={handleInput} />
+                    <Input type="number" name="hps" id="hps" onChange={handleInput} />
                   </FormGroup>
                   <FormGroup>
                     <Label htmlFor="dok_tender">Dokumen Tender</Label>
@@ -486,9 +514,6 @@ const NewTender = () => {
               </Row>
               <div className="d-flex justify-content-end">
                 <div className="d-flex gap-3">
-                  <Button color="secondary" outline>
-                    Cancel
-                  </Button>
                   {isSubmitting ? (
                     <Button type="button" color="success" disabled>
                       <div className="d-flex align-items-center gap-2">

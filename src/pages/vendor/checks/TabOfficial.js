@@ -41,7 +41,11 @@ const TabOfficial = ({ companyId }) => {
         </tbody>
       </Table>
 
-      <FileView filename="File Struktur dan NPWP Jajaran Direksi/Komisaris Perusahaan" />
+      <FileView
+        filename="File Struktur dan NPWP Jajaran Direksi/Komisaris Perusahaan"
+        base64={data?.struktur_base64}
+        mode="preview"
+      />
     </>
   );
 };

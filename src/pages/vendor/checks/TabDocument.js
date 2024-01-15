@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Col, Table } from 'reactstrap';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import useAxios from '../../../hooks/useAxios';
 import FileView from '../../../components/fileview/FileView';
 
@@ -67,9 +68,11 @@ const TabDocument = ({ companyId }) => {
                   <td>{ak.nama_notaris}</td>
                   <td>{ak.jenis}</td>
                   <td>
-                    <Button type="button" size="sm" color="light">
-                      Preview
-                    </Button>
+                    <Link to={`/preview?data=general&doc=${ak.file_base64}`} target="_blank">
+                      <Button type="button" size="sm" color="light">
+                        Preview
+                      </Button>
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -102,9 +105,11 @@ const TabDocument = ({ companyId }) => {
                   <td>{iz.tgl_terbit}</td>
                   <td>{iz.tgl_berakhir}</td>
                   <td>
-                    <Button type="button" size="sm" color="light">
-                      Preview
-                    </Button>
+                    <Link to={`/preview?data=general&doc=${iz.file_base64}`} target="_blank">
+                      <Button type="button" size="sm" color="light">
+                        Preview
+                      </Button>
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -117,7 +122,7 @@ const TabDocument = ({ companyId }) => {
       {dokumen?.length > 0
         ? dokumen.map((dok, i) => (
             <Col sm="12" md="8" key={dok.name} className="mt-4">
-              <FileView filename={fileName[i]} />
+              <FileView filename={fileName[i]} mode="preview" base64={dok.base_64} />
             </Col>
           ))
         : ''}
