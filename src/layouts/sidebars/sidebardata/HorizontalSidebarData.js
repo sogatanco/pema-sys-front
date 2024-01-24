@@ -47,10 +47,10 @@ const SidebarData = [
     allowedRoles: ['Employee'],
   },
 
-  { caption: 'Inventory' },
+  { caption: 'Asset' },
   {
-    title: 'Inventory',
-    href: '/inventory',
+    title: 'Asset',
+    href: '/asset ',
     id: 4,
     icon: <MaterialIcon icon="grid_view" />,
     ddType: 'two-column',

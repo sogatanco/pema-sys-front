@@ -120,13 +120,13 @@ const ThemeRoutes = [
             element: <DailyPage />,
           },
           {
-            path: 'inventory',
-            name: 'Inventory',
+            path: 'asset',
+            name: 'Asset',
             element: <AssetPage />,
           },
           {
-            path: 'inventory/:assetId',
-            name: 'Detail Inventory',
+            path: 'asset/:assetId',
+            name: 'Detail Asset',
             element: <DetailAsset />,
           },
           {

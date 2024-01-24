@@ -154,7 +154,8 @@ const DetailAsset = () => {
   };
 
   const addChild = async () => {
-    const vadd = { id_parent: assetId, amount: numberChild };
+    const vadd = { id_parent: (+assetId), amount: (+numberChild) };
+    console.log(vadd)
     await api
       .post(`dapi/inven/child/add`, vadd)
       .then((res) => {
