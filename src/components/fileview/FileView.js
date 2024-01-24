@@ -2,8 +2,9 @@ import React from 'react';
 import { Button, Col, Row } from 'reactstrap';
 import MaterialIcon from '@material/react-material-icon';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
-const FileView = ({ title, filename, mode, action }) => {
+const FileView = ({ title, filename, mode, action, base64 }) => {
   return (
     <Row className="align-items-center mb-4">
       <span>{title}</span>
@@ -17,9 +18,11 @@ const FileView = ({ title, filename, mode, action }) => {
           </div>
           <div className="d-flex p-2">
             {mode === 'preview' ? (
-              <Button type="button" size="sm" color="light" className="d-flex" onClick={action}>
-                Preview
-              </Button>
+              <Link to={`/preview?data=general&doc=${base64}`} target="_blank">
+                <Button type="button" size="sm" color="light">
+                  Preview
+                </Button>
+              </Link>
             ) : (
               <Button type="button" size="sm" color="secondary" className="d-flex" onClick={action}>
                 Edit
@@ -42,6 +45,7 @@ FileView.propTypes = {
   filename: PropTypes.string,
   mode: PropTypes.string,
   action: PropTypes.func,
+  base64: PropTypes.string,
 };
 
 export default FileView;

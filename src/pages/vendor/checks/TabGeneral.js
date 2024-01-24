@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
+import { Link } from 'react-router-dom';
 import useAxios from '../../../hooks/useAxios';
 
 const TabGeneral = ({ companyId }) => {
@@ -23,6 +24,10 @@ const TabGeneral = ({ companyId }) => {
     <table className="w-100">
       <tbody>
         <tr>
+          <td width="300">Bentuk Perusahaan</td>
+          <td className="fw-bold">{data.bentuk_usaha}</td>
+        </tr>
+        <tr>
           <td width="300">Nama Perusahaan</td>
           <td className="fw-bold">{data.nama_perusahaan}</td>
         </tr>
@@ -35,10 +40,6 @@ const TabGeneral = ({ companyId }) => {
           <td className="fw-bold">{data.tipe}</td>
         </tr>
         <tr>
-          <td width="300">Bentuk Perusahaan</td>
-          <td className="fw-bold">{data.bentuk_usaha}</td>
-        </tr>
-        <tr>
           <td width="300">Email Perusahaan</td>
           <td className="fw-bold">{data.email}</td>
         </tr>
@@ -49,14 +50,12 @@ const TabGeneral = ({ companyId }) => {
         <tr>
           <td width="300">File NPWP</td>
           <td className="fw-bold">
-            <Button type="button" size="sm" color="light">
-              Preview file NPWP
-            </Button>
+            <Link to={`/preview?data=general&doc=${data?.base64_npwp}`} target="_blank">
+              <Button type="button" size="sm" color="light">
+                Preview File NPWP
+              </Button>
+            </Link>
           </td>
-        </tr>
-        <tr>
-          <td width="300">Bidang Usaha</td>
-          <td className="fw-bold"> - </td>
         </tr>
         <tr>
           <td width="300">Kontak</td>
@@ -73,9 +72,11 @@ const TabGeneral = ({ companyId }) => {
         <tr>
           <td width="300">File PVD</td>
           <td className="fw-bold">
-            <Button type="button" size="sm" color="light">
-              Preview file PVD
-            </Button>
+            <Link to={`/preview?data=general&doc=${data?.base64_pvd}`} target="_blank">
+              <Button type="button" size="sm" color="light">
+                Preview File PVD
+              </Button>
+            </Link>
           </td>
         </tr>
       </tbody>
