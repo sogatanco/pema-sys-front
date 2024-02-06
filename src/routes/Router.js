@@ -62,6 +62,7 @@ const AtkReportPage = Loadable(lazy(() => import('../pages/report/AtkReport')));
 
 const Dashboard2 = Loadable(lazy(() => import('../views/dashboards/Dashboard2')));
 const Unauthorized = Loadable(lazy(() => import('../pages/auth/Unauthorized')));
+const ChangePassword = Loadable(lazy(() => import('../pages/auth/ChangePassword')));
 
 /***** CASL Access Control ****/
 // const CASL = Loadable(lazy(() => import('../views/apps/accessControlCASL/AccessControl')));
@@ -229,6 +230,11 @@ const ThemeRoutes = [
                 element: <AtkReportPage />,
               },
             ],
+          },
+          {
+            path: 'auth/change-password',
+            name: 'Change Password',
+            element: <ChangePassword />,
           },
         ],
       },

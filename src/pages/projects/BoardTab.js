@@ -8,6 +8,12 @@ import useAxios from '../../hooks/useAxios';
 import BoardDone from './BoardDone';
 // import NewTaskModal from './NewTaskModal';
 
+const removeDuplicates = (arr) => {
+  return arr?.filter(
+    (obj, index) => arr?.findIndex((item) => item.task_id === obj.task_id) === index,
+  );
+};
+
 const BoardTab = () => {
   const { projectId } = useParams();
   const [todos, setTodos] = useState();
@@ -40,8 +46,8 @@ const BoardTab = () => {
     });
 
     setTodos(todofFiltered);
-    setInProgress(inProgressfFiltered);
-    setDone(DoneFiltered);
+    setInProgress(removeDuplicates(inProgressfFiltered));
+    setDone(removeDuplicates(DoneFiltered));
   }, [data]);
 
   return (
