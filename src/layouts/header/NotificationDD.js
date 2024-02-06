@@ -33,7 +33,7 @@ const NotificationDD = ({ data, refetch, setIsNotifOpen }) => {
           ? navigate(`/projects/details/${projectId}?n=${notifId}&to=bast-review`)
           : navigate(`/projects/details/${projectId}`),
       )
-      .catch((err) => console.log(err), setIsLoading(false), setIsNotifOpen(false));
+      .catch(() => setIsLoading(false), setIsNotifOpen(false));
   };
 
   return (

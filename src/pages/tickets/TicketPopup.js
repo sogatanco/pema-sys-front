@@ -68,7 +68,6 @@ const TicketPopup = ({ ticket, isOpen, setIsOpen, refetch }) => {
         employe_name: assignedEmployee.label,
       })
       .then((res) => {
-        console.log(res);
         alert('success', `Assignment has been sent to ${res.data.data.employe_name}`);
       })
       .catch((err) => console.log(err));

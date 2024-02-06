@@ -13,7 +13,7 @@ const BoardTab = () => {
   const [todos, setTodos] = useState();
   const [inProgress, setInProgress] = useState();
   const [Done, setDone] = useState();
-  const [isMemberActive, setIsMemberActive] = useState(true);
+  // const [isMemberActive, setIsMemberActive] = useState(true);
 
   const api = useAxios();
 
@@ -21,7 +21,7 @@ const BoardTab = () => {
     queryKey: ['todos'],
     queryFn: () =>
       api.get(`api/task/${projectId}/employe/all`).then((res) => {
-        setIsMemberActive(res.data.is_member_active);
+        // setIsMemberActive(res.data.is_member_active);
         return res.data.tasks;
       }),
   });
@@ -67,23 +67,37 @@ const BoardTab = () => {
             </CardBody>
           </Card>
         </Col>
-      ) : isMemberActive ? (
+      ) : (
         <>
           <BoardToDo data={todos} {...{ isLoading, error, refetch, isRefetching }} />
           <BoardInProgress data={inProgress} {...{ isLoading, error, refetch, isRefetching }} />
           <BoardDone data={Done} {...{ isLoading, error, refetch, isRefetching }} />
         </>
-      ) : (
-        <Col>
-          <Card>
-            <CardBody className="text-center">
-              <h6 className="tex-muted">
-                You cannot create a task because you are not an active member.
-              </h6>
-            </CardBody>
-          </Card>
-        </Col>
       )}
+      {/* // ) : isMemberActive ? ( //{' '}
+      <>
+        // <BoardToDo data={todos} {...{ isLoading, error, refetch, isRefetching }} />
+        // <BoardInProgress data={inProgress} {...{ isLoading, error, refetch, isRefetching }} />
+        // <BoardDone data={Done} {...{ isLoading, error, refetch, isRefetching }} />
+        //{' '}
+      </>
+      // ) : ( //{' '}
+      <Col>
+        //{' '}
+        <Card>
+          //{' '}
+          <CardBody className="text-center">
+            //{' '}
+            <h6 className="tex-muted">
+              // You cannot create a task because you are not an active member. //{' '}
+            </h6>
+            //{' '}
+          </CardBody>
+          //{' '}
+        </Card>
+        //{' '}
+      </Col>
+      // )} */}
     </Row>
   );
 };

@@ -26,22 +26,23 @@ const useAxios = () => {
         const isExpired = tokenExp.diff(dayjs()) < 1;
 
         if (isExpired) {
-          let hours = tokenExp.diff(dayjs(), 'hours');
-          const days = Math.floor(hours / 24);
-          // eslint-disable-next-line operator-assignment
-          hours = hours - days * 24;
-
-          // user inactive after 12 hours
-          if (hours >= 12) {
-            dispatch({ type: 'LOGOUT' });
-            navigate('/auth/lockscreen');
-          }
-
           dispatch({ type: 'LOGOUT' });
           navigate('/auth/login');
 
+          // let hours = tokenExp.diff(dayjs(), 'hours');
+          // const days = Math.floor(hours / 24);
+          // // eslint-disable-next-line operator-assignment
+          // hours = hours - days * 24;
+
+          // // user inactive after 12 hours
+          // if (hours >= 12) {
+          //   dispatch({ type: 'LOGOUT' });
+          //   // navigate('/auth/lockscreen');
+          //   navigate('/auth/login');
+          // }
+
           // const response = await axios.post(
-          //   `${baseURL}/auth/refresh-token`,
+          //   `${baseURL}api/auth/refresh`,
           //   {},
           //   { withCredentials: true },
           // );

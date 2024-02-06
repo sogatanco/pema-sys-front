@@ -254,7 +254,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
                     ) : (
                       <div></div>
                     )}
-                    <div className="member-2">
+                    <div className="members">
                       <div className="member-item">
                         {td?.pics?.map(
                           (pic, idx) =>

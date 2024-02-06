@@ -187,8 +187,6 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
 
   const fileUrl = process.env.REACT_APP_BASEURL;
 
-  console.log('tasssssk:', task);
-
   return (
     <>
       <Modal isOpen={modal} toggle={toggle.bind(null)} size="xl" fade={false}>
@@ -202,7 +200,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
             <div className="popup-body">
               <div className="left">
                 {/* {auth?.user.employe_id !== task.employe_id.toString() || mode === 'activities' ? ( */}
-                {mode === 'activities' ? (
+                {mode === 'activities' || task?.status === 3 ? (
                   <>
                     <>
                       <div className="top">
@@ -289,7 +287,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                     <form onSubmit={handleUpdate}>
                       <div className="top">
                         <div className="date">
-                          <h6>Start Date {task.subtasks?.length}</h6>
+                          <h6>Start Date</h6>
                           <span>{taskTemp?.start_date || '-'}</span>
                         </div>
                         <div className="date">
@@ -356,7 +354,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                           type="submit"
                           className="btn"
                           color="info"
-                          disabled={updating}
+                          disabled={updating || task?.status === 3}
                           size="sm"
                         >
                           {updating ? 'Updating...' : 'Update'}
@@ -384,7 +382,13 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                             {files[0]?.name}
                           </span>
                         </div>
-                        <Button type="submit" className="btn" outline size="sm">
+                        <Button
+                          type="submit"
+                          className="btn"
+                          outline
+                          size="sm"
+                          disabled={task?.status === 3}
+                        >
                           {uploading ? 'Uploading...' : 'Upload'}
                         </Button>
                       </div>

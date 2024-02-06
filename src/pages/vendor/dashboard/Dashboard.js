@@ -2,7 +2,6 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { Card, CardBody, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
 import useAxios from '../../../hooks/useAxios';
 import TenderCollapse from './TenderCollapse';
 
@@ -19,7 +18,7 @@ const Dashboard = () => {
 
   return (
     <>
-      {data?.map((d) => (
+      {data?.reverse().map((d) => (
         <Card className="mb-2 rounded-3" key={d.id_tender}>
           <CardBody>
             <div className="d-flex justify-content-between mb-2">
@@ -42,11 +41,11 @@ const Dashboard = () => {
                   </small>
                 </div>
               </div>
-              <Link to={`update-tender/${d.id_tender}`}>
-                <Button type="button" color="primary" size="sm">
+              <div>
+                <Button href={`vendor/update-tender/${d.id_tender}`} color="primary" size="sm">
                   Edit Tender
                 </Button>
-              </Link>
+              </div>
             </div>
             <TenderCollapse tender={d} action={refetch} />
           </CardBody>

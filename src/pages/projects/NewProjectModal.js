@@ -46,7 +46,7 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
     }
     async function fetchPartnerOptions() {
       await api
-        .get(`api/project/partner/options`)
+        .get(`api/list-mitra`)
         .then((res) => setPartnerOptions(res.data.data))
         .catch((err) => console.log(err));
     }
@@ -71,8 +71,7 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
         alert('success', 'Project has been created.');
         refetch();
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         alert('error', 'Something went wrong.');
       });
 
@@ -187,7 +186,7 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
                   </option>
                   {partnerOptions.length > 0 &&
                     partnerOptions.map((p) => (
-                      <option key={p.id} value={p.id}>
+                      <option key={p.id_user} value={p.id_user}>
                         {p.name}
                       </option>
                     ))}

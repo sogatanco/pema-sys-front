@@ -367,7 +367,7 @@ const TenderCollapse = ({ tender, action }) => {
                                     <td className="fw-bold">Berita Acara</td>
                                     {tender?.upload_ba_seleksi !== null ? (
                                       <td>
-                                        <Link>Preview</Link>
+                                        <Link>Download</Link>
                                       </td>
                                     ) : (
                                       <td>
@@ -457,7 +457,7 @@ const TenderCollapse = ({ tender, action }) => {
                             </td>
                             {tender?.upload_ba_pemenang !== null ? (
                               <td>
-                                <Link>Preview</Link>
+                                <Link>Download</Link>
                               </td>
                             ) : (
                               <td>

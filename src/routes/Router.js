@@ -23,11 +23,14 @@ const DetailAsset = Loadable(lazy(() => import('../pages/asset/DetailAsset')));
 
 /***** Projects ****/
 const ProjectPage = Loadable(lazy(() => import('../pages/projects')));
-
 const ProjectDetail = Loadable(lazy(() => import('../pages/projects/ProjectDetail')));
 const ProjectTaskList = Loadable(lazy(() => import('../pages/projects/AllTask')));
 const ProjectReport = Loadable(lazy(() => import('../pages/projects/Report')));
 /***** Projects ****/
+
+/***** Timeline ****/
+const TimelinePage = Loadable(lazy(() => import('../pages/timeline/Timeline')));
+/***** Timeline ****/
 
 /***** Tickets ****/
 const TicketPage = Loadable(lazy(() => import('../pages/tickets')));
@@ -115,6 +118,11 @@ const ThemeRoutes = [
             path: 'projects',
             name: 'Projects',
             element: <ProjectPage />,
+          },
+          {
+            path: 'timeline',
+            name: 'Timeline',
+            element: <TimelinePage />,
           },
           {
             path: 'daily',

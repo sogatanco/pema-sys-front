@@ -9,7 +9,7 @@ const ProjectPart = () => {
   const { auth } = useAuth();
   const [navActive, setNavActive] = useState(2);
 
-  const allProjectNavAllowedRoles = ['Manager'];
+  const allProjectNavAllowedRoles = ['Staff', 'Manager'];
 
   return (
     <>

@@ -18,9 +18,9 @@ const FileView = ({ title, filename, mode, action, base64 }) => {
           </div>
           <div className="d-flex p-2">
             {mode === 'preview' ? (
-              <Link to={`/preview?data=general&doc=${base64}`} target="_blank">
+              <Link to={`data:application/pdf;base64, ${base64}`} download={`${filename}.pdf`}>
                 <Button type="button" size="sm" color="light">
-                  Preview
+                  Download
                 </Button>
               </Link>
             ) : (

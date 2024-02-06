@@ -68,9 +68,12 @@ const TabDocument = ({ companyId }) => {
                   <td>{ak.nama_notaris}</td>
                   <td>{ak.jenis}</td>
                   <td>
-                    <Link to={`/preview?data=general&doc=${ak.file_base64}`} target="_blank">
+                    <Link
+                      to={`data:application/pdf;base64, ${ak.file_base64}`}
+                      download={`akta_${ak.no_akta}.pdf`}
+                    >
                       <Button type="button" size="sm" color="light">
-                        Preview
+                        Download
                       </Button>
                     </Link>
                   </td>
@@ -105,9 +108,12 @@ const TabDocument = ({ companyId }) => {
                   <td>{iz.tgl_terbit}</td>
                   <td>{iz.tgl_berakhir}</td>
                   <td>
-                    <Link to={`/preview?data=general&doc=${iz.file_base64}`} target="_blank">
+                    <Link
+                      to={`data:application/pdf;base64, ${iz.nomor}`}
+                      download={`izin_berusaha_${iz.nomor}.pdf`}
+                    >
                       <Button type="button" size="sm" color="light">
-                        Preview
+                        Download
                       </Button>
                     </Link>
                   </td>

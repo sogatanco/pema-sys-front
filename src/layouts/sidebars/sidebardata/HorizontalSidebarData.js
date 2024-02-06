@@ -29,6 +29,12 @@ const SidebarData = [
         icon: <MaterialIcon icon="work_history" />,
       },
       {
+        title: 'Timeline',
+        href: '/timeline',
+        allowedRoles: ['Staff', 'Manager'],
+        icon: <MaterialIcon icon="timeline" />,
+      },
+      {
         title: 'Daily',
         href: '/daily',
         allowedRoles: ['Employee'],
@@ -37,15 +43,15 @@ const SidebarData = [
     ],
   },
 
-  { caption: 'Ticket' },
-  {
-    title: 'Ticket',
-    href: '/tickets',
-    id: 3,
-    icon: <MaterialIcon icon="description" />,
-    collapisble: true,
-    allowedRoles: ['Employee'],
-  },
+  // { caption: 'Ticket' },
+  // {
+  //   title: 'Ticket',
+  //   href: '/tickets',
+  //   id: 3,
+  //   icon: <MaterialIcon icon="description" />,
+  //   collapisble: true,
+  //   allowedRoles: ['Employee'],
+  // },
 
   { caption: 'Asset' },
   {
@@ -102,7 +108,7 @@ const SidebarData = [
   {
     title: 'Manual Book',
     href: 'https://drive.google.com/drive/folders/13u1UBwpLfVDsF0WoOMoNfU1_O1d3GTou?usp=sharing',
-    id: 4,
+    id: 6,
     icon: <MaterialIcon icon="grid_view" />,
     ddType: 'two-column',
     allowedRoles: ['Employee'],

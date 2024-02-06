@@ -43,8 +43,7 @@ const TaskList = () => {
         refetch();
         alert('success', res.data.message);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         alert('error', 'Bad request.');
       });
     setTaskIdSelected();
