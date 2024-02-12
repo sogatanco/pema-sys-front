@@ -281,15 +281,15 @@ const ActivityTab = () => {
                               </td>
                               <td>
                                 <div className="members">
-                                  <div className="member-item">
+                                  <div className="members-item">
                                     {ts?.pics?.map(
                                       (pic, i) =>
                                         i < 2 && (
-                                          <div key={pic.id} className="ava-img">
+                                          <>
                                             <img
                                               id={`tooltip-${pic.id}`}
                                               src={user1}
-                                              className="rounded-circle"
+                                              className="ava-pic rounded-circle"
                                               alt="avatar"
                                               width="35"
                                               height="35"
@@ -298,7 +298,7 @@ const ActivityTab = () => {
                                               title={pic.first_name}
                                               id={pic.id?.toString()}
                                             />
-                                          </div>
+                                          </>
                                         ),
                                     )}
                                     {ts?.pics?.length > 2 && (
@@ -368,15 +368,15 @@ const ActivityTab = () => {
                                   </td>
                                   <td>
                                     <div className="members">
-                                      <div className="member-item">
+                                      <div className="members-item">
                                         {st?.pics?.map(
                                           (pic, i) =>
                                             i < 2 && (
-                                              <div key={pic.id} className="ava-img">
+                                              <>
                                                 <img
                                                   id={`tooltip-${pic.id}`}
                                                   src={user1}
-                                                  className="rounded-circle"
+                                                  className="ava-pic rounded-circle"
                                                   alt="avatar"
                                                   width="35"
                                                   height="35"
@@ -385,7 +385,7 @@ const ActivityTab = () => {
                                                   title={pic.first_name}
                                                   id={pic.id?.toString()}
                                                 />
-                                              </div>
+                                              </>
                                             ),
                                         )}
                                         {st?.pics?.length > 2 && (

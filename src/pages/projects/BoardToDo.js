@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import BoardTask from './BoardTask';
 import TaskForm from './TaskForm';
 
-const BoardToDo = ({ data, isLoading, error, refetch, isRefetching }) => {
+const BoardToDo = ({ data, isLoading, error, refetch, isRefetching, isMemberActive }) => {
   const [newTaskOpen, setNewTaskOpen] = useState(false);
 
   const { projectId } = useParams();
@@ -25,22 +25,23 @@ const BoardToDo = ({ data, isLoading, error, refetch, isRefetching }) => {
         'Something went wrong.'
       ) : (
         <>
-          {!newTaskOpen ? (
-            <Button
-              type="button"
-              size="sm"
-              color="secondary"
-              className="d-flex align-items-center justify-content-center"
-              block
-              onClick={() => setNewTaskOpen(true)}
-            >
-              <MaterialIcon icon="add" style={{ fontSize: '14px' }} />
-              New Task
-            </Button>
-          ) : (
-            <TaskForm {...{ projectId, setNewTaskOpen, refetch, type }} />
-          )}
-          <BoardTask {...{ data, projectId, refetch, isRefetching }} />
+          {isMemberActive &&
+            (!newTaskOpen ? (
+              <Button
+                type="button"
+                size="sm"
+                color="secondary"
+                className="d-flex align-items-center justify-content-center"
+                block
+                onClick={() => setNewTaskOpen(true)}
+              >
+                <MaterialIcon icon="add" style={{ fontSize: '14px' }} />
+                New Task
+              </Button>
+            ) : (
+              <TaskForm {...{ projectId, setNewTaskOpen, refetch, type }} />
+            ))}
+          <BoardTask {...{ data, projectId, refetch, isRefetching, isMemberActive }} />
         </>
       )}
     </Col>
@@ -53,6 +54,7 @@ BoardToDo.propTypes = {
   error: PropTypes.any,
   refetch: PropTypes.func,
   isRefetching: PropTypes.bool,
+  isMemberActive: PropTypes.bool,
 };
 
 export default BoardToDo;

@@ -19,7 +19,7 @@ const BoardTab = () => {
   const [todos, setTodos] = useState();
   const [inProgress, setInProgress] = useState();
   const [Done, setDone] = useState();
-  // const [isMemberActive, setIsMemberActive] = useState(true);
+  const [isMemberActive, setIsMemberActive] = useState(false);
 
   const api = useAxios();
 
@@ -27,7 +27,7 @@ const BoardTab = () => {
     queryKey: ['todos'],
     queryFn: () =>
       api.get(`api/task/${projectId}/employe/all`).then((res) => {
-        // setIsMemberActive(res.data.is_member_active);
+        setIsMemberActive(res.data.is_member_active);
         return res.data.tasks;
       }),
   });
@@ -75,8 +75,14 @@ const BoardTab = () => {
         </Col>
       ) : (
         <>
-          <BoardToDo data={todos} {...{ isLoading, error, refetch, isRefetching }} />
-          <BoardInProgress data={inProgress} {...{ isLoading, error, refetch, isRefetching }} />
+          <BoardToDo
+            data={todos}
+            {...{ isLoading, error, refetch, isRefetching, isMemberActive }}
+          />
+          <BoardInProgress
+            data={inProgress}
+            {...{ isLoading, error, refetch, isRefetching, isMemberActive }}
+          />
           <BoardDone data={Done} {...{ isLoading, error, refetch, isRefetching }} />
         </>
       )}

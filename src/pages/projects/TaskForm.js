@@ -97,7 +97,7 @@ const TaskForm = (props) => {
           }
           alert('create', 'New task has been created.');
         })
-        .catch((err) => console.log(err.message));
+        .catch(() => alert('error', 'New task failed to save'));
       refetch();
       closeForm();
     } else {
@@ -120,13 +120,14 @@ const TaskForm = (props) => {
                 placeholder="Task title here.."
                 required
                 onChange={handleChange}
-                rows="6"
+                rows="4"
+                value={task?.task_title || ''}
               />
             </div>
           </div>
-          <div className="d-flex gap-3 justify-content-between">
-            <div className="d-flex gap-3">
-              <div className="d-flex align-items-center">
+          <div className="d-flex gap-3 justify-content-between ">
+            <div className="d-flex gap-0 w-75">
+              <div className="d-flex align-items-center w-50">
                 <span className="datepicker-toggle">
                   <span className="datepicker-toggle-button">
                     <MaterialIcon icon="calendar_month" />
@@ -148,7 +149,7 @@ const TaskForm = (props) => {
                   </small>
                 </div>
               </div>
-              <div className="d-flex align-items-center">
+              <div className="d-flex align-items-center w-50">
                 <span className="datepicker-toggle">
                   <span className="datepicker-toggle-button">
                     <MaterialIcon icon="calendar_month" />

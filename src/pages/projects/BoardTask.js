@@ -17,7 +17,7 @@ import TooltipHover from '../../components/atoms/TooltipHover';
 //     (person, index) => index === emId.findIndex((other) => person.employe_id === other.employe_id),
 //   );
 
-const BoardTask = ({ data, projectId, refetch }) => {
+const BoardTask = ({ data, projectId, refetch, isMemberActive }) => {
   const { auth } = useAuth();
   const [modal, setModal] = useState(false);
   const [addSubtaskOpen, setAddSubtaskOpen] = useState(undefined);
@@ -240,7 +240,7 @@ const BoardTask = ({ data, projectId, refetch }) => {
                   />
                 ) : (
                   <>
-                    {td.status !== 2 ? (
+                    {td.status !== 2 && isMemberActive ? (
                       <Button
                         type="button"
                         size="sm"
@@ -255,21 +255,21 @@ const BoardTask = ({ data, projectId, refetch }) => {
                       <div></div>
                     )}
                     <div className="members">
-                      <div className="member-item">
+                      <div className="members-item">
                         {td?.pics?.map(
                           (pic, idx) =>
                             idx < 2 && (
-                              <div key={pic.id} className="ava-img">
+                              <>
                                 <img
                                   id={`tooltip-${pic.id}`}
                                   src={user1}
-                                  className="rounded-circle"
+                                  className="ava-pic rounded-circle"
                                   alt="avatar"
                                   width="35"
                                   height="35"
                                 />
                                 <TooltipHover title={pic.first_name} id={pic.id.toString()} />
-                              </div>
+                              </>
                             ),
                         )}
                         {td?.pics?.length > 2 && (
@@ -296,6 +296,7 @@ BoardTask.propTypes = {
   projectId: PropTypes.string,
   refetch: PropTypes.func,
   isRefetching: PropTypes.any,
+  isMemberActive: PropTypes.bool,
 };
 
 export default BoardTask;

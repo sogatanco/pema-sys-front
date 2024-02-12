@@ -18,7 +18,7 @@ const SidebarData = [
     href: '/activity',
     id: 2,
     icon: <MaterialIcon icon="engineering" />,
-    ddType: 'two-column',
+    // ddType: 'two-column',
     collapisble: true,
     allowedRoles: ['Employee'],
     children: [
@@ -60,7 +60,7 @@ const SidebarData = [
     id: 4,
     icon: <MaterialIcon icon="grid_view" />,
     ddType: 'two-column',
-    allowedRoles: ['Employee'],
+    allowedRoles: ['PicAsset'],
     collapisble: true,
   },
   { caption: 'Vendor' },
@@ -68,7 +68,7 @@ const SidebarData = [
     title: 'Vendor',
     id: 5,
     icon: <MaterialIcon icon="diversity_3" />,
-    ddType: 'two-column',
+    ddType: 'four-column',
     allowedRoles: ['AdminVendor'],
     collapisble: true,
     children: [
@@ -109,10 +109,8 @@ const SidebarData = [
     title: 'Manual Book',
     href: 'https://drive.google.com/drive/folders/13u1UBwpLfVDsF0WoOMoNfU1_O1d3GTou?usp=sharing',
     id: 6,
-    icon: <MaterialIcon icon="grid_view" />,
-    ddType: 'two-column',
+    icon: <MaterialIcon icon="menu_book" />,
     allowedRoles: ['Employee'],
-    collapisble: true,
   },
   // { caption: 'Form' },
   // {

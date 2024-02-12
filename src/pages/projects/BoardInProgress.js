@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import BoardTask from './BoardTask';
 // import TaskForm from './TaskForm';
 
-const BoardInProgress = ({ data, isLoading, error, refetch, isRefetching }) => {
+const BoardInProgress = ({ data, isLoading, error, refetch, isRefetching, isMemberActive }) => {
   // const [newTaskOpen, setNewTaskOpen] = useState(false);
 
   const { projectId } = useParams();
@@ -37,7 +37,7 @@ const BoardInProgress = ({ data, isLoading, error, refetch, isRefetching }) => {
             </Button>
           ) : (
           )} */}
-          <BoardTask {...{ data, projectId, refetch, isRefetching }} />
+          <BoardTask {...{ data, projectId, refetch, isRefetching, isMemberActive }} />
         </>
       )}
     </Col>
@@ -50,6 +50,7 @@ BoardInProgress.propTypes = {
   error: PropTypes.any,
   refetch: PropTypes.func,
   isRefetching: PropTypes.bool,
+  isMemberActive: PropTypes.bool,
 };
 
 export default BoardInProgress;

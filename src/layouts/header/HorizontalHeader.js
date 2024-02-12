@@ -54,89 +54,90 @@ const HorizontalHeader = () => {
   };
 
   return (
-    <Navbar
-      color={topbarColor}
-      dark={!isDarkMode}
-      light={isDarkMode}
-      expand="lg"
-      className="shadow HorizontalTopbar p-0"
-    >
+    <>
       <Toast />
-      <Container className="d-flex align-items-center">
-        {/******************************/}
-        {/**********Logo**********/}
-        {/******************************/}
-        <div className="pe-4 py-3 ">
-          <HorizontalLogo />
-        </div>
-        {/******************************/}
-        {/**********Toggle Buttons**********/}
-        {/******************************/}
+      <Navbar
+        color={topbarColor}
+        dark={!isDarkMode}
+        light={isDarkMode}
+        expand="lg"
+        className="shadow HorizontalTopbar p-0"
+      >
+        <Container className="d-flex align-items-center">
+          {/******************************/}
+          {/**********Logo**********/}
+          {/******************************/}
+          <div className="pe-4 py-3 ">
+            <HorizontalLogo />
+          </div>
+          {/******************************/}
+          {/**********Toggle Buttons**********/}
+          {/******************************/}
 
-        <Nav className="me-auto flex-row" navbar>
-          <Button
-            color={topbarColor}
-            className="d-sm-block d-lg-none"
-            onClick={() => toggleDispatch(ToggleMobileSidebar())}
-          >
-            <i className={`bi ${isMobileSidebar ? 'bi-x' : 'bi-list'}`} />
-          </Button>
-
-          {/******************************/}
-          {/**********Mega DD**********/}
-          {/******************************/}
-          <UncontrolledDropdown className="mega-dropdown mx-1">
-            <DropdownToggle className="bg-transparent border-0" color={topbarColor}>
-              {/* <Icon.Grid size={18} /> */}
-            </DropdownToggle>
-            <DropdownMenu>
-              <MegaDD />
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        </Nav>
-        <div className="d-flex align-items-center">
-          {/******************************/}
-          {/**********Notification DD**********/}
-          {/******************************/}
-          <UncontrolledDropdown>
-            <DropdownToggle
-              className="border-0"
+          <Nav className="me-auto flex-row" navbar>
+            <Button
               color={topbarColor}
-              onClick={() => setIsNotifOpen(true)}
+              className="d-sm-block d-lg-none"
+              onClick={() => toggleDispatch(ToggleMobileSidebar())}
             >
-              <div className="notif">
-                <Bell size={18} />
-                {data?.length > 0 && <div className="notif-count">{data?.length}</div>}
-              </div>
-            </DropdownToggle>
-            {isNotifOpen && (
-              <DropdownMenu className="notif-view">
-                <DropdownItem header>
-                  <span className="mb-0 fs-5">Notifications</span>
-                </DropdownItem>
-                <DropdownItem divider />
-                <SimpleBar style={{ maxHeight: '350px' }}>
-                  {isLoading ? (
-                    <span style={{ padding: '0px 20px' }}>Loading...</span>
-                  ) : error ? (
-                    <span style={{ padding: '0px 20px' }}>Something went wrong.</span>
-                  ) : (
-                    <NotificationDD {...{ data, refetch, setIsNotifOpen }} />
-                  )}
-                </SimpleBar>
-                <DropdownItem divider />
-                <div className="p-2 px-3">
-                  <Button color="primary" size="sm" block>
-                    Check All
-                  </Button>
-                </div>
+              <i className={`bi ${isMobileSidebar ? 'bi-x' : 'bi-list'}`} />
+            </Button>
+
+            {/******************************/}
+            {/**********Mega DD**********/}
+            {/******************************/}
+            <UncontrolledDropdown className="mega-dropdown mx-1">
+              <DropdownToggle className="bg-transparent border-0" color={topbarColor}>
+                {/* <Icon.Grid size={18} /> */}
+              </DropdownToggle>
+              <DropdownMenu>
+                <MegaDD />
               </DropdownMenu>
-            )}
-          </UncontrolledDropdown>
-          {/******************************/}
-          {/**********Message DD**********/}
-          {/******************************/}
-          {/* <UncontrolledDropdown className="mx-1">
+            </UncontrolledDropdown>
+          </Nav>
+          <div className="d-flex align-items-center">
+            {/******************************/}
+            {/**********Notification DD**********/}
+            {/******************************/}
+            <UncontrolledDropdown>
+              <DropdownToggle
+                className="border-0"
+                color={topbarColor}
+                onClick={() => setIsNotifOpen(true)}
+              >
+                <div className="notif">
+                  <Bell size={18} />
+                  {data?.length > 0 && <div className="notif-count">{data?.length}</div>}
+                </div>
+              </DropdownToggle>
+              {isNotifOpen && (
+                <DropdownMenu className="notif-view">
+                  <DropdownItem header>
+                    <span className="mb-0 fs-5">Notifications</span>
+                  </DropdownItem>
+                  <DropdownItem divider />
+                  <SimpleBar style={{ maxHeight: '350px' }}>
+                    {isLoading ? (
+                      <span style={{ padding: '0px 20px' }}>Loading...</span>
+                    ) : error ? (
+                      <span style={{ padding: '0px 20px' }}>Something went wrong.</span>
+                    ) : (
+                      <NotificationDD {...{ data, refetch, setIsNotifOpen }} />
+                    )}
+                  </SimpleBar>
+                  <DropdownItem divider />
+                  <div className="p-2 px-3">
+                    <Button color="primary" size="sm" block>
+                      Check All
+                    </Button>
+                  </div>
+                </DropdownMenu>
+              )}
+            </UncontrolledDropdown>
+            {/******************************/}
+            {/**********Message DD**********/}
+            {/******************************/}
+            {/* <UncontrolledDropdown className="mx-1">
             <DropdownToggle className="bg-transparent border-0" color={topbarColor}>
               <MessageSquare size={18} />
             </DropdownToggle>
@@ -156,26 +157,27 @@ const HorizontalHeader = () => {
               </div>
             </DropdownMenu>
           </UncontrolledDropdown> */}
-          {/******************************/}
-          {/**********Profile DD**********/}
-          {/******************************/}
-          <UncontrolledDropdown>
-            <DropdownToggle tag="span" className="p-2 cursor-pointer ">
-              <img src={user1} alt="profile" className="rounded-circle" width="30" />
-            </DropdownToggle>
-            <DropdownMenu className="account-view">
-              <ProfileDD />
+            {/******************************/}
+            {/**********Profile DD**********/}
+            {/******************************/}
+            <UncontrolledDropdown>
+              <DropdownToggle tag="span" className="p-2 cursor-pointer ">
+                <img src={user1} alt="profile" className="rounded-circle" width="30" />
+              </DropdownToggle>
+              <DropdownMenu className="account-view">
+                <ProfileDD />
 
-              <div className="p-2 px-3">
-                <Button color="danger" size="sm" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </div>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        </div>
-      </Container>
-    </Navbar>
+                <div className="p-2 px-3">
+                  <Button color="danger" size="sm" onClick={handleLogout}>
+                    Logout
+                  </Button>
+                </div>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </div>
+        </Container>
+      </Navbar>
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import ProjectList from './ProjectList';
 import TopCards from './TopCards';
 import './Dashboard.scss';
 import TaskList from './TaskList';
+import AdditionalTask from './AdditionalTask';
 // import Daily from './Daily';
 
 const Dashboard2 = () => {
@@ -29,7 +30,8 @@ const Dashboard2 = () => {
           <ProjectList />
         </Col>
         <Col lg="4">
-          <TaskList />
+          <TaskList title="Recent Tasks" type="recent" />
+          <AdditionalTask />
         </Col>
       </Row>
     </>

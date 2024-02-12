@@ -9,11 +9,17 @@ const Director = () => {
     <>
       <TopCards />
       <Row>
-        <Col lg="8">
+        <Col lg="12">
           <ProjectList />
         </Col>
         <Col lg="4">
-          <TaskList />
+          <TaskList title="Need Review" type="done" />
+        </Col>
+        <Col lg="4">
+          <TaskList title="Inprogress Tasks" type="inprogress" />
+        </Col>
+        <Col lg="4">
+          <TaskList title="Marked Tasks" type="marked" />
         </Col>
       </Row>
     </>

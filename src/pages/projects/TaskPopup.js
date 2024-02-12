@@ -143,7 +143,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
       .then((res) => {
         // eslint-disable-next-line no-unused-expressions
         task?.files?.push(res.data.file);
-        // alert('success', 'File has been uploaded.');
+        alert('success', 'File has been uploaded.');
       })
       .catch((err) => console.log(err));
     setFiles([]);
@@ -189,8 +189,8 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
 
   return (
     <>
-      <Modal isOpen={modal} toggle={toggle.bind(null)} size="xl" fade={false}>
-        <ModalHeader toggle={toggle.bind(null)}>Task Info</ModalHeader>
+      <Modal isOpen={modal} toggle={toggle.bind(null)} size="xl" fade={false} centered>
+        <ModalHeader toggle={toggle.bind(null)}></ModalHeader>
         <ModalBody>
           {loading ? (
             <div className="d-flex justify-content-center" style={{ height: '400px' }}>
@@ -368,7 +368,8 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                         </Button>
                       </div>
                     </form>
-                    <form onSubmit={handleUpload}>
+                    <form onSubmit={handleUpload} className="mt-2">
+                      <h6>Attachment files ({task?.files?.length || 0})</h6>
                       <div className="d-flex justify-content-between align-items-center bg-light px-2 rounded-3 mt-2">
                         <div className="d-flex align-items-center gap-1">
                           <div className="pt-2" id="tooltip-3">
@@ -401,7 +402,6 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                       </div>
                     </form>
                     <div className="attach">
-                      <h6>Attachment files ({task?.files?.length || 0})</h6>
                       <ul>
                         {task?.files?.length > 0 &&
                           task?.files.map((f) => (

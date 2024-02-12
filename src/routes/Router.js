@@ -88,6 +88,7 @@ const ROLES = {
 const formAllowedRoles = ['Picpentry', 'Picatk'];
 const vendorAllowedRoles = ['AdminVendor'];
 const reportAllowedRoles = ['Picpentry', 'Picatk'];
+const assetAllowedRoles = ['PicAsset'];
 
 /*****Routes******/
 const ThemeRoutes = [
@@ -132,8 +133,8 @@ const ThemeRoutes = [
           },
           {
             path: 'asset',
-            name: 'Asset',
-            element: <AssetPage />,
+            element: <RequireAuth allowedRoles={assetAllowedRoles} />,
+            children: [{ path: '', name: 'Asset', element: <AssetPage /> }],
           },
           {
             path: 'asset/:assetId',
