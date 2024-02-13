@@ -1,5 +1,5 @@
 import MaterialIcon from '@material/react-material-icon';
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Badge, Button, Spinner } from 'reactstrap';
 import PropTypes from 'prop-types';
 import user1 from '../../assets/images/users/user1.jpg';
@@ -167,7 +167,7 @@ const BoardTask = ({ data, projectId, refetch, isMemberActive }) => {
                         (pic) =>
                           pic.employe_id.toString() === auth?.user.employe_id && (
                             <ActionMenu
-                              key={td.task_id}
+                              key={pic.id}
                               menuOptions={menuOptions}
                               taskId={td.task_id}
                               status={parseInt(td.status, 10)}
@@ -259,7 +259,7 @@ const BoardTask = ({ data, projectId, refetch, isMemberActive }) => {
                         {td?.pics?.map(
                           (pic, idx) =>
                             idx < 2 && (
-                              <>
+                              <Fragment key={pic.id}>
                                 <img
                                   id={`tooltip-${pic.id}`}
                                   src={user1}
@@ -269,7 +269,7 @@ const BoardTask = ({ data, projectId, refetch, isMemberActive }) => {
                                   height="35"
                                 />
                                 <TooltipHover title={pic.first_name} id={pic.id.toString()} />
-                              </>
+                              </Fragment>
                             ),
                         )}
                         {td?.pics?.length > 2 && (

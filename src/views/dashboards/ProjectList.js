@@ -7,6 +7,7 @@ import CircularPercentage from '../../components/atoms/circularPercentage/Circul
 import user1 from '../../assets/images/users/user1.jpg';
 import useAuth from '../../hooks/useAuth';
 import IndoDate from '../../utils/IndoDate';
+import isExpired from '../../utils/isExpired';
 
 const ProjectList = () => {
   const { auth } = useAuth();
@@ -28,8 +29,14 @@ const ProjectList = () => {
         )
         .then((res) => {
           setDivisions(res.data.divisions);
-          const filtered = res.data.data.filter((item) => item.total_progress > 10);
-          setList(filtered.reverse());
+          let filtered = [];
+          if (auth?.user?.roles?.includes('Director')) {
+            filtered = res.data.data.filter((item) => item.total_progress > 10);
+          } else {
+            filtered = res.data.data;
+          }
+
+          setList(filtered);
           setSelectedDivision('all');
           return filtered.reverse();
         }),
@@ -50,7 +57,9 @@ const ProjectList = () => {
           <CardBody className="d-flex flex-column gap-2" style={{ minHeight: '130px' }}>
             <Row lg="d-flex justify-content-between">
               <Col sm="12" md="6" lg="3">
-                <CardTitle tag="h4">Projects Inprogress</CardTitle>
+                <CardTitle tag="h4">
+                  Projects {auth?.user?.roles?.includes('Director') ? 'Inprogress' : ''}{' '}
+                </CardTitle>
               </Col>
               <Col
                 sm="12"
@@ -104,7 +113,7 @@ const ProjectList = () => {
                       i < 10 && (
                         <Link
                           key={p.project_id}
-                          className="d-flex justify-content-between rounded-3 px-3 py-3 align-items-center link-item text-dark bg-light"
+                          className="d-flex justify-content-between rounded-3 px-2 py-2 align-items-center link-item text-dark bg-light"
                           to={`projects/details/${p.project_id}`}
                           style={{ textDecoration: 'none' }}
                         >
@@ -117,11 +126,13 @@ const ProjectList = () => {
                                     lg="1"
                                     className="my-auto"
                                   >
-                                    <span className="text-muted">{i + 1}</span>
+                                    <span className="text-muted" style={{ marginLeft: '7px' }}>
+                                      {i + 1}
+                                    </span>
                                   </Col>
                                   <Col>
                                     <abbr title={p.project_name} style={{ textDecoration: 'none' }}>
-                                      <span className="fw-bold" style={{ fontSize: '14px' }}>
+                                      <span className="fw-bold" style={{ fontSize: '13px' }}>
                                         {p.project_name.trim().length > 40
                                           ? `${p.project_name.substring(0, 42)}...`
                                           : p.project_name}
@@ -141,7 +152,13 @@ const ProjectList = () => {
                                     Deadline{' '}
                                   </small>
                                 </div>
-                                <small>{IndoDate(p.current_stage?.end_date)}</small>
+                                <small
+                                  className={`${
+                                    isExpired(p.current_stage?.end_date) ? 'text-danger' : ''
+                                  }`}
+                                >
+                                  {IndoDate(p.current_stage?.end_date)}
+                                </small>
                               </Col>
                               <Col lg="2" className="d-flex align-items-center">
                                 <span
@@ -165,8 +182,8 @@ const ProjectList = () => {
                                   src={user1}
                                   className="rounded-circle"
                                   alt="avatar"
-                                  width="45"
-                                  height="45"
+                                  width="40"
+                                  height="40"
                                 />
                               </Col>
                             </Row>

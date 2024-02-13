@@ -228,7 +228,7 @@ const ActivityTab = () => {
                 </Row>
                 <Col sm="12 overflow-auto">
                   <h6 className="fw-bold mt-3">List of tasks from {projectTitle?.division}</h6>
-                  <table className="rounded-corners">
+                  <table className="rounded-corners" style={{ fontSize: '13px' }}>
                     <thead>
                       <tr>
                         <th width="30">#</th>
@@ -285,7 +285,7 @@ const ActivityTab = () => {
                                     {ts?.pics?.map(
                                       (pic, i) =>
                                         i < 2 && (
-                                          <>
+                                          <Fragment key={pic.id}>
                                             <img
                                               id={`tooltip-${pic.id}`}
                                               src={user1}
@@ -298,7 +298,7 @@ const ActivityTab = () => {
                                               title={pic.first_name}
                                               id={pic.id?.toString()}
                                             />
-                                          </>
+                                          </Fragment>
                                         ),
                                     )}
                                     {ts?.pics?.length > 2 && (
@@ -372,7 +372,7 @@ const ActivityTab = () => {
                                         {st?.pics?.map(
                                           (pic, i) =>
                                             i < 2 && (
-                                              <>
+                                              <Fragment key={pic.id}>
                                                 <img
                                                   id={`tooltip-${pic.id}`}
                                                   src={user1}
@@ -385,7 +385,7 @@ const ActivityTab = () => {
                                                   title={pic.first_name}
                                                   id={pic.id?.toString()}
                                                 />
-                                              </>
+                                              </Fragment>
                                             ),
                                         )}
                                         {st?.pics?.length > 2 && (

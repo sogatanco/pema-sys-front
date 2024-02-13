@@ -9,6 +9,8 @@ import useAuth from '../../hooks/useAuth';
 import CircularPercentage from '../../components/atoms/circularPercentage/CircularPercentage';
 import { alert } from '../../components/atoms/Toast';
 import TaskPopup from '../../pages/projects/TaskPopup';
+import IndoDate from '../../utils/IndoDate';
+import isExpired from '../../utils/isExpired';
 
 const TaskList = ({ title, type }) => {
   const { auth } = useAuth();
@@ -127,9 +129,17 @@ const TaskList = ({ title, type }) => {
                               ? 'Approved'
                               : 'Revision'}
                           </span>
-                          <span style={{ fontSize: '12px' }} className="text-muted">
-                            Deadline: {t?.end_date}
-                          </span>
+                          <div className="d-flex gap-1">
+                            <span style={{ fontSize: '12px' }} className="text-muted">
+                              Deadline:
+                            </span>
+                            <span
+                              style={{ fontSize: '12px' }}
+                              className={`${isExpired(t?.end_date) ? 'text-danger' : 'text-muted'}`}
+                            >
+                              {IndoDate(t?.end_date)}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </Link>
