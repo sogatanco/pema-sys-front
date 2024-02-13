@@ -186,7 +186,7 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
                   </option>
                   {partnerOptions.length > 0 &&
                     partnerOptions.map((p) => (
-                      <option key={p.id_user} value={p.id_user}>
+                      <option key={p.id_user} value={p.name}>
                         {p.name}
                       </option>
                     ))}

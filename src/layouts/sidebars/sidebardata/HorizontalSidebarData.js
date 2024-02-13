@@ -60,7 +60,7 @@ const SidebarData = [
     id: 4,
     icon: <MaterialIcon icon="grid_view" />,
     ddType: 'two-column',
-    allowedRoles: ['PicAsset'],
+    allowedRoles: ['Employee'],
     collapisble: true,
   },
   { caption: 'Vendor' },

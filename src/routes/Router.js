@@ -38,6 +38,7 @@ const TicketPage = Loadable(lazy(() => import('../pages/tickets')));
 
 /***** Vendor ****/
 const DashboardPage = Loadable(lazy(() => import('../pages/vendor/dashboard/Dashboard')));
+const InprogressTaskPage = Loadable(lazy(() => import('../pages/projects/InprogressTaskList')));
 const VendorCompanyPage = Loadable(lazy(() => import('../pages/vendor/Company')));
 const RequestPage = Loadable(lazy(() => import('../pages/vendor/requests/Request')));
 const VerificationPage = Loadable(lazy(() => import('../pages/vendor/checks/DocumentCheck')));
@@ -88,7 +89,8 @@ const ROLES = {
 const formAllowedRoles = ['Picpentry', 'Picatk'];
 const vendorAllowedRoles = ['AdminVendor'];
 const reportAllowedRoles = ['Picpentry', 'Picatk'];
-const assetAllowedRoles = ['PicAsset'];
+const assetAllowedRoles = ['Employee'];
+const inProgressTaskAllowedRoles = ['Director'];
 
 /*****Routes******/
 const ThemeRoutes = [
@@ -105,6 +107,17 @@ const ThemeRoutes = [
             path: '',
             name: 'Dashboard',
             element: <Dashboard2 />,
+          },
+          {
+            path: 'director',
+            element: <RequireAuth allowedRoles={inProgressTaskAllowedRoles} />,
+            children: [
+              {
+                path: 'inprogress-task',
+                name: 'Inprogress Task',
+                element: <InprogressTaskPage />,
+              },
+            ],
           },
           {
             path: 'profile',

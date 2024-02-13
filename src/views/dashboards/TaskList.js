@@ -70,7 +70,7 @@ const TaskList = ({ title, type }) => {
           <div className="d-flex justify-content-between">
             <CardTitle tag="h4">{title}</CardTitle>
             {type === 'inprogress' && (
-              <Link to="projects" style={{ textDecoration: 'none' }}>
+              <Link to="director/inprogress-task" style={{ textDecoration: 'none' }}>
                 See all
               </Link>
             )}

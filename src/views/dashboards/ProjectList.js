@@ -50,7 +50,7 @@ const ProjectList = () => {
           <CardBody className="d-flex flex-column gap-2" style={{ minHeight: '130px' }}>
             <Row lg="d-flex justify-content-between">
               <Col sm="12" md="6" lg="3">
-                <CardTitle tag="h4">Projects</CardTitle>
+                <CardTitle tag="h4">Projects Inprogress</CardTitle>
               </Col>
               <Col
                 sm="12"
