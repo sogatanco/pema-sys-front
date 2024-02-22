@@ -36,7 +36,7 @@ const ProjectList = () => {
             filtered = res.data.data;
           }
 
-          setList(filtered);
+          setList(filtered.reverse());
           setSelectedDivision('all');
           return filtered.reverse();
         }),
@@ -121,12 +121,8 @@ const ProjectList = () => {
                             <Row lg="12">
                               <Col lg="6">
                                 <Row>
-                                  <Col
-                                    sm="12 align-items-start justify-content-start"
-                                    lg="1"
-                                    className="my-auto"
-                                  >
-                                    <span className="text-muted" style={{ marginLeft: '7px' }}>
+                                  <Col sm="12" lg="1" className="my-auto p-0">
+                                    <span className="text-muted" style={{ marginLeft: '12px' }}>
                                       {i + 1}
                                     </span>
                                   </Col>

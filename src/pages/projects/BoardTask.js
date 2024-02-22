@@ -1,6 +1,6 @@
 import MaterialIcon from '@material/react-material-icon';
 import React, { Fragment, useState } from 'react';
-import { Badge, Button, Spinner } from 'reactstrap';
+import { Badge, Spinner } from 'reactstrap';
 import PropTypes from 'prop-types';
 import user1 from '../../assets/images/users/user1.jpg';
 import TaskPopup from './TaskPopup';
@@ -11,6 +11,9 @@ import useAuth from '../../hooks/useAuth';
 import { alert } from '../../components/atoms/Toast';
 import CircularPercentage from '../../components/atoms/circularPercentage/CircularPercentage';
 import TooltipHover from '../../components/atoms/TooltipHover';
+import IndoDate from '../../utils/IndoDate';
+import isExpired from '../../utils/isExpired';
+import { level1Progress, level2Progress } from '../../utils/countTaskProgress';
 
 // const result = (emId) =>
 //   emId.filter(
@@ -95,7 +98,7 @@ const BoardTask = ({ data, projectId, refetch, isMemberActive }) => {
     <>
       <div className="">
         {data?.map((td, i) => (
-          <div key={td.task_id} className="board">
+          <div key={td.task_id} className="board rounded-3">
             <div className="board-header">
               <div className="d-flex gap-2" style={{ height: 'max-content' }}>
                 <Badge
@@ -121,7 +124,7 @@ const BoardTask = ({ data, projectId, refetch, isMemberActive }) => {
                 updating && taskIdActive === td.task_id ? (
                   <div className="d-flex align-items-center gap-1">
                     <Spinner size="sm" color="success" />
-                    <span>
+                    <span style={{ fontSize: '12px' }}>
                       Updating status to{' '}
                       <strong>
                         {status === 0
@@ -146,7 +149,8 @@ const BoardTask = ({ data, projectId, refetch, isMemberActive }) => {
                               color: td.task_progress === 100 ? '#4cc790' : '#21C1D6',
                             }}
                           >
-                            {td.task_progress.toFixed(td.task_progress !== 100 && 2)}%
+                            {/* {td.task_progress.toFixed(td.task_progress !== 100 && 2)}% */}
+                            {level1Progress(td)}%
                           </strong>
                         </span>
                         // <div className="progress-bar">
@@ -193,11 +197,22 @@ const BoardTask = ({ data, projectId, refetch, isMemberActive }) => {
                 ''
               )}
             </div>
-            <div className="board-body" onClick={() => openPopup(td)}>
-              <div className="task-title fw-bold">{td.task_title}</div>
+            <div className="board-body task">
+              <div className="task-title fw-bold" onClick={() => openPopup(td)}>
+                {td.task_title}
+              </div>
               <div className="task-bottom">
                 <div className="task-info">
-                  <small className="text-muted">{td.subtasks.length} Subtask</small>
+                  {/* <small className="text-muted">{td.level_2.length} Subtask</small> */}
+                  {isMemberActive && (
+                    <button
+                      type="button"
+                      className="add-child"
+                      onClick={() => setAddSubtaskOpen(td.task_id)}
+                    >
+                      <MaterialIcon icon="add_circle" />
+                    </button>
+                  )}
                 </div>
                 <div className="task-action">
                   <div className="comment">
@@ -206,81 +221,117 @@ const BoardTask = ({ data, projectId, refetch, isMemberActive }) => {
                   </div>
                 </div>
               </div>
+              {addSubtaskOpen === td.task_id && (
+                <div className="p-1">
+                  <TaskForm
+                    {...{ projectId, setAddSubtaskOpen, refetch, type }}
+                    title="Create subtask level 1"
+                    taskId={td.task_id}
+                  />
+                </div>
+              )}
             </div>
-            {td.subtasks.length >= 1 &&
-              td.subtasks.map((st) => (
-                <div key={st.task_id} className="board-body subtask" onClick={() => openPopup(st)}>
-                  <div className="task-title text-muted">{st.task_title}</div>
-                  <div className="task-action">
-                    <div className="circular-progress">
-                      <CircularPercentage data={st.task_progress} />
-                      {/* <Progress
-                          className="mb-0"
-                          value={st.task_progress}
-                          color="success"
-                          style={{ fontSize: '10px', height: '12px' }}
-                          />
-                          <div className={`num ${st.task_progress > 52 && 'white'}`}>
-                          {st.task_progress}%
-                        </div> */}
+            {td.level_2?.length > 0 &&
+              td.level_2.map((l2) => (
+                // <div key={l2.task_id} className="board-body subtask" onClick={() => openPopup(st)}>
+                <div key={l2.task_id} className="board-container">
+                  <div key={l2.task_id} className="board-body subtask">
+                    <div className="task-title" onClick={() => openPopup(l2)}>
+                      {l2.task_title}
                     </div>
-                    <div className="comment">
-                      <MaterialIcon icon="comment" />
-                      <div>{st.comments}</div>
+                    <div className="task-bottom">
+                      <div className="task-info">
+                        {/* <small className="text-muted">{td.level_2.length} Subtask</small> */}
+                        {isMemberActive && (
+                          <button
+                            type="button"
+                            className="add-child"
+                            onClick={() => setAddSubtaskOpen(l2.task_id)}
+                          >
+                            <MaterialIcon icon="add_circle" />
+                          </button>
+                        )}
+                      </div>
+                      <div className="task-action">
+                        <div className="circular-progress">
+                          <CircularPercentage data={level2Progress(l2)} />
+                        </div>
+                        <div className="comment">
+                          <MaterialIcon icon="comment" />
+                          <div>{l2.comments}</div>
+                        </div>
+                      </div>
                     </div>
+                    {addSubtaskOpen === l2.task_id && (
+                      <div className="p-1">
+                        <TaskForm
+                          {...{ projectId, setAddSubtaskOpen, refetch, type }}
+                          title="Create subtask level 2"
+                          taskId={l2.task_id}
+                        />
+                      </div>
+                    )}
                   </div>
+                  {l2.level_3?.length > 0 &&
+                    l2.level_3.map((l3) => (
+                      <div key={l3.task_id} className="board-body subtask-level3">
+                        <div className="task-title text-muted" onClick={() => openPopup(l3)}>
+                          {l3.task_title}
+                        </div>
+                        <div className="task-bottom">
+                          <div className="task-info"></div>
+                          <div className="task-action">
+                            <div className="circular-progress">
+                              <CircularPercentage data={l3.task_progress} />
+                            </div>
+                            <div className="comment">
+                              <MaterialIcon icon="comment" />
+                              <div>{l3.comments}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               ))}
             {parseInt(td.status, 10) !== 3 && (
               <div className="board-footer">
-                {addSubtaskOpen === td.task_id ? (
-                  <TaskForm
-                    {...{ projectId, setAddSubtaskOpen, refetch, type }}
-                    taskId={td.task_id}
-                  />
-                ) : (
-                  <>
-                    {td.status !== 2 && isMemberActive ? (
-                      <Button
-                        type="button"
-                        size="sm"
-                        color="light"
-                        className="d-flex align-items-center"
-                        onClick={() => setAddSubtaskOpen(td.task_id)}
-                      >
-                        <MaterialIcon icon="add" style={{ fontSize: '14px' }} />
-                        Add Subtask
-                      </Button>
-                    ) : (
-                      <div></div>
-                    )}
-                    <div className="members">
-                      <div className="members-item">
-                        {td?.pics?.map(
-                          (pic, idx) =>
-                            idx < 2 && (
-                              <Fragment key={pic.id}>
-                                <img
-                                  id={`tooltip-${pic.id}`}
-                                  src={user1}
-                                  className="ava-pic rounded-circle"
-                                  alt="avatar"
-                                  width="35"
-                                  height="35"
-                                />
-                                <TooltipHover title={pic.first_name} id={pic.id.toString()} />
-                              </Fragment>
-                            ),
-                        )}
-                        {td?.pics?.length > 2 && (
-                          <div className="member-plus bg-light-info text-info fw-bold">
-                            +{td.pics.length - 2}
-                          </div>
-                        )}
-                      </div>
+                <>
+                  <div className="d-flex gap-2">
+                    <MaterialIcon icon="event" style={{ fontSize: '20px' }} />
+                    <span
+                      className={`${isExpired(td.end_date) ? 'text-danger' : ''} `}
+                      style={{ fontSize: '12px' }}
+                    >
+                      {IndoDate(td.end_date)}
+                    </span>
+                  </div>
+                  <div className="members">
+                    <div className="members-item">
+                      {td?.pics?.map(
+                        (pic, idx) =>
+                          idx < 2 && (
+                            <Fragment key={pic.id}>
+                              <img
+                                id={`tooltip-${pic.id}`}
+                                src={user1}
+                                className="ava-pic rounded-circle"
+                                alt="avatar"
+                                width="35"
+                                height="35"
+                              />
+                              <TooltipHover title={pic.first_name} id={pic.id.toString()} />
+                            </Fragment>
+                          ),
+                      )}
+                      {td?.pics?.length > 2 && (
+                        <div className="member-plus bg-light-info text-info fw-bold">
+                          +{td.pics.length - 2}
+                        </div>
+                      )}
                     </div>
-                  </>
-                )}
+                  </div>
+                </>
               </div>
             )}
           </div>

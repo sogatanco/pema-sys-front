@@ -15,7 +15,7 @@ const BoardToDo = ({ data, isLoading, error, refetch, isRefetching, isMemberActi
 
   return (
     <Col lg="4" className="mt-1">
-      <div className="d-flex align-items-center justify-content-between bg-light-primary text-primary py-2 px-3 mb-2 rounded-2">
+      <div className="d-flex align-items-center justify-content-between bg-light-primary text-primary py-2 px-3 mb-2 rounded-3">
         <span className="fw-bold">To do</span>
         <span className="fw-bold">{data?.length}</span>
       </div>
@@ -31,7 +31,7 @@ const BoardToDo = ({ data, isLoading, error, refetch, isRefetching, isMemberActi
                 type="button"
                 size="sm"
                 color="secondary"
-                className="d-flex align-items-center justify-content-center"
+                className="d-flex align-items-center justify-content-center rounded-2"
                 block
                 onClick={() => setNewTaskOpen(true)}
               >
@@ -39,7 +39,10 @@ const BoardToDo = ({ data, isLoading, error, refetch, isRefetching, isMemberActi
                 New Task
               </Button>
             ) : (
-              <TaskForm {...{ projectId, setNewTaskOpen, refetch, type }} />
+              <TaskForm
+                {...{ projectId, setNewTaskOpen, refetch, type }}
+                title="Create main task"
+              />
             ))}
           <BoardTask {...{ data, projectId, refetch, isRefetching, isMemberActive }} />
         </>

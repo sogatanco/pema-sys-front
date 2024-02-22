@@ -16,6 +16,8 @@ import {
   Spinner,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
+import makeAnimated from 'react-select/animated';
+import Select from 'react-select';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import { alert } from '../../components/atoms/Toast';
@@ -26,9 +28,23 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
   const [division, setDivision] = useState({});
   const [options, setOptions] = useState({});
   const [partnerOptions, setPartnerOptions] = useState([]);
+  const [partner, setPartner] = useState();
   const [loading, setLoading] = useState(false);
+  const [otherPartner, setOtherPartner] = useState(false);
+  const [anotherBaseId, setAnotherBaseId] = useState(false);
+  const [isSavingBaseId, setIsSavingBaseId] = useState(false);
+  const [newBaseId, setNewBaseId] = useState();
+  const [businessPlan, setBusinessPlan] = useState();
+  const animatedComponents = makeAnimated();
 
   const api = useAxios();
+
+  const fetchBusinessOptions = async () => {
+    await api
+      .get(`api/project/business/options`)
+      .then((res) => setOptions(res.data))
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     async function fetchDIvision() {
@@ -38,16 +54,12 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
         .catch((err) => console.log(err));
     }
 
-    async function fetchBusinessOptions() {
-      await api
-        .get(`api/project/business/options`)
-        .then((res) => setOptions(res.data))
-        .catch((err) => console.log(err));
-    }
     async function fetchPartnerOptions() {
       await api
         .get(`api/list-mitra`)
-        .then((res) => setPartnerOptions(res.data.data))
+        .then((res) => {
+          setPartnerOptions(res.data.data);
+        })
         .catch((err) => console.log(err));
     }
 
@@ -60,10 +72,18 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
     setNewProject((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  useEffect(() => {
+    if (newProject?.base_id === 'another') {
+      setAnotherBaseId(true);
+    }
+  }, [newProject]);
+
   const newProjectSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     newProject.division = division.organization_id;
+    newProject.partner = partner.value;
+    newProject.business_id = businessPlan.value;
 
     await api
       .post(`api/project`, newProject)
@@ -77,6 +97,26 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
 
     setModal(false);
     setLoading(false);
+  };
+
+  const submitBaseId = async () => {
+    setIsSavingBaseId(true);
+    if (newBaseId) {
+      await api
+        .post('api/project/activity-base/add', { activity_name: newBaseId })
+        .then((res) => {
+          fetchBusinessOptions();
+          alert('success', res.data.message);
+        })
+        .catch(() => {
+          alert('error', 'Something went wrong');
+        });
+    } else {
+      alert('error', 'Field cannot be empty');
+    }
+    setNewBaseId();
+    setAnotherBaseId(false);
+    setIsSavingBaseId(false);
   };
 
   return (
@@ -172,7 +212,7 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
           </Row>
           {newProject?.category === 'business' && (
             <>
-              <FormGroup>
+              {/* <FormGroup>
                 <Label for="partner">Partner</Label>
                 <Input
                   type="select"
@@ -191,6 +231,47 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
                       </option>
                     ))}
                 </Input>
+              </FormGroup> */}
+              <FormGroup>
+                <Label for="partner">{otherPartner ? 'Add Other Partner' : 'Partner'}</Label>
+                <div className="d-flex gap-3">
+                  <div style={{ width: '80%' }}>
+                    {otherPartner ? (
+                      <Input
+                        type="text"
+                        name="partner"
+                        id="partner"
+                        placeholder="Type here.."
+                        onChange={handleChange}
+                      />
+                    ) : (
+                      <Select
+                        components={animatedComponents}
+                        options={partnerOptions}
+                        onChange={(choice) => setPartner(choice)}
+                      />
+                    )}
+                  </div>
+                  {otherPartner ? (
+                    <Button
+                      type="button"
+                      color="secondary"
+                      outline
+                      onClick={() => setOtherPartner(false)}
+                    >
+                      Cancel
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      color="secondary"
+                      outline
+                      onClick={() => setOtherPartner(true)}
+                    >
+                      Add Other
+                    </Button>
+                  )}
+                </div>
               </FormGroup>
               <FormGroup>
                 <Label htmlFor="desc">Description for Initiation & Definition phase</Label>
@@ -235,63 +316,119 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
               </Row>
             </>
           )}
-          <Row>
-            <Col md="6">
-              <FormGroup>
-                <Label for="base_id">Activity base</Label>
-                <Input
-                  type="select"
-                  id="base_id"
-                  name="base_id"
-                  defaultValue="ab"
-                  onChange={handleChange}
-                  style={{ textOverflow: 'ellipsis' }}
-                >
-                  <option disabled value="ab">
-                    - Select -
-                  </option>
-                  {options?.activity_base?.map((ab) => (
-                    <option
-                      key={ab.base_id}
-                      value={ab.base_id}
-                      style={{
-                        width: '4rem',
-                        textOverflow: 'ellipsis',
-                      }}
+          {anotherBaseId ? (
+            <Row>
+              <Col md="12">
+                <FormGroup>
+                  <Label for="activity_name">Add Activity Base</Label>
+                  <div className="d-flex gap-3">
+                    <div style={{ width: '70%' }}>
+                      <Input
+                        type="text"
+                        name="activity_name"
+                        id="activity_name"
+                        placeholder="Type here.."
+                        onChange={(e) => setNewBaseId(e.target.value)}
+                      />
+                    </div>
+                    <Button
+                      className="d-flex align-items-center"
+                      type="button"
+                      color="success"
+                      size="sm"
+                      onClick={submitBaseId}
+                      disabled={isSavingBaseId}
                     >
-                      {ab.base_description}
+                      {isSavingBaseId ? (
+                        <>
+                          <Spinner className="me-2" size="sm" color="light" />
+                          Loading
+                        </>
+                      ) : (
+                        'Save'
+                      )}
+                    </Button>
+                    <Button
+                      type="button"
+                      outline
+                      onClick={() => setAnotherBaseId(false)}
+                      disabled={isSavingBaseId}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </FormGroup>
+              </Col>
+            </Row>
+          ) : (
+            <Row>
+              <Col md="6">
+                <FormGroup>
+                  <Label for="base_id">Activity base</Label>
+                  <Input
+                    type="select"
+                    id="base_id"
+                    name="base_id"
+                    defaultValue="ab"
+                    onChange={handleChange}
+                    style={{ textOverflow: 'ellipsis' }}
+                  >
+                    <option disabled value="ab">
+                      - Select -
                     </option>
-                  ))}
-                </Input>
-              </FormGroup>
-            </Col>
-            <Col md="6">
-              <FormGroup>
-                <Label for="business_id" className="text-muted">
-                  Business plan
-                </Label>
-                <Input
-                  type="select"
-                  id="business_id"
-                  name="business_id"
-                  disabled={newProject?.base_id !== '3'}
-                  onChange={handleChange}
-                  defaultValue=""
-                >
-                  {newProject?.base_id === '3' && (
-                    <>
-                      <option value="">- Select -</option>
-                      {options?.business_plan?.map((bp) => (
-                        <option key={bp.business_id} value={bp.business_id}>
-                          {bp.business_desc}
-                        </option>
-                      ))}
-                    </>
+                    {options?.activity_base?.map((ab) => (
+                      <option
+                        key={ab.base_id}
+                        value={ab.base_id}
+                        style={{
+                          width: '4rem',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {ab.base_description}
+                      </option>
+                    ))}
+                    <option value="another">Tambah Lainnya</option>
+                  </Input>
+                </FormGroup>
+              </Col>
+              <Col md="6">
+                <FormGroup>
+                  <Label for="business_id" className="text-muted">
+                    Business plan
+                  </Label>
+                  {newProject?.base_id === '3' ? (
+                    <Select
+                      components={animatedComponents}
+                      options={options?.business_plan}
+                      onChange={(choice) => setBusinessPlan(choice)}
+                    />
+                  ) : (
+                    <Input type="select" disabled defaultValue="" />
                   )}
-                </Input>
-              </FormGroup>
-            </Col>
-          </Row>
+                  {/* <Input
+                    type="select"
+                    id="business_id"
+                    name="business_id"
+                    disabled={newProject?.base_id !== '3'}
+                    onChange={handleChange}
+                    defaultValue=""
+                  >
+                    {newProject?.base_id === '3' && (
+                      <>
+                        <option value="">- Select -</option>
+                        {options?.business_plan?.map((bp) => (
+                          <option key={bp.business_id} value={bp.business_id}>
+                            {bp.business_desc}
+                          </option>
+                        ))}
+                      </>
+                    )}
+                  </Input> */}
+                </FormGroup>
+              </Col>
+            </Row>
+          )}
         </ModalBody>
         <ModalFooter>
           <Button type="submit" color="info" disabled={loading}>

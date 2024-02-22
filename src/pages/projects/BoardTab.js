@@ -16,9 +16,9 @@ const removeDuplicates = (arr) => {
 
 const BoardTab = () => {
   const { projectId } = useParams();
-  const [todos, setTodos] = useState();
-  const [inProgress, setInProgress] = useState();
-  const [Done, setDone] = useState();
+  const [todos, setTodos] = useState([]);
+  const [inProgress, setInProgress] = useState([]);
+  const [Done, setDone] = useState([]);
   const [isMemberActive, setIsMemberActive] = useState(false);
 
   const api = useAxios();
@@ -26,9 +26,9 @@ const BoardTab = () => {
   const { isLoading, error, data, refetch, isRefetching } = useQuery({
     queryKey: ['todos'],
     queryFn: () =>
-      api.get(`api/task/${projectId}/employe/all`).then((res) => {
+      api.get(`api/task/${projectId}/employe/list`).then((res) => {
         setIsMemberActive(res.data.is_member_active);
-        return res.data.tasks;
+        return res.data.data;
       }),
   });
 

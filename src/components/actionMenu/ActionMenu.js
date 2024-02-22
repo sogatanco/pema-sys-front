@@ -29,7 +29,7 @@ const ActionMenu = ({ menuOptions, taskId, status, action, progress }) => {
       {actionMenu && (
         <>
           <div className="action-overlay" onClick={() => setActionMenu(false)} />
-          <div className="action-options">
+          <div className="action-options rounded-3">
             {menuOptions?.options.map((op) => (
               <div key={op.id}>
                 {op.type === 'button' ? (

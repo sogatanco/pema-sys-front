@@ -13,7 +13,7 @@ import useAxios from '../../hooks/useAxios';
 
 const TaskForm = (props) => {
   const { auth } = useAuth();
-  const { projectId, setNewTaskOpen, setAddSubtaskOpen, refetch, type, taskId } = props;
+  const { projectId, setNewTaskOpen, setAddSubtaskOpen, refetch, type, taskId, title } = props;
   const [loading, setLoading] = useState(false);
   const [task, setTask] = useState({});
   const [modal, setModal] = useState(false);
@@ -111,21 +111,22 @@ const TaskForm = (props) => {
       <div className="task-form-overlay" onClick={closeForm} />
 
       <form onSubmit={taskSubmit} style={{ width: '100%' }} encType="multipart/form-data">
-        <div className="new-task">
+        <div className="new-task rounded-3">
           <div className="body">
             <div className="input">
               <Input
                 type="textarea"
                 name="task_title"
-                placeholder="Task title here.."
+                placeholder={`${title}...`}
                 required
                 onChange={handleChange}
                 rows="4"
                 value={task?.task_title || ''}
+                style={{ fontSize: '13px' }}
               />
             </div>
           </div>
-          <div className="d-flex gap-3 justify-content-between ">
+          <div className="d-flex gap-3 justify-content-between">
             <div className="d-flex gap-0 w-75">
               <div className="d-flex align-items-center w-50">
                 <span className="datepicker-toggle">
@@ -237,6 +238,7 @@ TaskForm.propTypes = {
   refetch: PropTypes.func,
   type: PropTypes.number,
   taskId: PropTypes.number,
+  title: PropTypes.string,
 };
 
 export default TaskForm;

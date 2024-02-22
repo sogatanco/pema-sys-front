@@ -135,11 +135,11 @@ const ReviewTab = ({ setTotalReview }) => {
                   <div className="d-flex gap-4">
                     <div color="muted">
                       <span className="text-dark">Start at: </span>
-                      <br /> {newDate(task.start_date).split(',')[0]}
+                      <br /> {newDate(task.start_date)?.split(',')[0]}
                     </div>
                     <div color="muted">
                       <span className="text-dark">Due at: </span>
-                      <br /> {newDate(task.end_date).split(',')[0]}
+                      <br /> {newDate(task.end_date)?.split(',')[0]}
                     </div>
                   </div>
                   <div className="d-flex gap-2">

@@ -145,7 +145,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
   return (
     <Col>
       <Col className="d-flex justify-content-between gap-3 mb-3 align-items-center">
-        <div className="project-nav overflow-auto">
+        <div className="project-nav overflow-auto rounded-3">
           <Link
             className={`${navActive === 1 && 'active'} text-muted fw-bold`}
             onClick={() => setNavActive(1)}
@@ -297,12 +297,12 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                           style={{ fontSize: '28px' }}
                         />
                         <div className="d-flex flex-column">
-                          <span
+                          <spanfil
                             className="text-muted"
                             style={{ fontSize: '10px', marginBottom: '-4px' }}
                           >
                             Phase
-                          </span>
+                          </spanfil>
                           <small className="fw-bold">{data?.current_stage?.phase}</small>
                         </div>
                       </div>

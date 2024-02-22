@@ -15,7 +15,7 @@ import './TaskPopup.scss';
 import MaterialIcon from '@material/react-material-icon';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import ActionMenu from '../../components/actionMenu/ActionMenu';
 import user1 from '../../assets/images/users/user1.jpg';
 import useAxios from '../../hooks/useAxios';
@@ -36,6 +36,7 @@ const sortHistoryByDate = (data) => {
 };
 
 const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
+  const { projectId } = useParams();
   const { auth } = useAuth();
   const [history, setHistory] = useState();
   const [loading, setLoading] = useState(false);
@@ -50,6 +51,8 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
   const [commentSending, setCommentSending] = useState(false);
   const [files, setFiles] = useState([]);
   const [popContent, setPopContent] = useState();
+  const [isDeletingFile, setIsDeletingFile] = useState(false);
+  const [listFile, setListFile] = useState([]);
 
   const inputCommentRef = useRef();
 
@@ -96,6 +99,8 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
       await api.get(`api/comment/${task?.task_id}`).then((res) => setComments(res.data.data));
     }
 
+    setListFile(task?.files);
+
     fetchComments();
     fetchHistory();
   }, [task]);
@@ -118,36 +123,51 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     setUpdating(true);
-    taskTemp.task_pic = assignedEmployees;
+    if (assignedEmployees.length !== 0) {
+      taskTemp.pic = assignedEmployees;
+      taskTemp.project_id = projectId;
 
-    if (files) {
-      taskTemp.files = files;
+      if (files) {
+        taskTemp.files = files;
+      }
+      await api
+        .patch(`api/task/${task?.task_id}`, taskTemp)
+        .then(() => {
+          alert('success', 'Task has been updated.');
+          setModal(false);
+          refetch();
+        })
+        .catch(() => alert('error', 'Something went wrong'));
+    } else {
+      alert('error', 'Field employee cannot be empty');
     }
-    await api.patch(`api/task/${task?.task_id}`, taskTemp).then(() => {
-      alert('success', 'Task has been updated.');
-    });
-    setModal(false);
-    refetch();
     setUpdating(false);
   };
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    setUploading(true);
-    await api
-      .post(`api/task/${task.task_id}/upload`, files, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then((res) => {
-        // eslint-disable-next-line no-unused-expressions
-        task?.files?.push(res.data.file);
-        alert('success', 'File has been uploaded.');
-      })
-      .catch((err) => console.log(err));
-    setFiles([]);
-    setUploading(false);
+    if (files?.length === 0) {
+      alert('error', 'Field cannot be empty');
+    } else {
+      setUploading(true);
+      await api
+        .post(`api/task/${task.task_id}/upload`, files, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then((res) => {
+          // eslint-disable-next-line no-unused-expressions
+          task?.files?.push(res.data.file);
+          // listFile.push(res.data.file);
+          alert('success', 'File has been uploaded.');
+        })
+        .catch(() => {
+          alert('error', 'Upload file failed');
+        });
+      setFiles([]);
+      setUploading(false);
+    }
   };
 
   const deleteTask = async () => {
@@ -159,6 +179,19 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
     setLoading(false);
     setModal(false);
     refetch();
+  };
+
+  const deleteFile = async (fileId) => {
+    setIsDeletingFile(true);
+    await api
+      .delete(`api/task/file/delete/${fileId}`)
+      .then(() => {
+        refetch();
+        setModal(false);
+        alert('success', 'A file has been deleted');
+      })
+      .catch('error', 'Delete file failed');
+    setIsDeletingFile(false);
   };
 
   const menuOptions = {
@@ -253,7 +286,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                         <h6>Attachment files ({task?.files?.length || 0})</h6>
                         <ul>
                           {task?.files?.length > 0 &&
-                            task?.files.map((f) => (
+                            listFile.map((f) => (
                               <div key={f.file_id} className="d-flex gap-1 align-items-center">
                                 <li>
                                   <Link
@@ -264,18 +297,6 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                                     {f.file_name}
                                   </Link>
                                 </li>
-                                {auth?.user.employe_id === task?.employe_id && (
-                                  <button
-                                    type="button"
-                                    className="btn d-flex"
-                                    style={{ color: '#EF6767' }}
-                                  >
-                                    <MaterialIcon
-                                      icon="delete_outline"
-                                      style={{ fontSize: '20px' }}
-                                    />
-                                  </button>
-                                )}
                               </div>
                             ))}
                         </ul>
@@ -322,7 +343,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                           value={taskTemp?.task_desc || ''}
                           onChange={(e) => setTaskTemp({ ...taskTemp, task_desc: e.target.value })}
                         />
-                        {task?.subtasks?.length > 0
+                        {task?.level_2?.length > 0 || task?.level_3?.length > 0
                           ? ''
                           : task?.pics?.map(
                               (pic) =>
@@ -382,7 +403,6 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                               name="attach"
                               hidden
                               onChange={(e) => setFiles(e.target.files)}
-                              required
                             />
                             <TooltipHover title="Upload file" id="3" />
                           </div>
@@ -404,7 +424,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                     <div className="attach">
                       <ul>
                         {task?.files?.length > 0 &&
-                          task?.files.map((f) => (
+                          listFile.map((f) => (
                             <div key={f.file_id} className="d-flex gap-1 align-items-center">
                               <li>
                                 <Link
@@ -419,8 +439,17 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                                 type="button"
                                 className="btn d-flex"
                                 style={{ color: '#EF6767' }}
+                                disabled={isDeletingFile}
+                                onClick={() => deleteFile(f.file_id)}
                               >
-                                <MaterialIcon icon="delete_outline" style={{ fontSize: '20px' }} />
+                                {isDeletingFile ? (
+                                  'Deleting..'
+                                ) : (
+                                  <MaterialIcon
+                                    icon="delete_outline"
+                                    style={{ fontSize: '20px' }}
+                                  />
+                                )}
                               </button>
                             </div>
                           ))}
@@ -462,7 +491,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                       </span>
                     </div>
                   )}
-                  {auth?.user.employe_id === task.employe_id && (
+                  {auth?.user.employe_id === task?.employe_id?.toString() && (
                     <ActionMenu menuOptions={menuOptions} action={deleteTask} />
                   )}
                 </div>
@@ -626,13 +655,12 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
         <ModalHeader toggle={() => setEmModal(false)}>Assigne Employee</ModalHeader>
         <ModalBody>
           <Select
-            closeMenuOnSelect={false}
+            closeMenuOnSelect
             components={animatedComponents}
             isMulti
             defaultValue={assignedEmployees}
             options={listEmployee}
             onChange={(choice) => setAssignedEmployees(choice)}
-            isDisabled
           />
         </ModalBody>
       </Modal>

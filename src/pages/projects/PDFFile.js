@@ -154,7 +154,7 @@ const PDFFile = ({ projectTitle, data }) => {
                   ))}
                 </View>
               </View>
-              {item.subtasks.map((st) => (
+              {item.level_2.map((st) => (
                 <View style={styles.tableRow} key={st.task_id}>
                   <View style={{ ...styles.tableCol, width: '5%' }}>
                     <Text style={styles.tableCell}></Text>
