@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import DataTable from 'react-data-table-component';
 
 import { Card, CardBody, Input, Button } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 const CompanyList = ({ companies }) => {
   const [search, setSearch] = useState('');
@@ -28,7 +29,7 @@ const CompanyList = ({ companies }) => {
     },
     {
       name: 'Status',
-      selector: (row) => row.status_verifikasi ,
+      selector: (row) => row.status_verifikasi,
     },
     {
       name: 'Phone Number',
@@ -36,7 +37,13 @@ const CompanyList = ({ companies }) => {
     },
     {
       name: 'Action',
-      selector: (row) => (<Button size='sm' href={`/vendor/requests/check/${row.id}`} color='dark' >Detail</Button>)
+      selector: (row) => (
+        <Link to={`/vendor/requests/check/${row.id}`}>
+          <Button size="sm" color="dark">
+            Detail
+          </Button>
+        </Link>
+      ),
     },
   ];
 

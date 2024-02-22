@@ -50,9 +50,9 @@ const TabGeneral = ({ companyId }) => {
         <tr>
           <td width="300">File NPWP</td>
           <td className="fw-bold">
-            <Link to={`/preview?data=general&doc=${data?.base64_npwp}`} target="_blank">
+            <Link to={`data:application/pdf;base64, ${data?.npwp_base64}`} download="npwp.pdf">
               <Button type="button" size="sm" color="light">
-                Preview File NPWP
+                Download File NPWP
               </Button>
             </Link>
           </td>
@@ -72,9 +72,9 @@ const TabGeneral = ({ companyId }) => {
         <tr>
           <td width="300">File PVD</td>
           <td className="fw-bold">
-            <Link to={`/preview?data=general&doc=${data?.base64_pvd}`} target="_blank">
+            <Link to={`data:application/pdf;base64, ${data?.base64_pvd}`} download="pvd.pdf">
               <Button type="button" size="sm" color="light">
-                Preview File PVD
+                Download File PVD
               </Button>
             </Link>
           </td>

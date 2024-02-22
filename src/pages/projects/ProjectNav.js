@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link, useParams } from 'react-router-dom';
-import { Card, CardBody, Col, Row } from 'reactstrap';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import {
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+  Row,
+} from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import user1 from '../../assets/images/users/user1.jpg';
 import './Project.scss';
+import EditProjectModal from './EditProjectModal';
+import { alert } from '../../components/atoms/Toast';
 
 const allowedRolesForReview = ['Manager', 'Director'];
 const allowedRolesForBastReview = ['Director'];
@@ -21,6 +33,20 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
   const { projectId } = useParams();
   const [actionMenu, setActionMenu] = useState(false);
   const [isBusiness, setIsBusiness] = useState();
+
+  const [modal, setModal] = useState(false);
+  const [modal2, setModal2] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const navigate = useNavigate();
+  // const [actionMenu, setActionMenu] = useState(undefined);
+
+  const toggle = () => {
+    setModal(!modal);
+  };
+
+  const toggle2 = () => {
+    setModal2(!modal2);
+  };
 
   const queryParams = new URLSearchParams(window.location.search);
 
@@ -66,7 +92,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
     }
   }, [totalBastReview]);
 
-  const { isLoading, data } = useQuery({
+  const { isLoading, data, refetch } = useQuery({
     queryKey: ['project-number'],
     queryFn: () =>
       api.get(`api/project/${projectId}`).then((res) => {
@@ -81,6 +107,31 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
       setIsBusiness(false);
     }
   }, [data]);
+
+  const handleUpdate = () => {
+    setModal(true);
+    setActionMenu(undefined);
+  };
+
+  const handleDelete = () => {
+    setModal2(!modal2);
+    setActionMenu(false);
+  };
+
+  const deleteProject = async () => {
+    setIsDeleting(true);
+    await api
+      .delete(`api/project/${projectId}`)
+      .then(() => {
+        alert('success', 'Project has been deleted.');
+        navigate('/projects');
+      })
+      .catch(() => {
+        alert('error', 'Something went wrong.');
+      });
+    setModal2(!modal2);
+    setIsDeleting(false);
+  };
 
   const BoardAllowedRoles = ['Staff', 'Manager'];
   const MembersAllowedRoles = ['Staff', 'Manager', 'Director'];
@@ -208,7 +259,9 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                           >
                             Partner
                           </span>
-                          <small className="fw-bold">{data?.current_stage?.partner || '-'}</small>
+                          <small className="fw-bold">
+                            {data?.current_stage?.partner_name || '-'}
+                          </small>
                         </div>
                       </div>
                     </Col>
@@ -297,14 +350,14 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                         <>
                           <div className="action-overlay" onClick={() => setActionMenu(false)} />
                           <div className="action-options">
-                            <Link to="/" className="text-muted">
+                            <Link type="button" className="text-muted" onClick={handleUpdate}>
                               <MaterialIcon icon="update" />
                               Update
                             </Link>
                             <button
                               type="button"
                               className="text-muted fw-bold"
-                              onClick={() => setActionMenu(undefined)}
+                              onClick={handleDelete}
                             >
                               <MaterialIcon icon="delete" />
                               Delete
@@ -317,6 +370,24 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                     ''
                   )}
                 </div>
+                <EditProjectModal {...{ modal, setModal, toggle, data, refetch }} />
+                <Modal isOpen={modal2} toggle={toggle2.bind(null)} centered>
+                  <ModalHeader toggle={toggle2.bind(null)}>Confirmation</ModalHeader>
+                  <ModalBody>
+                    <div className="d-flex flex-column align-items-center">
+                      <h4>{data?.project_name}</h4>
+                      Are you sure you want to delete this project?
+                    </div>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="danger" size="sm" onClick={deleteProject} disabled={isDeleting}>
+                      {isDeleting ? 'Deleting..' : 'Yes'}
+                    </Button>
+                    <Button color="secondary" size="sm" outline onClick={toggle2.bind(null)}>
+                      Cancel
+                    </Button>
+                  </ModalFooter>
+                </Modal>
               </Col>
             </Row>
           )}

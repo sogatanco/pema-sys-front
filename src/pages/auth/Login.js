@@ -14,7 +14,7 @@ import {
 } from 'reactstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { ReactComponent as LeftBg } from '../../assets/images/bg/login-bgleft.svg';
 import { ReactComponent as RightBg } from '../../assets/images/bg/login-bg-right.svg';
 import { AuthContext } from '../../context/AuthContext';
@@ -119,9 +119,9 @@ const Login = () => {
                           <Input type="checkbox" />
                           Remember me
                         </Label>
-                        <Link className="ms-auto text-decoration-none" to="/auth/forgotPwd">
+                        {/* <Link className="ms-auto text-decoration-none" to="/auth/forgotPwd">
                           <small>Forgot Pwd?</small>
-                        </Link>
+                        </Link> */}
                       </FormGroup>
                       <FormGroup>
                         <div className="d-grid gap-2">

@@ -143,7 +143,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
       .then((res) => {
         // eslint-disable-next-line no-unused-expressions
         task?.files?.push(res.data.file);
-        // alert('success', 'File has been uploaded.');
+        alert('success', 'File has been uploaded.');
       })
       .catch((err) => console.log(err));
     setFiles([]);
@@ -154,8 +154,8 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
     setLoading(true);
     await api
       .delete(`api/task/${task.task_id}`)
-      .then()
-      .catch((err) => console.log(err));
+      .then(() => alert('success', 'Task has been deleted'))
+      .catch(() => alert('error', 'Something went wrong'));
     setLoading(false);
     setModal(false);
     refetch();
@@ -187,12 +187,10 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
 
   const fileUrl = process.env.REACT_APP_BASEURL;
 
-  console.log('tasssssk:', task);
-
   return (
     <>
-      <Modal isOpen={modal} toggle={toggle.bind(null)} size="xl" fade={false}>
-        <ModalHeader toggle={toggle.bind(null)}>Task Info</ModalHeader>
+      <Modal isOpen={modal} toggle={toggle.bind(null)} size="xl" fade={false} centered>
+        <ModalHeader toggle={toggle.bind(null)}></ModalHeader>
         <ModalBody>
           {loading ? (
             <div className="d-flex justify-content-center" style={{ height: '400px' }}>
@@ -202,12 +200,12 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
             <div className="popup-body">
               <div className="left">
                 {/* {auth?.user.employe_id !== task.employe_id.toString() || mode === 'activities' ? ( */}
-                {mode === 'activities' ? (
+                {mode === 'activities' || task?.status === 2 || task?.status === 3 ? (
                   <>
                     <>
                       <div className="top">
                         <div className="date">
-                          <h6>Start Date</h6>
+                          <h6>Start Date </h6>
                           <span>{taskTemp?.start_date || '-'}</span>
                         </div>
                         <div className="date">
@@ -289,8 +287,15 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                     <form onSubmit={handleUpdate}>
                       <div className="top">
                         <div className="date">
-                          <h6>Start Date {task.subtasks?.length}</h6>
-                          <span>{taskTemp?.start_date || '-'}</span>
+                          <h6>Start Date</h6>
+                          <Input
+                            type="date"
+                            name="start_date"
+                            value={taskTemp?.start_date || ''}
+                            onChange={(e) =>
+                              setTaskTemp({ ...taskTemp, start_date: e.target.value })
+                            }
+                          />
                         </div>
                         <div className="date">
                           <h6>Due Date</h6>
@@ -356,14 +361,15 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                           type="submit"
                           className="btn"
                           color="info"
-                          disabled={updating}
+                          disabled={updating || task?.status === 3}
                           size="sm"
                         >
                           {updating ? 'Updating...' : 'Update'}
                         </Button>
                       </div>
                     </form>
-                    <form onSubmit={handleUpload}>
+                    <form onSubmit={handleUpload} className="mt-2">
+                      <h6>Attachment files ({task?.files?.length || 0})</h6>
                       <div className="d-flex justify-content-between align-items-center bg-light px-2 rounded-3 mt-2">
                         <div className="d-flex align-items-center gap-1">
                           <div className="pt-2" id="tooltip-3">
@@ -384,13 +390,18 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                             {files[0]?.name}
                           </span>
                         </div>
-                        <Button type="submit" className="btn" outline size="sm">
+                        <Button
+                          type="submit"
+                          className="btn"
+                          outline
+                          size="sm"
+                          disabled={task?.status === 3}
+                        >
                           {uploading ? 'Uploading...' : 'Upload'}
                         </Button>
                       </div>
                     </form>
                     <div className="attach">
-                      <h6>Attachment files ({task?.files?.length || 0})</h6>
                       <ul>
                         {task?.files?.length > 0 &&
                           task?.files.map((f) => (
@@ -463,6 +474,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                           <span>
                             <strong>{task && task.created_by}</strong> create this task
                           </span>
+                          <br />
                         </div>
                         <small>{task && newDate(task.created_at)}</small>
                       </div>
@@ -471,22 +483,56 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                           <Fragment key={newDate(h?.created_at)}>
                             <div className="history-item">
                               <div className="comment-name">
-                                {h?.status === 0 && i > 0 ? (
-                                  <span>
-                                    <strong>{h?.pic_task}</strong> change task to To Do
-                                  </span>
+                                {h?.status === 0 && i < 1 ? (
+                                  <>
+                                    <span>
+                                      <strong>{h?.pic_task}</strong> sdsd
+                                    </span>
+                                    <br />
+                                    <span style={{ fontSize: '12px' }}>
+                                      Deadline: {h?.end_date}
+                                    </span>
+                                  </>
+                                ) : h?.status === 0 && i > 0 ? (
+                                  <>
+                                    <span>
+                                      <strong>{h?.pic_task}</strong> change task to To Do
+                                    </span>
+                                    <br />
+                                    <span style={{ fontSize: '12px' }}>
+                                      Deadline: {h?.end_date}
+                                    </span>
+                                  </>
                                 ) : h?.status === 0 ? (
-                                  <span>
-                                    <strong>{h?.pic_task}</strong> was assigned
-                                  </span>
+                                  <>
+                                    <span>
+                                      <strong>{h?.pic_task}</strong> was assigned
+                                    </span>
+                                    <br />
+                                    <span style={{ fontSize: '12px' }}>
+                                      Deadline: {h?.end_date}
+                                    </span>
+                                  </>
                                 ) : h?.status === 1 ? (
-                                  <span>
-                                    <strong>{h?.pic_task}</strong> change task to In Progress
-                                  </span>
+                                  <>
+                                    <span>
+                                      <strong>{h?.pic_task}</strong> change task to In Progress
+                                    </span>
+                                    <br />
+                                    <span style={{ fontSize: '12px' }}>
+                                      Deadline: {h?.end_date}
+                                    </span>
+                                  </>
                                 ) : h?.status === 2 ? (
-                                  <span>
-                                    <strong>{h?.pic_task}</strong> change task to Review
-                                  </span>
+                                  <>
+                                    <span>
+                                      <strong>{h?.pic_task}</strong> change task to Review
+                                    </span>
+                                    <br />
+                                    <span style={{ fontSize: '12px' }}>
+                                      Deadline: {h?.end_date}
+                                    </span>
+                                  </>
                                 ) : h?.status === 3 ? (
                                   <span>
                                     <strong>{h?.status_by} </strong> task approved
@@ -495,6 +541,10 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
                                   <>
                                     <span>
                                       <strong>{h?.status_by} </strong>change task to Revision
+                                    </span>
+                                    <br />
+                                    <span style={{ fontSize: '12px' }}>
+                                      Deadline: {h?.end_date}
                                     </span>
                                   </>
                                 )}

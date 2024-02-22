@@ -1,29 +1,27 @@
-import { NavLink, NavItem } from "reactstrap";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
+import { NavLink, NavItem } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-const NavSingleItem = ({
-  to,
-  icon,
-  title,
-  toggle,
-  className,
-  suffix,
-  suffixColor,
-}) => {
+const NavSingleItem = ({ to, icon, title, toggle, className, suffix, suffixColor }) => {
   return (
     <NavItem onClick={toggle} className={className}>
-      <NavLink tag={Link} to={to} className="gap-3">
-        <span className="sidebarIcon d-flex align-items-center">{icon}</span>
-        <div className="d-flex flex-grow-1 align-items-center gap-2">
-          <span>{title}</span>
-          {suffix ? (
-            <span className={`badge ms-auto ${suffixColor}`}>{suffix}</span>
-          ) : (
-            ""
-          )}
-        </div>
-      </NavLink>
+      {title === 'Manual Book' ? (
+        <NavLink tag={Link} to={to} target="_blank" className="gap-3">
+          <span className="sidebarIcon d-flex align-items-center">{icon}</span>
+          <div className="d-flex flex-grow-1 align-items-center gap-2">
+            <span>{title}</span>
+            {suffix ? <span className={`badge ms-auto ${suffixColor}`}>{suffix}</span> : ''}
+          </div>
+        </NavLink>
+      ) : (
+        <NavLink tag={Link} to={to} className="gap-3">
+          <span className="sidebarIcon d-flex align-items-center">{icon}</span>
+          <div className="d-flex flex-grow-1 align-items-center gap-2">
+            <span>{title}</span>
+            {suffix ? <span className={`badge ms-auto ${suffixColor}`}>{suffix}</span> : ''}
+          </div>
+        </NavLink>
+      )}
     </NavItem>
   );
 };

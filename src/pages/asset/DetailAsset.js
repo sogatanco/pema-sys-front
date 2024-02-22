@@ -69,7 +69,6 @@ const DetailAsset = () => {
 
   const { refetch } = result[0];
 
-
   const getBase64 = (file) => {
     return new Promise((resolve) => {
       let bUrl = '';
@@ -154,8 +153,8 @@ const DetailAsset = () => {
   };
 
   const addChild = async () => {
-    const vadd = { id_parent: (+assetId), amount: (+numberChild) };
-    console.log(vadd)
+    const vadd = { id_parent: +assetId, amount: +numberChild };
+    console.log(vadd);
     await api
       .post(`dapi/inven/child/add`, vadd)
       .then((res) => {
@@ -432,7 +431,7 @@ const DetailAsset = () => {
       <Modal isOpen={modal1} toggle={toggle1}>
         <ModalHeader toggle={toggle1}>Set Number Of Child</ModalHeader>
         <ModalBody>
-          <Input type="number" min='1' onChange={(e) => setNumberChild(e.target.value)} />
+          <Input type="number" min="1" onChange={(e) => setNumberChild(e.target.value)} />
 
           <div className="d-grid gap-2 mt-3">
             <Button onClick={() => addChild()}>Add Childs</Button>

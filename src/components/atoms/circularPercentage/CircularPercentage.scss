@@ -13,6 +13,13 @@
   margin: auto;
   max-width: 80%;
   max-height: 250px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all ease 300ms;
+
+  &:hover {
+    background-color: rgb(201, 201, 201);
+  }
 }
 
 .circle-bg {

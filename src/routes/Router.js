@@ -23,11 +23,14 @@ const DetailAsset = Loadable(lazy(() => import('../pages/asset/DetailAsset')));
 
 /***** Projects ****/
 const ProjectPage = Loadable(lazy(() => import('../pages/projects')));
-
 const ProjectDetail = Loadable(lazy(() => import('../pages/projects/ProjectDetail')));
 const ProjectTaskList = Loadable(lazy(() => import('../pages/projects/AllTask')));
 const ProjectReport = Loadable(lazy(() => import('../pages/projects/Report')));
 /***** Projects ****/
+
+/***** Timeline ****/
+const TimelinePage = Loadable(lazy(() => import('../pages/timeline/Timeline')));
+/***** Timeline ****/
 
 /***** Tickets ****/
 const TicketPage = Loadable(lazy(() => import('../pages/tickets')));
@@ -35,6 +38,7 @@ const TicketPage = Loadable(lazy(() => import('../pages/tickets')));
 
 /***** Vendor ****/
 const DashboardPage = Loadable(lazy(() => import('../pages/vendor/dashboard/Dashboard')));
+const InprogressTaskPage = Loadable(lazy(() => import('../pages/projects/InprogressTaskList')));
 const VendorCompanyPage = Loadable(lazy(() => import('../pages/vendor/Company')));
 const RequestPage = Loadable(lazy(() => import('../pages/vendor/requests/Request')));
 const VerificationPage = Loadable(lazy(() => import('../pages/vendor/checks/DocumentCheck')));
@@ -59,6 +63,7 @@ const AtkReportPage = Loadable(lazy(() => import('../pages/report/AtkReport')));
 
 const Dashboard2 = Loadable(lazy(() => import('../views/dashboards/Dashboard2')));
 const Unauthorized = Loadable(lazy(() => import('../pages/auth/Unauthorized')));
+const ChangePassword = Loadable(lazy(() => import('../pages/auth/ChangePassword')));
 
 /***** CASL Access Control ****/
 // const CASL = Loadable(lazy(() => import('../views/apps/accessControlCASL/AccessControl')));
@@ -84,6 +89,8 @@ const ROLES = {
 const formAllowedRoles = ['Picpentry', 'Picatk'];
 const vendorAllowedRoles = ['AdminVendor'];
 const reportAllowedRoles = ['Picpentry', 'Picatk'];
+const assetAllowedRoles = ['Employee'];
+const inProgressTaskAllowedRoles = ['Director'];
 
 /*****Routes******/
 const ThemeRoutes = [
@@ -102,6 +109,17 @@ const ThemeRoutes = [
             element: <Dashboard2 />,
           },
           {
+            path: 'director',
+            element: <RequireAuth allowedRoles={inProgressTaskAllowedRoles} />,
+            children: [
+              {
+                path: 'inprogress-task',
+                name: 'Inprogress Task',
+                element: <InprogressTaskPage />,
+              },
+            ],
+          },
+          {
             path: 'profile',
             name: 'Profile',
             element: <ProfilePage />,
@@ -117,14 +135,19 @@ const ThemeRoutes = [
             element: <ProjectPage />,
           },
           {
+            path: 'timeline',
+            name: 'Timeline',
+            element: <TimelinePage />,
+          },
+          {
             path: 'daily',
             name: 'Daily',
             element: <DailyPage />,
           },
           {
             path: 'asset',
-            name: 'Asset',
-            element: <AssetPage />,
+            element: <RequireAuth allowedRoles={assetAllowedRoles} />,
+            children: [{ path: '', name: 'Asset', element: <AssetPage /> }],
           },
           {
             path: 'asset/:assetId',
@@ -221,6 +244,11 @@ const ThemeRoutes = [
                 element: <AtkReportPage />,
               },
             ],
+          },
+          {
+            path: 'auth/change-password',
+            name: 'Change Password',
+            element: <ChangePassword />,
           },
         ],
       },

@@ -8,12 +8,18 @@ import useAxios from '../../hooks/useAxios';
 import BoardDone from './BoardDone';
 // import NewTaskModal from './NewTaskModal';
 
+const removeDuplicates = (arr) => {
+  return arr?.filter(
+    (obj, index) => arr?.findIndex((item) => item.task_id === obj.task_id) === index,
+  );
+};
+
 const BoardTab = () => {
   const { projectId } = useParams();
   const [todos, setTodos] = useState();
   const [inProgress, setInProgress] = useState();
   const [Done, setDone] = useState();
-  const [isMemberActive, setIsMemberActive] = useState(true);
+  const [isMemberActive, setIsMemberActive] = useState(false);
 
   const api = useAxios();
 
@@ -40,8 +46,8 @@ const BoardTab = () => {
     });
 
     setTodos(todofFiltered);
-    setInProgress(inProgressfFiltered);
-    setDone(DoneFiltered);
+    setInProgress(removeDuplicates(inProgressfFiltered));
+    setDone(removeDuplicates(DoneFiltered));
   }, [data]);
 
   return (
@@ -67,23 +73,43 @@ const BoardTab = () => {
             </CardBody>
           </Card>
         </Col>
-      ) : isMemberActive ? (
+      ) : (
         <>
-          <BoardToDo data={todos} {...{ isLoading, error, refetch, isRefetching }} />
-          <BoardInProgress data={inProgress} {...{ isLoading, error, refetch, isRefetching }} />
+          <BoardToDo
+            data={todos}
+            {...{ isLoading, error, refetch, isRefetching, isMemberActive }}
+          />
+          <BoardInProgress
+            data={inProgress}
+            {...{ isLoading, error, refetch, isRefetching, isMemberActive }}
+          />
           <BoardDone data={Done} {...{ isLoading, error, refetch, isRefetching }} />
         </>
-      ) : (
-        <Col>
-          <Card>
-            <CardBody className="text-center">
-              <h6 className="tex-muted">
-                You cannot create a task because you are not an active member.
-              </h6>
-            </CardBody>
-          </Card>
-        </Col>
       )}
+      {/* // ) : isMemberActive ? ( //{' '}
+      <>
+        // <BoardToDo data={todos} {...{ isLoading, error, refetch, isRefetching }} />
+        // <BoardInProgress data={inProgress} {...{ isLoading, error, refetch, isRefetching }} />
+        // <BoardDone data={Done} {...{ isLoading, error, refetch, isRefetching }} />
+        //{' '}
+      </>
+      // ) : ( //{' '}
+      <Col>
+        //{' '}
+        <Card>
+          //{' '}
+          <CardBody className="text-center">
+            //{' '}
+            <h6 className="tex-muted">
+              // You cannot create a task because you are not an active member. //{' '}
+            </h6>
+            //{' '}
+          </CardBody>
+          //{' '}
+        </Card>
+        //{' '}
+      </Col>
+      // )} */}
     </Row>
   );
 };

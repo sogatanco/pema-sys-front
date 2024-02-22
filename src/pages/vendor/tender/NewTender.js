@@ -25,6 +25,7 @@ const NewTender = () => {
   const [pascaKualifikasi, setPaskaKualifikasi] = useState(true);
   const [dokTenderFile, setDokTenderFile] = useState();
   const [dokDeskTenderFile, setDokDeskTenderFile] = useState();
+  const [dokSuratPenyampaianFile, setDokSuratPenyampaianFile] = useState();
   const [kblis, setKblis] = useState([]);
   const [kblisSelected, setKblisSelected] = useState([]);
 
@@ -103,6 +104,12 @@ const NewTender = () => {
       .catch((err) => console.log(err));
   };
 
+  const handleDokSuratPenyampaian = (val) => {
+    getBase64(val)
+      .then((res) => setDokSuratPenyampaianFile(res.split(',')[1]))
+      .catch((err) => console.log(err));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -113,6 +120,7 @@ const NewTender = () => {
       values.centang_dok_wajib = documentsCheck;
       values.dok_tender = dokTenderFile;
       values.dok_deskripsi_tender = dokDeskTenderFile;
+      values.doc_penyampaian_penawaran = dokSuratPenyampaianFile;
       values.kbli = theKblis;
 
       await api
@@ -210,6 +218,25 @@ const NewTender = () => {
                       </FormGroup>
                     </Col>
                   </Row>
+                  {documentsCheck?.dok_surat_penyampaian_penawaran === true && (
+                    <Row>
+                      <Col sm="12" md="12">
+                        <FormGroup>
+                          <Label htmlFor="dok_surat_penyampaian">
+                            Dokumen Surat Penyampaian Penawaran
+                          </Label>
+                          <Input
+                            type="file"
+                            name="dok_surat_penyampaian"
+                            id="dok_surat_penyampaian"
+                            onChange={(e) => handleDokSuratPenyampaian(e.target.files[0])}
+                            accept="application/pdf"
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  )}
+
                   {tenderUmum ? (
                     ''
                   ) : (

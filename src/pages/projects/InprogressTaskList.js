@@ -1,19 +1,18 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useLocation, useParams } from 'react-router-dom';
-import { Badge, Button, Card, CardBody, Col, Input, Row, Spinner } from 'reactstrap';
+import { Badge, Button, Card, CardBody, CardTitle, Col, Input, Row, Spinner } from 'reactstrap';
 import MaterialIcon from '@material/react-material-icon';
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import Popover from '@mui/material/Popover';
-import Typography from '@mui/material/Typography';
-import useAxios from '../../hooks/useAxios';
+import { Link } from 'react-router-dom';
 import TaskPopup from './TaskPopup';
+import PDFFile from './PDFFile';
+import useAxios from '../../hooks/useAxios';
 import user1 from '../../assets/images/users/user1.jpg';
 import useAuth from '../../hooks/useAuth';
 import { alert } from '../../components/atoms/Toast';
-import PDFFile from './PDFFile';
 import TooltipHover from '../../components/atoms/TooltipHover';
 import './ProjectTable.scss';
+import './ProjectDetail.scss';
 // import TooltipHover from '../../components/atoms/TooltipHover';
 
 // const result = (emId) =>
@@ -21,9 +20,8 @@ import './ProjectTable.scss';
 //     (person, index) => index === emId.findIndex((other) => person.employe_id === other.employe_id),
 //   );
 
-const ActivityTab = () => {
+const InprogressTaskList = () => {
   const { auth } = useAuth();
-  const { projectId } = useParams();
   const [modal, setModal] = useState(false);
   const [task, setTask] = useState(undefined);
   const [taskIdSelected, setTaskIdSelected] = useState();
@@ -33,12 +31,10 @@ const ActivityTab = () => {
   const [filterSearch, setFilterSearch] = useState();
   const api = useAxios();
 
-  const { search } = useLocation();
-
   const { isLoading, error, data, refetch } = useQuery({
-    queryKey: ['act'],
+    queryKey: ['inprogresstasks'],
     queryFn: () =>
-      api.get(`api/task/${projectId}/activities/all${search}`).then((res) => {
+      api.get(`api/task/director/inprogress/list`).then((res) => {
         setProjectTitle(res.data.project);
         return res.data.data;
       }),
@@ -90,110 +86,70 @@ const ActivityTab = () => {
     setFilterSearch(filterByTitle);
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
-
   return (
     <>
       <Col>
         <Card className="rounded-3">
           <CardBody>
+            <CardTitle tag="h4">
+              <div className="d-flex justify-content-between">
+                Inprogress Tasks
+                <Link to="/" style={{ textDecoration: 'none' }}>
+                  <Button size="sm" color="info" outline className="d-flex align-items-center">
+                    <MaterialIcon icon="chevron_left" />
+                    Back to Dashboard
+                  </Button>
+                </Link>
+              </div>
+            </CardTitle>
             {isLoading ? (
               'loading...'
             ) : error ? (
               'Something went wrong.'
             ) : (
               <>
-                <Row>
-                  <Col sm="12 mb-2" md="6">
-                    <div className="d-flex gap-2">
-                      <Button
-                        type="button"
-                        className="d-flex align-items-center gap-2 rounded-3"
-                        color="light"
-                        size="sm"
-                      >
-                        <MaterialIcon icon="filter_list" style={{ fontSize: '12px' }} />
-                        Sort
-                      </Button>
-                      <Button
-                        type="button"
-                        className="d-flex align-items-center gap-2 rounded-3"
-                        color="light"
-                        size="sm"
-                      >
-                        <MaterialIcon icon="tune" style={{ fontSize: '12px' }} />
-                        Filters
-                      </Button>
-                    </div>
-                  </Col>
-                  <Col sm="12" md="6">
-                    <div className="d-flex gap-3 col-md-6 w-100">
-                      <div className="w-100 position-relative">
-                        <Input
-                          type="text"
-                          className="rounded-3"
-                          bsSize="md"
-                          placeholder="Search task..."
-                          onChange={(e) => handleSearch(e.target.value)}
-                        />
-                        <div className="position-absolute top-0 end-0 h-100 p-1">
-                          <Button
-                            type="button"
-                            className="btn btn-light w-100 h-100 border-0 rounded-3 text-muted"
-                            aria-describedby={id}
-                            variant="contained"
-                            onClick={handleClick}
-                          >
-                            <MaterialIcon icon="more_horiz" style={{ fontSize: '16px' }} />
-                          </Button>
-                          <Popover
-                            id={id}
-                            open={open}
-                            anchorEl={anchorEl}
-                            onClick={handleClose}
-                            anchorOrigin={{
-                              vertical: 'bottom',
-                              horizontal: 'left',
-                            }}
-                            transformOrigin={{
-                              vertical: 'top',
-                              horizontal: 'center',
-                            }}
-                          >
-                            <Typography sx={{ p: 2 }}>
-                              <Col>
-                                <Row>
-                                  <Link to="#">Task</Link>
-                                </Row>
-                                <Row>
-                                  <Link to="#">Employee</Link>
-                                </Row>
-                                <Row>
-                                  <Link to="#">Date</Link>
-                                </Row>
-                              </Col>
-                            </Typography>
-                          </Popover>
-                        </div>
-                      </div>
-                      {auth?.user.roles.find((role) => reportTaskAllowedRoles.includes(role)) && (
-                        <PDFDownloadLink
-                          document={<PDFFile {...{ projectTitle, data }} />}
-                          fileName={`Task Report - ${projectTitle?.project_number} - ${projectTitle?.division}`}
-                          style={{ textDecoration: 'none' }}
+                <Col className="bg-light-secondary my-auto p-2 rounded-3">
+                  <Row>
+                    <Col sm="12 mb-2" md="6">
+                      <div className="d-flex gap-2">
+                        <Button
+                          type="button"
+                          className="d-flex align-items-center gap-2 rounded-3"
+                          color="light"
+                          size="sm"
                         >
-                          {/* {({ loading }) =>
+                          <MaterialIcon icon="filter_list" style={{ fontSize: '12px' }} />
+                          Sort
+                        </Button>
+                        <Button
+                          type="button"
+                          className="d-flex align-items-center gap-2 rounded-3"
+                          color="light"
+                          size="sm"
+                        >
+                          <MaterialIcon icon="tune" style={{ fontSize: '12px' }} />
+                          Filters
+                        </Button>
+                      </div>
+                    </Col>
+                    <Col sm="12" md="6">
+                      <div className="d-flex gap-3 col-md-6 w-100">
+                        <div className="w-100 position-relative">
+                          <Input
+                            type="text"
+                            className="rounded-3"
+                            bsSize="md"
+                            placeholder="Search task..."
+                            onChange={(e) => handleSearch(e.target.value)}
+                          />
+                        </div>
+                        {auth?.user.roles.find((role) => reportTaskAllowedRoles.includes(role)) && (
+                          <PDFDownloadLink
+                            document={<PDFFile {...{ projectTitle, data }} />}
+                            fileName={`Task Report - ${projectTitle?.project_number} - ${projectTitle?.division}`}
+                            style={{ textDecoration: 'none' }}
+                          >
+                            {/* {({ loading }) =>
                           loading ? (
                             <Button
                               type="button"
@@ -213,22 +169,23 @@ const ActivityTab = () => {
                             </Button>
                           )
                         } */}
-                          <Button
-                            type="button"
-                            className="btn btn-light-info text-info rounded-3 d-flex py-2"
-                            // size="lg"
-                          >
-                            <MaterialIcon icon="file_download" style={{ fontSize: '18px' }} />
-                            {/* Report */}
-                          </Button>
-                        </PDFDownloadLink>
-                      )}
-                    </div>
-                  </Col>
-                </Row>
+                            <Button
+                              type="button"
+                              className="btn btn-light-info text-info rounded-3 d-flex py-2"
+                              // size="lg"
+                            >
+                              <MaterialIcon icon="file_download" style={{ fontSize: '18px' }} />
+                              {/* Report */}
+                            </Button>
+                          </PDFDownloadLink>
+                        )}
+                      </div>
+                    </Col>
+                  </Row>
+                </Col>
                 <Col sm="12 overflow-auto">
                   <h6 className="fw-bold mt-3">List of tasks from {projectTitle?.division}</h6>
-                  <table className="rounded-corners" style={{ fontSize: '13px' }}>
+                  <table className="rounded-corners">
                     <thead>
                       <tr>
                         <th width="30">#</th>
@@ -303,7 +260,7 @@ const ActivityTab = () => {
                                     )}
                                     {ts?.pics?.length > 2 && (
                                       <div className="member-plus bg-light-info text-info fw-bold">
-                                        +{ts.pics.length - 2}
+                                        +{ts?.pics?.length - 2}
                                       </div>
                                     )}
                                   </div>
@@ -330,7 +287,7 @@ const ActivityTab = () => {
                                 </td>
                               )}
                             </tr>
-                            {ts.subtasks.length > 0 &&
+                            {ts?.subtasks?.length > 0 &&
                               ts.subtasks.map((st) => (
                                 <tr key={st.task_id}>
                                   <td></td>
@@ -374,6 +331,7 @@ const ActivityTab = () => {
                                             i < 2 && (
                                               <Fragment key={pic.id}>
                                                 <img
+                                                  key={pic.id}
                                                   id={`tooltip-${pic.id}`}
                                                   src={user1}
                                                   className="ava-pic rounded-circle"
@@ -440,4 +398,4 @@ const ActivityTab = () => {
   );
 };
 
-export default ActivityTab;
+export default InprogressTaskList;

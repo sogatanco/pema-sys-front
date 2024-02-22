@@ -26,7 +26,6 @@ const TabBusinessField = ({ companyId }) => {
           <th width="50">#</th>
           <th>NIB</th>
           <th>Nama Bidang Usaha</th>
-          <th>Resiko</th>
         </tr>
       </thead>
       <tbody>
@@ -35,7 +34,6 @@ const TabBusinessField = ({ companyId }) => {
             <td>{i + 1}</td>
             <td>{kb.nomor_kbli}</td>
             <td>{kb.nama_kbli}</td>
-            <td>{kb.resiko}</td>
           </tr>
         ))}
       </tbody>

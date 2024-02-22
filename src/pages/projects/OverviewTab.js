@@ -321,7 +321,7 @@ const OverviewTab = () => {
                           <div className="col-md-3 d-flex flex-column">
                             <small>{newDate(h.created_at)}</small>
                           </div>
-                          <div className="col-md-1 member">
+                          <div className="col-md-1 d-flex justify-content-end">
                             <img
                               id={`tooltip-${h.history_id}`}
                               src={h.img || user1}

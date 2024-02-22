@@ -4,6 +4,7 @@
   "homepage": "/",
   "private": true,
   "dependencies": {
+    "@bitnoi.se/react-scheduler": "^0.1.4",
     "@blueprintjs/core": "^5.0.1",
     "@casl/ability": "^6.5.0",
     "@casl/react": "^3.1.0",
