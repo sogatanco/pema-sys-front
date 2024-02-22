@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Card, CardBody } from 'reactstrap';
 import Tab from '@mui/material/Tab';
 import Badge from '@mui/material/Badge';
@@ -38,6 +38,13 @@ const Asset = () => {
             return res.data.data;
           }),
       },
+      {
+        queryKey: ['req', 2],
+        queryFn: () =>
+          api.get(`dapi/inv/getrservice`).then((res) => {
+            return res.data.data;
+          }),
+      },
     ],
   });
 
@@ -46,17 +53,18 @@ const Asset = () => {
   };
 
   const { refetch } = result[0];
+  const refetch1 = useCallback(()=> {
+    result[1].refetch();
+  }, [result[1]]);
+  // const refetch2 = useCallback(()=> {
+  //   result[2].refetch();
+  // }, [result[2]]);
 
   useEffect(() => {
     setListAsset(result[0].data);
-    setReqser(result[0].data);
+    setReqser(result[2].data);
     setOnMe(result[1].data);
-    if (auth?.user.roles.includes('PicAsset')) {
-      setValue('1');
-    } else {
-      setValue('2');
-    }
-  }, [result[0].data, result[1].data]);
+  }, [result[0].data, result[1].data,  result[2].data]);
 
   return (
     <>
@@ -102,12 +110,12 @@ const Asset = () => {
             <Tab
               label={
                 <Badge
-                  badgeContent={0}
+                  badgeContent={result[2].data?.length}
                   anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
                   }}
-                  color="primary"
+                  color="warning"
                 >
                   <strong>SERVICE APPLICATION</strong> &nbsp;&nbsp;
                 </Badge>
@@ -135,7 +143,7 @@ const Asset = () => {
         <TabPanel value="2" className="ps-0 pe-0">
           <Card>
             <CardBody>
-              <AssetOnMe {...{ onMe, handleChange }} />
+              <AssetOnMe {...{ onMe, handleChange, refetch1 }} />
             </CardBody>
           </Card>
         </TabPanel>

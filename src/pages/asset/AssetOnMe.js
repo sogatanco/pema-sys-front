@@ -9,7 +9,7 @@ import { alert } from '../../components/atoms/Toast';
 
 const baseURL = process.env.REACT_APP_BASEURL;
 
-const AssetOnMe = ({ onMe,handleChange }) => {
+const AssetOnMe = ({ onMe, handleChange, refetch1 }) => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState([]);
   const [sesImg, setSesImg] = useState(new Date());
@@ -73,9 +73,14 @@ const AssetOnMe = ({ onMe,handleChange }) => {
     {
       name: 'Action',
       selector: (row) => (
-        <Button color="primary" outline size="sm" onClick={() => toggle(row.id)}>
-          {' '}
-          Request Service
+        <Button
+          color="primary"
+          outline
+          size="sm"
+          onClick={() => toggle(row.id)}
+          disabled={row.request_service}
+        >
+          {row.request_service ? 'Service Requested' : 'Request Service'}
         </Button>
       ),
     },
@@ -89,12 +94,14 @@ const AssetOnMe = ({ onMe,handleChange }) => {
       .then((res) => {
         if (res?.data?.success) {
           toggle();
-          handleChange('','3');
+          handleChange('', '3');
           alert('success', `Request Submitted succesfully !`);
+          refetch1();
         }
       })
       .catch((err) => {
         toggle();
+
         alert('error', err);
       });
   };
@@ -159,7 +166,8 @@ const AssetOnMe = ({ onMe,handleChange }) => {
 
 AssetOnMe.propTypes = {
   onMe: PropTypes.array,
-  handleChange:PropTypes.func,
+  handleChange: PropTypes.func,
+  refetch1: PropTypes.func,
 };
 
 export default AssetOnMe;
