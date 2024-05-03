@@ -9,15 +9,15 @@ import HandoverTab from './HandoverTab';
 import ActivityTab from './ActivityTab';
 import ReviewBastTab from './ReviewBastTab';
 
-const ProjectDetailTab = ({ navActive, setTotalReview, setTotalBastReview }) => {
+const ProjectDetailTab = ({ navActive, setTotalReview, setTotalBastReview, roles }) => {
   return (
     <>
       {navActive === 1 && <OverviewTab />}
-      {navActive === 2 && <BoardTab />}
+      {!roles.includes('Director') && navActive === 2 && <BoardTab />}
       {navActive === 3 && <MemberTab />}
       {navActive === 4 && <FileTab />}
       {navActive === 5 && <ReviewTab {...{ setTotalReview }} />}
-      {navActive === 6 && <HandoverTab />}
+      {!roles.includes('Director') && navActive === 6 && <HandoverTab />}
       {navActive === 7 && <ActivityTab />}
       {navActive === 8 && <ReviewBastTab {...{ setTotalBastReview }} />}
     </>
@@ -28,6 +28,7 @@ ProjectDetailTab.propTypes = {
   navActive: PropTypes.any,
   setTotalReview: PropTypes.func,
   setTotalBastReview: PropTypes.func,
+  roles: PropTypes.array,
 };
 
 export default ProjectDetailTab;

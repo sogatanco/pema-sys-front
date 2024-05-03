@@ -58,6 +58,7 @@
     "react-hook-form": "^7.45.1",
     "react-hot-toast": "^2.4.1",
     "react-iframe": "1.8.5",
+    "react-input-mask": "^2.0.4",
     "react-jotform-embed": "^1.1.3",
     "react-jvectormap": "0.0.16",
     "react-live-clock": "^6.1.19",
@@ -102,7 +103,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && cp -R build/* pema-sys && cd pema-sys && git add . && git commit -m 'update' && git push -u origin master",
+    "build-testing": "react-scripts build",
+    "build-prod": "react-scripts build && cp -R build/* pema-sys && cd pema-sys && git add . && git commit -m 'update' && git push -u origin master",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint ./src",

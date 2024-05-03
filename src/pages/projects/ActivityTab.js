@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { Badge, Button, Card, CardBody, Col, Input, Row, Spinner } from 'reactstrap';
+import { Badge, Button, Card, CardBody, Col, Input, Progress, Row, Spinner } from 'reactstrap';
 import MaterialIcon from '@material/react-material-icon';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import Popover from '@mui/material/Popover';
@@ -14,6 +14,9 @@ import { alert } from '../../components/atoms/Toast';
 import PDFFile from './PDFFile';
 import TooltipHover from '../../components/atoms/TooltipHover';
 import './ProjectTable.scss';
+import { level1Progress, level2Progress } from '../../utils/countTaskProgress';
+import IndoDate from '../../utils/IndoDate';
+import isExpired from '../../utils/isExpired';
 // import TooltipHover from '../../components/atoms/TooltipHover';
 
 // const result = (emId) =>
@@ -31,6 +34,7 @@ const ActivityTab = () => {
   const [isDirector, setIsDirector] = useState(false);
   const [projectTitle, setProjectTitle] = useState();
   const [filterSearch, setFilterSearch] = useState();
+  const [progress, setProgress] = useState(0);
   const api = useAxios();
 
   const { search } = useLocation();
@@ -46,6 +50,17 @@ const ActivityTab = () => {
 
   useEffect(() => {
     setFilterSearch(data);
+
+    async function fetchProgress() {
+      await api
+        .post('api/project/progress/collection', { ids: [projectId] })
+        .then((res) => {
+          setProgress(res.data.data[0]?.progress);
+        })
+        .catch((err) => console.log(err));
+    }
+
+    fetchProgress();
   }, [data]);
 
   const toggle = () => {
@@ -227,13 +242,32 @@ const ActivityTab = () => {
                   </Col>
                 </Row>
                 <Col sm="12 overflow-auto">
-                  <h6 className="fw-bold mt-3">List of tasks from {projectTitle?.division}</h6>
-                  <table className="rounded-corners" style={{ fontSize: '13px' }}>
+                  <div className="d-flex align-items-center justify-content-between mt-2">
+                    <h6 className="fw-bold">List of tasks from {projectTitle?.division}</h6>
+                    <div className="w-25">
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div style={{ width: '86%' }}>
+                          <Progress
+                            className=""
+                            color="success"
+                            value={progress.toFixed()}
+                            style={{ height: '12px' }}
+                          />
+                        </div>
+                        <span className="fw-bold">{progress.toFixed()}%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <table className="rounded-corners act-table">
                     <thead>
                       <tr>
                         <th width="30">#</th>
-                        <th>Task title</th>
+                        <th colSpan="3" style={{ minWidth: '400px' }}>
+                          Task title
+                        </th>
                         <th width="">Status</th>
+                        <th style={{ minWidth: '100px' }}>Start date</th>
+                        <th style={{ minWidth: '100px' }}>Due date</th>
                         <th>Progress</th>
                         <th width="100">PIC</th>
                         {isDirector && <th width="50"></th>}
@@ -245,11 +279,15 @@ const ActivityTab = () => {
                           <Fragment key={ts.task_id}>
                             <tr>
                               <td>{idx + 1}.</td>
-                              <td style={{ cursor: 'pointer' }} onClick={() => openPopup(ts)}>
+                              <td
+                                colSpan="3"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => openPopup(ts)}
+                              >
                                 <span style={{ fontWeight: '600' }}>{ts.task_title}</span>
                                 <br></br>
                                 <Badge color="light" className="text-muted">
-                                  {ts?.subtasks?.length} subtask
+                                  {ts?.level_2?.length} subtask
                                 </Badge>
                                 {'  '}
                                 <Badge color="light" className="text-muted">
@@ -257,6 +295,7 @@ const ActivityTab = () => {
                                   {ts.comments}
                                 </Badge>
                               </td>
+
                               <td>
                                 {ts.status === 0 ? (
                                   <Badge color="light" className="text-dark">
@@ -274,9 +313,13 @@ const ActivityTab = () => {
                                   <Badge color="danger">Revision</Badge>
                                 )}
                               </td>
+                              <td>{IndoDate(ts.start_date)}</td>
+                              <td className={`${isExpired(ts.end_date) ? 'text-danger' : ''}`}>
+                                {IndoDate(ts.end_date)}
+                              </td>
                               <td>
                                 <span className="badge bg-light-success text-primary rounded-pill d-inline-block fw-bold">
-                                  {ts?.task_progress?.toFixed()}%
+                                  {level1Progress(ts)?.toFixed()}%
                                 </span>
                               </td>
                               <td>
@@ -330,100 +373,199 @@ const ActivityTab = () => {
                                 </td>
                               )}
                             </tr>
-                            {ts.subtasks.length > 0 &&
-                              ts.subtasks.map((st) => (
-                                <tr key={st.task_id}>
-                                  <td></td>
-                                  <td onClick={() => openPopup(st)} style={{ cursor: 'pointer' }}>
-                                    {st.task_title}
-                                    <br></br>
-                                    <Badge color="light" className="text-muted">
-                                      <MaterialIcon icon="comment" style={{ fontSize: '12px' }} />
-                                      {st.comments}
-                                    </Badge>
-                                  </td>
-
-                                  <td>
-                                    {/* {st.status === 0 ? (
-                                <Badge color="light" className="text-dark">
-                                  To Do
-                                </Badge>
-                              ) : st.status === 1 ? (
-                                <Badge color="warning">In Progress</Badge>
-                              ) : st.status === 2 ? (
-                                <Badge color="light" className="text-dark">
-                                  Under Review
-                                </Badge>
-                              ) : st.status === 3 ? (
-                                <Badge color="success">Approved</Badge>
-                              ) : (
-                                <Badge color="danger">Revision</Badge>
-                              )} */}
-                                    -
-                                  </td>
-                                  <td>
-                                    <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">
-                                      {st?.task_progress?.toFixed()}%
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <div className="members">
-                                      <div className="members-item">
-                                        {st?.pics?.map(
-                                          (pic, i) =>
-                                            i < 2 && (
-                                              <Fragment key={pic.id}>
-                                                <img
-                                                  id={`tooltip-${pic.id}`}
-                                                  src={user1}
-                                                  className="ava-pic rounded-circle"
-                                                  alt="avatar"
-                                                  width="35"
-                                                  height="35"
-                                                />
-                                                <TooltipHover
-                                                  title={pic.first_name}
-                                                  id={pic.id?.toString()}
-                                                />
-                                              </Fragment>
-                                            ),
-                                        )}
-                                        {st?.pics?.length > 2 && (
-                                          <div className="member-plus bg-light-info text-info fw-bold">
-                                            +{st.pics.length - 2}
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </td>
-                                  {isDirector && (
-                                    <td className="text-center">
-                                      {addingFavorite && taskIdSelected === st.task_id ? (
-                                        <Spinner size="sm" color="warning" />
-                                      ) : (
-                                        <abbr title="Mark task" style={{ textDecoration: 'none' }}>
-                                          <button
-                                            type="button"
-                                            className="fav-btn"
-                                            onClick={() => handleFavorite(st.task_id)}
-                                          >
-                                            <MaterialIcon
-                                              icon="star"
-                                              className={`${st.isFavorite && 'is_favorite'}`}
-                                            />
-                                          </button>
-                                        </abbr>
-                                      )}
+                            {ts.level_2?.length > 0 &&
+                              ts.level_2?.map((st, si) => (
+                                <Fragment key={st.task_id}>
+                                  <tr key={st.task_id}>
+                                    <td></td>
+                                    <td width="5">
+                                      {idx + 1}.{si + 1}
                                     </td>
-                                  )}
-                                </tr>
+                                    <td
+                                      colSpan="2"
+                                      onClick={() => openPopup(st)}
+                                      style={{
+                                        cursor: 'pointer',
+                                        textAlign: 'left',
+                                        fontWeight: '500',
+                                      }}
+                                    >
+                                      {st.task_title}
+                                      <br></br>
+                                      <Badge color="light" className="text-muted">
+                                        {st?.level_3?.length} subtask
+                                      </Badge>
+                                      {'  '}
+                                      <Badge color="light" className="text-muted">
+                                        <MaterialIcon icon="comment" style={{ fontSize: '12px' }} />
+                                        {st.comments}
+                                      </Badge>
+                                    </td>
+                                    <td>-</td>
+                                    <td>{IndoDate(st.start_date)}</td>
+                                    <td
+                                      className={`${isExpired(st.end_date) ? 'text-danger' : ''}`}
+                                    >
+                                      {IndoDate(st.end_date)}
+                                    </td>
+                                    <td>
+                                      <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">
+                                        {level2Progress(st)?.toFixed()}%
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <div className="members">
+                                        <div className="members-item">
+                                          {st?.pics?.map(
+                                            (pic, i) =>
+                                              i < 2 && (
+                                                <Fragment key={pic.id}>
+                                                  <img
+                                                    id={`tooltip-${pic.id}`}
+                                                    src={user1}
+                                                    className="ava-pic rounded-circle"
+                                                    alt="avatar"
+                                                    width="35"
+                                                    height="35"
+                                                  />
+                                                  <TooltipHover
+                                                    title={pic.first_name}
+                                                    id={pic.id?.toString()}
+                                                  />
+                                                </Fragment>
+                                              ),
+                                          )}
+                                          {st?.pics?.length > 2 && (
+                                            <div className="member-plus bg-light-info text-info fw-bold">
+                                              +{st.pics.length - 2}
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </td>
+                                    {isDirector && (
+                                      <td className="text-center">
+                                        {addingFavorite && taskIdSelected === st.task_id ? (
+                                          <Spinner size="sm" color="warning" />
+                                        ) : (
+                                          <abbr
+                                            title="Mark task"
+                                            style={{ textDecoration: 'none' }}
+                                          >
+                                            <button
+                                              type="button"
+                                              className="fav-btn"
+                                              onClick={() => handleFavorite(st.task_id)}
+                                            >
+                                              <MaterialIcon
+                                                icon="star"
+                                                className={`${st.isFavorite && 'is_favorite'}`}
+                                              />
+                                            </button>
+                                          </abbr>
+                                        )}
+                                      </td>
+                                    )}
+                                  </tr>
+                                  {st.level_3?.length > 0 &&
+                                    st.level_3?.map((sst, ssi) => (
+                                      <tr key={sst.task_id}>
+                                        <td></td>
+                                        <td></td>
+                                        <td width="5">
+                                          {idx + 1}.{si + 1}.{ssi + 1}
+                                        </td>
+                                        <td
+                                          onClick={() => openPopup(sst)}
+                                          style={{ cursor: 'pointer', textAlign: 'left' }}
+                                        >
+                                          {sst.task_title}
+                                          <br></br>
+                                          <Badge color="light" className="text-muted">
+                                            <MaterialIcon
+                                              icon="comment"
+                                              style={{ fontSize: '12px' }}
+                                            />
+                                            {sst.comments}
+                                          </Badge>
+                                        </td>
+                                        <td>-</td>
+                                        <td>{IndoDate(sst.start_date)}</td>
+                                        <td
+                                          className={`${
+                                            isExpired(sst.end_date) ? 'text-danger' : ''
+                                          }`}
+                                        >
+                                          {IndoDate(sst.end_date)}
+                                        </td>
+                                        <td>
+                                          <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">
+                                            {sst?.task_progress?.toFixed()}%
+                                          </span>
+                                        </td>
+                                        <td>
+                                          <div className="members">
+                                            <div className="members-item">
+                                              {sst?.pics?.map(
+                                                (pic, i) =>
+                                                  i < 2 && (
+                                                    <Fragment key={pic.id}>
+                                                      <img
+                                                        id={`tooltip-${pic.id}`}
+                                                        src={user1}
+                                                        className="ava-pic rounded-circle"
+                                                        alt="avatar"
+                                                        width="35"
+                                                        height="35"
+                                                      />
+                                                      <TooltipHover
+                                                        title={pic.first_name}
+                                                        id={pic.id?.toString()}
+                                                      />
+                                                    </Fragment>
+                                                  ),
+                                              )}
+                                              {sst?.pics?.length > 2 && (
+                                                <div className="member-plus bg-light-info text-info fw-bold">
+                                                  +{sst.pics.length - 2}
+                                                </div>
+                                              )}
+                                            </div>
+                                          </div>
+                                        </td>
+                                        {isDirector && (
+                                          <td className="text-center">
+                                            {addingFavorite && taskIdSelected === sst.task_id ? (
+                                              <Spinner size="sm" color="warning" />
+                                            ) : (
+                                              <abbr
+                                                title="Mark task"
+                                                style={{ textDecoration: 'none' }}
+                                              >
+                                                <button
+                                                  type="button"
+                                                  className="fav-btn"
+                                                  onClick={() => handleFavorite(sst.task_id)}
+                                                >
+                                                  <MaterialIcon
+                                                    icon="star"
+                                                    className={`${sst.isFavorite && 'is_favorite'}`}
+                                                  />
+                                                </button>
+                                              </abbr>
+                                            )}
+                                          </td>
+                                        )}
+                                      </tr>
+                                    ))}
+                                </Fragment>
                               ))}
                           </Fragment>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="5" align="center">
-                            Data not found.
+                          <td colSpan="9" align="center">
+                            No data available
                           </td>
                         </tr>
                       )}

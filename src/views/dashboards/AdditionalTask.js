@@ -19,7 +19,7 @@ const AdditionalTask = () => {
 
   return (
     <>
-      <Card>
+      <Card className="rounded-3">
         <CardBody className="d-flex flex-column gap-1">
           <div className="d-flex justify-content-between">
             <CardTitle tag="h4">Additional Tasks</CardTitle>
@@ -41,7 +41,7 @@ const AdditionalTask = () => {
                   >
                     <abbr title={t?.task_title} style={{ textDecoration: 'none', width: '100%' }}>
                       <Link
-                        to={`/projects/details/${t?.project_id}`}
+                        to={`/projects/details/${t?.project_id}?task=${t.task_id}`}
                         className="d-flex gap-2 col-md-12 align-items-center text-muted"
                         style={{ fontSize: '13px', textDecoration: 'none' }}
                         // to={`projects/details/${t.project_id}`}

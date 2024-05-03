@@ -5,8 +5,20 @@ import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import BoardTask from './BoardTask';
 import TaskForm from './TaskForm';
+import useAuth from '../../hooks/useAuth';
 
-const BoardToDo = ({ data, isLoading, error, refetch, isRefetching, isMemberActive }) => {
+const newTaskAllowedRoles = ['Manager'];
+
+const BoardToDo = ({
+  directSupervisor,
+  data,
+  isLoading,
+  error,
+  refetch,
+  isRefetching,
+  isMemberActive,
+}) => {
+  const { auth } = useAuth();
   const [newTaskOpen, setNewTaskOpen] = useState(false);
 
   const { projectId } = useParams();
@@ -15,7 +27,7 @@ const BoardToDo = ({ data, isLoading, error, refetch, isRefetching, isMemberActi
 
   return (
     <Col lg="4" className="mt-1">
-      <div className="d-flex align-items-center justify-content-between bg-light-primary text-primary py-2 px-3 mb-2 rounded-2">
+      <div className="d-flex align-items-center justify-content-between bg-light-primary text-primary py-1 px-2 mb-2 rounded-3">
         <span className="fw-bold">To do</span>
         <span className="fw-bold">{data?.length}</span>
       </div>
@@ -26,22 +38,28 @@ const BoardToDo = ({ data, isLoading, error, refetch, isRefetching, isMemberActi
       ) : (
         <>
           {isMemberActive &&
+            auth?.user?.roles.find((role) => newTaskAllowedRoles?.includes(role)) &&
             (!newTaskOpen ? (
               <Button
                 type="button"
                 size="sm"
                 color="secondary"
-                className="d-flex align-items-center justify-content-center"
+                className="d-flex align-items-center justify-content-center rounded-2"
                 block
                 onClick={() => setNewTaskOpen(true)}
               >
                 <MaterialIcon icon="add" style={{ fontSize: '14px' }} />
-                New Task
+                Add Goal
               </Button>
             ) : (
-              <TaskForm {...{ projectId, setNewTaskOpen, refetch, type }} />
+              <TaskForm
+                {...{ projectId, setNewTaskOpen, refetch, type }}
+                title="Create new goal.."
+              />
             ))}
-          <BoardTask {...{ data, projectId, refetch, isRefetching, isMemberActive }} />
+          <BoardTask
+            {...{ directSupervisor, data, projectId, refetch, isRefetching, isMemberActive }}
+          />
         </>
       )}
     </Col>
@@ -49,6 +67,7 @@ const BoardToDo = ({ data, isLoading, error, refetch, isRefetching, isMemberActi
 };
 
 BoardToDo.propTypes = {
+  directSupervisor: PropTypes.string,
   data: PropTypes.array,
   isLoading: PropTypes.bool,
   error: PropTypes.any,

@@ -8,12 +8,14 @@ import user1 from '../../assets/images/users/user1.jpg';
 import useAuth from '../../hooks/useAuth';
 import IndoDate from '../../utils/IndoDate';
 import isExpired from '../../utils/isExpired';
+// import FilterData from '../../components/filterData/FilterData';
 
 const ProjectList = () => {
   const { auth } = useAuth();
   const [divisions, setDivisions] = useState([]);
   const [list, setList] = useState([]);
   const [selectedDivision, setSelectedDivision] = useState();
+  const [progressList, setProgressList] = useState([]);
   const api = useAxios();
 
   const { isLoading, error, data } = useQuery({
@@ -24,36 +26,93 @@ const ProjectList = () => {
           `${
             auth?.user?.roles.includes('Director')
               ? 'api/project'
-              : `api/project/${auth?.user.employe_id}/list`
+              : `api/project/${auth?.user.employe_id}/list?for=dashboard`
           }`,
         )
         .then((res) => {
           setDivisions(res.data.divisions);
-          let filtered = [];
-          if (auth?.user?.roles?.includes('Director')) {
-            filtered = res.data.data.filter((item) => item.total_progress > 10);
-          } else {
-            filtered = res.data.data;
-          }
 
-          setList(filtered);
+          // let filtered = [];
+          // if (auth?.user?.roles?.includes('Director')) {
+          //   const allData = res.data.data.filter((item) => item.total_progress > 10);
+
+          //   for (let index = 0; index < allData.length; index++) {
+          //     if (index < 10) {
+          //       filtered.push(allData[index]);
+          //     }
+          //   }
+          // } else {
+          //   filtered = res.data.data;
+          // }
+
+          // setList(filtered.reverse());
           setSelectedDivision('all');
-          return filtered.reverse();
+          // return filtered.reverse();
+          return res.data.data;
         }),
   });
 
   useEffect(() => {
-    setList(
-      selectedDivision === 'all'
-        ? data
-        : data?.filter((item) => item.division.toString() === selectedDivision),
-    );
-  }, [selectedDivision]);
+    if (auth?.user?.roles?.includes('Director')) {
+      if (selectedDivision === 'all') {
+        const filtered = [];
+        const allData = data?.filter((item) => item.total_progress > 10);
+        for (let index = 0; index < allData.length; index++) {
+          if (index < 10) {
+            filtered.push(allData[index]);
+          }
+        }
+        setList(filtered.reverse());
+      } else {
+        setList(data?.filter((item) => item.division.toString() === selectedDivision));
+      }
+    } else {
+      const filtered = [];
+      for (let index = 0; index < data?.length; index++) {
+        if (index < 10) {
+          filtered.push(data[index]);
+        }
+      }
+      setList(filtered);
+    }
+  }, [selectedDivision, data]);
+
+  const fethProgress = async (ids) => {
+    await api
+      .post('api/project/progress/collection', { ids })
+      .then((res) => {
+        setProgressList(res.data.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  useEffect(() => {
+    const projectIds = () => {
+      const ids = [];
+      for (let idx = 0; idx < list?.length; idx++) {
+        ids.push(list[idx].project_id);
+      }
+      return ids;
+    };
+
+    if (projectIds()?.length > 0) {
+      fethProgress(projectIds());
+    }
+  }, [list]);
+
+  const progressValue = (id) => {
+    const result = progressList?.filter((row) => row.project_id === id);
+    return result[0]?.progress !== 0 ? result[0]?.progress?.toFixed() : 0;
+  };
+
+  const newTab = (pId) => {
+    window.open(`projects/details/${pId}`, '_blank', 'noopener');
+  };
 
   return (
     <Row>
       <Col lg="12">
-        <Card className="">
+        <Card className="rounded-3">
           <CardBody className="d-flex flex-column gap-2" style={{ minHeight: '130px' }}>
             <Row lg="d-flex justify-content-between">
               <Col sm="12" md="6" lg="3">
@@ -67,7 +126,7 @@ const ProjectList = () => {
                 lg="5"
                 className="d-flex gap-2 align-items-end justify-content-end"
               >
-                {auth?.user?.roles.includes('Director') && (
+                {auth?.user?.roles.includes('Director') ? (
                   <div className="w-75">
                     <Input
                       type="select"
@@ -83,8 +142,11 @@ const ProjectList = () => {
                       ))}
                     </Input>
                   </div>
+                ) : (
+                  ''
+                  // <FilterData />
                 )}
-                <div className="w-25">
+                <div className="d-flex w-50">
                   <Link to="projects" style={{ textDecoration: 'none' }}>
                     <Button
                       type="button"
@@ -108,34 +170,32 @@ const ProjectList = () => {
             ) : (
               <>
                 {list?.length > 0 ? (
-                  list?.map(
-                    (p, i) =>
-                      i < 10 && (
-                        <Link
-                          key={p.project_id}
-                          className="d-flex justify-content-between rounded-3 px-2 py-2 align-items-center link-item text-dark bg-light"
-                          to={`projects/details/${p.project_id}`}
-                          style={{ textDecoration: 'none' }}
-                        >
-                          <Col>
-                            <Row lg="12">
-                              <Col lg="6">
-                                <Row>
-                                  <Col
-                                    sm="12 align-items-start justify-content-start"
-                                    lg="1"
-                                    className="my-auto"
-                                  >
-                                    <span className="text-muted" style={{ marginLeft: '7px' }}>
+                  list?.map((p, i) => (
+                    <Link
+                      key={p.project_id}
+                      className="d-flex justify-content-between rounded-3 px-2 py-2 align-items-center link-item text-dark bg-light"
+                      // to={`projects/details/${p.project_id}`}
+                      style={{ textDecoration: 'none' }}
+                      onClick={() => newTab(p.project_id)}
+                    >
+                      <Col lg="12">
+                        <Row lg="12" style={{ paddingRight: '5px' }}>
+                          <Col lg="6">
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td style={{ minWidth: '30px', textAlign: 'left' }}>
+                                    <span className="text-muted" style={{ marginLeft: '12px' }}>
                                       {i + 1}
                                     </span>
-                                  </Col>
-                                  <Col>
+                                  </td>
+                                  <td>
                                     <abbr title={p.project_name} style={{ textDecoration: 'none' }}>
                                       <span className="fw-bold" style={{ fontSize: '13px' }}>
-                                        {p.project_name.trim().length > 40
-                                          ? `${p.project_name.substring(0, 42)}...`
-                                          : p.project_name}
+                                        {/* {p.project_name.trim().length > 40
+                                    ? `${p.project_name.substring(0, 42)}...`
+                                    : p.project_name} */}
+                                        {p.project_name}
                                       </span>
                                       <div>
                                         <span className="badge text-primary bg-light-primary rounded-pill d-inline-block">
@@ -143,10 +203,14 @@ const ProjectList = () => {
                                         </span>
                                       </div>
                                     </abbr>
-                                  </Col>
-                                </Row>
-                              </Col>
-                              <Col lg="2" className="my-auto" content="center">
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </Col>
+                          <Col xs="12" sm="12" lg="5">
+                            <Row lg="12" className="my-auto h-100 ">
+                              <Col xs="4" sm="4" lg="4" className="my-auto " content="center">
                                 <div style={{ marginBottom: '-7px' }}>
                                   <small className="text-muted" style={{ fontSize: '12px' }}>
                                     Deadline{' '}
@@ -160,7 +224,7 @@ const ProjectList = () => {
                                   {IndoDate(p.current_stage?.end_date)}
                                 </small>
                               </Col>
-                              <Col lg="2" className="d-flex align-items-center">
+                              <Col xs="4" sm="4" lg="4" className="d-flex align-items-center">
                                 <span
                                   className="badge text-info bg-light-info rounded-pill d-inline-block fw-bold"
                                   style={{ textTransform: 'capitalize' }}
@@ -168,29 +232,42 @@ const ProjectList = () => {
                                   {p.category}
                                 </span>
                               </Col>
-                              <Col lg="1" className="d-flex align-items-center">
+                              <Col
+                                xs="4"
+                                sm="4"
+                                lg="4"
+                                className="d-flex align-items-center justify-content-end"
+                              >
                                 <div className="d-flex gap-1 justify-content-center align-items-center">
                                   <div className="circular-progress">
                                     <CircularPercentage
-                                      data={parseInt(p.total_progress.toFixed(), 10)}
+                                      // data={parseInt(p.total_progress.toFixed(), 10)}
+                                      data={
+                                        progressValue(p.project_id)
+                                          ? parseInt(progressValue(p.project_id), 10)
+                                          : 0
+                                      }
                                     />
                                   </div>
                                 </div>
                               </Col>
-                              <Col lg="1" className="my-auto px-2">
-                                <img
-                                  src={user1}
-                                  className="rounded-circle"
-                                  alt="avatar"
-                                  width="40"
-                                  height="40"
-                                />
-                              </Col>
                             </Row>
                           </Col>
-                        </Link>
-                      ),
-                  )
+                          <Col lg="1" className="my-auto d-flex justify-content-start px-2">
+                            <div className="p-2">
+                              <img
+                                src={user1}
+                                className="rounded-circle"
+                                alt="avatar"
+                                width="40"
+                                height="40"
+                              />
+                            </div>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Link>
+                  ))
                 ) : (
                   <div className="d-flex justify-content-center">
                     <p className="text-muted">No data yet.</p>

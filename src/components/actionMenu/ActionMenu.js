@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import MaterialIcon from '@material/react-material-icon';
 import PropTypes from 'prop-types';
 
-const ActionMenu = ({ menuOptions, taskId, status, action, progress }) => {
+const ActionMenu = ({ menuOptions, taskId, status, action, progress, duplicateFn }) => {
   const [actionMenu, setActionMenu] = useState(false);
 
   const deleteTask = () => {
@@ -29,10 +29,15 @@ const ActionMenu = ({ menuOptions, taskId, status, action, progress }) => {
       {actionMenu && (
         <>
           <div className="action-overlay" onClick={() => setActionMenu(false)} />
-          <div className="action-options">
+          <div className="action-options rounded-3">
             {menuOptions?.options.map((op) => (
               <div key={op.id}>
-                {op.type === 'button' ? (
+                {op.to === 'duplicate' ? (
+                  <button type="button" className="text-muted" onClick={() => duplicateFn(taskId)}>
+                    {op.icon}
+                    Duplicate
+                  </button>
+                ) : op.type === 'button' ? (
                   <button
                     type="button"
                     className="text-muted"
@@ -76,6 +81,7 @@ ActionMenu.propTypes = {
   status: PropTypes.number,
   action: PropTypes.func,
   progress: PropTypes.number,
+  duplicateFn: PropTypes.func,
 };
 
 export default ActionMenu;

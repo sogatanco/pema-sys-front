@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
+  Alert,
   Button,
   Card,
   CardBody,
@@ -136,16 +137,16 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
   const BoardAllowedRoles = ['Staff', 'Manager'];
   const MembersAllowedRoles = ['Staff', 'Manager', 'Director'];
   const ActivitiesAllowedRoles = ['Manager', 'Director'];
-  const FilesAllowedRoles = ['Staff'];
+  const FilesAllowedRoles = ['Staff', 'Manager'];
   const BASTReviewAllowedRoles = ['Director'];
   const BASTAndReviewNotAllowedRoles = 'Presdir';
   const ReviewTaskAllowedRoles = ['Manager', 'Director'];
   const HandoverAllowedRoles = ['Manager'];
 
   return (
-    <Col>
-      <Col className="d-flex justify-content-between gap-3 mb-3 align-items-center">
-        <div className="project-nav overflow-auto">
+    <>
+      <Col className="nav-container mb-3">
+        <Row sm="12" lg="8" className="project-nav overflow-auto">
           <Link
             className={`${navActive === 1 && 'active'} text-muted fw-bold`}
             onClick={() => setNavActive(1)}
@@ -229,10 +230,19 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
               Members
             </Link>
           )}
-        </div>
-        <h3 className="fw-bold">{isLoading ? 'Loading..' : data?.project_number}</h3>
+        </Row>
+        <Row
+          sm="12"
+          style={{
+            fontSize: '20px',
+            marginRight: '10px',
+            textAlign: 'right',
+            minWidth: '35%',
+          }}
+        >
+          <span className="fw-bold">{isLoading ? 'Loading..' : data?.project_number}</span>
+        </Row>
       </Col>
-
       <Card className="rounded-3 mb-3">
         <CardBody>
           {isLoading ? (
@@ -393,7 +403,24 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
           )}
         </CardBody>
       </Card>
-    </Col>
+      <Col lg="12">
+        <Alert color="primary" className="rounded-3" style={{ fontSize: '14px' }}>
+          <div className="d-flex justify-content-between">
+            <div>
+              <span>Ketentuan task terbaru, </span>
+              <Link
+                to="https://drive.google.com/file/d/1So2xTY9FZA8GgWkvIO7zzo8LltyloljZ/view?usp=sharing"
+                target="blank"
+                style={{ textDecoration: 'none' }}
+              >
+                Baca selengkapnya
+              </Link>
+            </div>
+            <MaterialIcon icon="info" />
+          </div>
+        </Alert>
+      </Col>
+    </>
   );
 };
 

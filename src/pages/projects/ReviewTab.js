@@ -22,6 +22,7 @@ import MaterialIcon from '@material/react-material-icon';
 import useAxios from '../../hooks/useAxios';
 import newDate from '../../utils/formatDate';
 import { alert } from '../../components/atoms/Toast';
+import IndoDate from '../../utils/IndoDate';
 
 const ReviewTab = ({ setTotalReview }) => {
   const { projectId } = useParams();
@@ -55,7 +56,7 @@ const ReviewTab = ({ setTotalReview }) => {
     refetch();
   }, [projectId]);
 
-  const fileUrl = process.env.REACT_APP_FILEURL;
+  const fileUrl = process.env.REACT_APP_BASEURL;
 
   const handleForm = (modeRes, task, employe) => {
     setModal(true);
@@ -94,7 +95,7 @@ const ReviewTab = ({ setTotalReview }) => {
           </div>
         ) : (
           listReview.map((task, i) => (
-            <Card key={task.approval_id} className="custom-card">
+            <Card key={task.approval_id} className="custom-card rounded-3">
               <CardBody>
                 <CardTitle tag="h4" className="d-flex justify-content-between">
                   <div className="d-flex gap-2">
@@ -135,17 +136,17 @@ const ReviewTab = ({ setTotalReview }) => {
                   <div className="d-flex gap-4">
                     <div color="muted">
                       <span className="text-dark">Start at: </span>
-                      <br /> {newDate(task.start_date).split(',')[0]}
+                      <br /> {IndoDate(task.start_date)?.split(',')[0]}
                     </div>
                     <div color="muted">
                       <span className="text-dark">Due at: </span>
-                      <br /> {newDate(task.end_date).split(',')[0]}
+                      <br /> {IndoDate(task.end_date)?.split(',')[0]}
                     </div>
                   </div>
                   <div className="d-flex gap-2">
                     <Button
                       type="button"
-                      size="md"
+                      size="sm"
                       color="warning"
                       outline
                       onClick={() => handleForm('revision', task.task_id, task.employe_id)}
@@ -154,7 +155,7 @@ const ReviewTab = ({ setTotalReview }) => {
                     </Button>
                     <Button
                       type="button"
-                      size="md"
+                      size="sm"
                       color="success"
                       onClick={() => handleForm('approve', task.task_id, task.employe_id)}
                     >

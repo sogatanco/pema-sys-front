@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardBody, CardTitle, Spinner } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import MaterialIcon from '@material/react-material-icon';
 import PropTypes from 'prop-types';
 import useAxios from '../../hooks/useAxios';
@@ -18,6 +18,9 @@ const TaskList = ({ title, type }) => {
   const [task, setTask] = useState(undefined);
   const [addingFavorite, setAddingFavorite] = useState();
   const [modal, setModal] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState();
+  const [selectedTaskId, setSelectedTaskId] = useState();
+  const [isRedirect, setIsRedirect] = useState(false);
   const api = useAxios();
 
   const { isLoading, error, data, refetch } = useQuery({
@@ -62,9 +65,21 @@ const TaskList = ({ title, type }) => {
     setTask(selectedTask);
   };
 
-  return (
+  const handleTaskOnClick = (t) => {
+    if (auth?.user?.roles.includes('director')) {
+      openPopup(t);
+    } else {
+      setIsRedirect(true);
+      setSelectedProjectId(t.project_id);
+      setSelectedTaskId(t.task_id);
+    }
+  };
+
+  return isRedirect ? (
+    <Navigate to={`projects/details/${selectedProjectId}?task=${selectedTaskId}`} />
+  ) : (
     <>
-      <Card>
+      <Card className="rounded-3">
         <CardBody
           className="d-flex flex-column gap-1"
           style={{ minHeight: `${type === 'recent' ? '130px' : '400px'}` }}
@@ -98,7 +113,7 @@ const TaskList = ({ title, type }) => {
                       } align-items-center text-muted`}
                       style={{ fontSize: '13px', textDecoration: 'none' }}
                       // to={`projects/details/${t.project_id}`}
-                      onClick={() => openPopup(t)}
+                      onClick={() => handleTaskOnClick(t)}
                     >
                       <span>{i + 1}</span>
                       <div className="d-flex flex-column col-md-12">

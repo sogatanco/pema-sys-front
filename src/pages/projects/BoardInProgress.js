@@ -6,14 +6,22 @@ import { useParams } from 'react-router-dom';
 import BoardTask from './BoardTask';
 // import TaskForm from './TaskForm';
 
-const BoardInProgress = ({ data, isLoading, error, refetch, isRefetching, isMemberActive }) => {
+const BoardInProgress = ({
+  directSupervisor,
+  data,
+  isLoading,
+  error,
+  refetch,
+  isRefetching,
+  isMemberActive,
+}) => {
   // const [newTaskOpen, setNewTaskOpen] = useState(false);
 
   const { projectId } = useParams();
 
   return (
     <Col lg="4" className="mt-1">
-      <div className="d-flex align-items-center justify-content-between bg-light-warning text-warning py-2 px-3 mb-2 rounded-2">
+      <div className="d-flex align-items-center justify-content-between bg-light-warning text-warning py-1 px-2 mb-2 rounded-3">
         <span className="fw-bold">In progress</span>
         <span className="fw-bold">{data?.length}</span>
       </div>
@@ -37,7 +45,9 @@ const BoardInProgress = ({ data, isLoading, error, refetch, isRefetching, isMemb
             </Button>
           ) : (
           )} */}
-          <BoardTask {...{ data, projectId, refetch, isRefetching, isMemberActive }} />
+          <BoardTask
+            {...{ directSupervisor, data, projectId, refetch, isRefetching, isMemberActive }}
+          />
         </>
       )}
     </Col>
@@ -45,6 +55,7 @@ const BoardInProgress = ({ data, isLoading, error, refetch, isRefetching, isMemb
 };
 
 BoardInProgress.propTypes = {
+  directSupervisor: PropTypes.string,
   data: PropTypes.array,
   isLoading: PropTypes.bool,
   error: PropTypes.any,
