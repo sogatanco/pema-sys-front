@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const TopCardsData = ({ bg, icon, title, subtitle, loading }) => {
   return (
-    <Card>
+    <Card className="rounded-3">
       <CardBody>
         <div className="d-flex align-items-center">
           <span className={`circle-box md-box text-dark-white bg-${bg}`}>

@@ -24,7 +24,7 @@ const AuthLogo = () => {
           <div className="d-flex flex-column">
             <h1 style={{ fontWeight: 'bold' }}>PEMA-Sys</h1>
             <div className="d-flex justify-content-end" style={{ marginTop: '-10px' }}>
-              <small className="text-danger">Beta Version</small>
+              <small className="text-danger">Beta Version 0.1</small>
             </div>
           </div>
           {/* <LogoDarkIcon /> */}

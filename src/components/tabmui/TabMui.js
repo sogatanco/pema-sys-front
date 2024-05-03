@@ -139,7 +139,7 @@ const TabMui = ({ activeTab, setActiveTab, items, panels, children }) => {
 };
 
 TabMui.propTypes = {
-  activeTab: PropTypes.string,
+  activeTab: PropTypes.number,
   setActiveTab: PropTypes.func,
   items: PropTypes.array,
   panels: PropTypes.array,

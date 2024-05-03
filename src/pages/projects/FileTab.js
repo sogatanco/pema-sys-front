@@ -1,9 +1,13 @@
 import React from 'react';
-import { Card, CardBody, Col, Table } from 'reactstrap';
+import { Card, CardBody, Table } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
 import useAxios from '../../hooks/useAxios';
 import newDate from '../../utils/formatDate';
+
+const sortFileByDate = (arr) => {
+  return arr.sort(({ created_at: a }, { created_at: b }) => (a < b ? -1 : a > b ? 1 : 0));
+};
 
 const FileTab = () => {
   const { projectId } = useParams();
@@ -21,40 +25,52 @@ const FileTab = () => {
   });
 
   return (
-    <Col>
-      <Card>
-        <CardBody>
-          {isLoading ? (
-            'Loading...'
-          ) : error ? (
-            'Something went wrong.'
-          ) : (
-            <Table className="no-wrap mt-3 align-middle" hover style={{ zIndex: '-1' }}>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Filename</th>
-                  <th>Date Added</th>
-                </tr>
-              </thead>
+    <Card className="rounded-3">
+      <CardBody>
+        {isLoading ? (
+          'Loading...'
+        ) : error ? (
+          'Something went wrong.'
+        ) : (
+          <Table className="no-wrap align-middle" hover style={{ zIndex: '-1', fontSize: '13px' }}>
+            <thead>
+              <tr>
+                <th width="60">#</th>
+                <th width="700">Filename</th>
+                <th>User</th>
+                <th width="200">Uploaded at</th>
+              </tr>
+            </thead>
+            {data?.length ? (
               <tbody style={{ overflow: 'hidden' }}>
-                {data?.map((f, i) => (
-                  <tr key={f.file_id}>
-                    <td>{i + 1}</td>
-                    <td>
-                      <Link to={`${fileUrl}taskfiles/${f.file_name}`} target="blank">
-                        {f.file_name}
-                      </Link>
-                    </td>
-                    <td>{newDate(f.created_at)}</td>
-                  </tr>
-                ))}
+                {sortFileByDate(data)
+                  ?.reverse()
+                  .map((f, i) => (
+                    <tr key={f.file_id}>
+                      <td>{i + 1}</td>
+                      <td>
+                        <Link to={`${fileUrl}taskfiles/${f.file_name}`} target="blank">
+                          {f.file_name}
+                        </Link>
+                      </td>
+                      <td>{f.employee || '-'}</td>
+                      <td>{newDate(f.created_at)}</td>
+                    </tr>
+                  ))}
               </tbody>
-            </Table>
-          )}
-        </CardBody>
-      </Card>
-    </Col>
+            ) : (
+              <tbody style={{ overflow: 'hidden' }}>
+                <tr>
+                  <td colSpan="4" className="text-center">
+                    No data yet.
+                  </td>
+                </tr>
+              </tbody>
+            )}
+          </Table>
+        )}
+      </CardBody>
+    </Card>
   );
 };
 

@@ -70,6 +70,7 @@ const OverviewTab = () => {
   const [isBusiness, setIsBusiness] = useState();
   const [partnerOptions, setPartnerOptions] = useState([]);
   const [selectedPartner, setSelectedPartner] = useState(undefined);
+  const [progress, setProgress] = useState(0);
   const [taskByStatus, setTaskByStatus] = useState({
     todo: 0,
     inprogress: 0,
@@ -120,6 +121,17 @@ const OverviewTab = () => {
     } else {
       setIsBusiness(false);
     }
+
+    async function fetchProgress() {
+      await api
+        .post('api/project/progress/collection', { ids: [projectId] })
+        .then((res) => {
+          setProgress(res.data.data[0]?.progress);
+        })
+        .catch((err) => console.log(err));
+    }
+
+    fetchProgress();
   }, [data]);
 
   const fetsHistory = async () => {
@@ -343,14 +355,12 @@ const OverviewTab = () => {
               <CardBody>
                 <CardTitle tag="h5" className="d-flex justify-content-between fw-bold">
                   Project Active
-                  <span className="text-success fw-bold">
-                    {data.total_progress.toFixed(data.total_progress !== 100 && 2)}%
-                  </span>
+                  <span className="text-success fw-bold">{progress.toFixed()}%</span>
                 </CardTitle>
                 <Progress
                   className=""
                   color="success"
-                  value={data.total_progress}
+                  value={progress.toFixed()}
                   style={{ height: '15px' }}
                 />
               </CardBody>
@@ -395,24 +405,26 @@ const OverviewTab = () => {
                 </div>
               </CardBody>
             </Card>
-            {isBusiness && auth.user.roles.includes('Manager') && (
-              <Card>
-                <Button
-                  type="button"
-                  color="info"
-                  disabled={
-                    data?.total_progress !== 100 ||
-                    taskByStatus?.underReview !== 0 ||
-                    taskByStatus?.todo !== 0 ||
-                    taskByStatus?.inprogress !== 0
-                  }
-                  outline
-                  onClick={toggle.bind(null)}
-                >
-                  Handover Project
-                </Button>
-              </Card>
-            )}
+            {isBusiness &&
+              auth.user.roles.includes('Manager') &&
+              auth.user.employe_id === data?.pic_active?.employe_id && (
+                <Card>
+                  <Button
+                    type="button"
+                    color="info"
+                    disabled={
+                      progress !== 100 ||
+                      taskByStatus?.underReview !== 0 ||
+                      taskByStatus?.todo !== 0 ||
+                      taskByStatus?.inprogress !== 0
+                    }
+                    outline
+                    onClick={toggle.bind(null)}
+                  >
+                    Handover Project
+                  </Button>
+                </Card>
+              )}
             {/* <Card>
           <CardBody>
             <CardTitle tag="h4">Recent Tasks</CardTitle>

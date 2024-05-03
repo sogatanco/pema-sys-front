@@ -19,6 +19,7 @@ const BoardTab = () => {
   const [todos, setTodos] = useState([]);
   const [inProgress, setInProgress] = useState([]);
   const [Done, setDone] = useState([]);
+  const [directSupervisor, setDirectSupervisor] = useState('');
   const [isMemberActive, setIsMemberActive] = useState(false);
 
   const api = useAxios();
@@ -28,6 +29,7 @@ const BoardTab = () => {
     queryFn: () =>
       api.get(`api/task/${projectId}/employe/list`).then((res) => {
         setIsMemberActive(res.data.is_member_active);
+        setDirectSupervisor(res.data.direct_supervisor.toString());
         return res.data.data;
       }),
   });
@@ -74,17 +76,34 @@ const BoardTab = () => {
           </Card>
         </Col>
       ) : (
-        <>
-          <BoardToDo
-            data={todos}
-            {...{ isLoading, error, refetch, isRefetching, isMemberActive }}
-          />
-          <BoardInProgress
-            data={inProgress}
-            {...{ isLoading, error, refetch, isRefetching, isMemberActive }}
-          />
-          <BoardDone data={Done} {...{ isLoading, error, refetch, isRefetching }} />
-        </>
+        <Col>
+          {/* <div
+            className="d-flex  justify-content-between align-items-center mb-2"
+            style={{ borderBottom: '0.7px solid grey' }}
+          >
+            <div className="d-flex align-items-center ">
+              <span className="fw-bold">List Task</span>
+            </div>
+            <div className="d-flex gap-4">
+              <span>Filter</span>
+              <span>Sort</span>
+              <div className="input-search">
+                <input type="text" placeholder="search.." />
+              </div>
+            </div>
+          </div> */}
+          <Row>
+            <BoardToDo
+              data={todos}
+              {...{ directSupervisor, isLoading, error, refetch, isRefetching, isMemberActive }}
+            />
+            <BoardInProgress
+              data={inProgress}
+              {...{ directSupervisor, isLoading, error, refetch, isRefetching, isMemberActive }}
+            />
+            <BoardDone data={Done} {...{ isLoading, error, refetch, isRefetching }} />
+          </Row>
+        </Col>
       )}
       {/* // ) : isMemberActive ? ( //{' '}
       <>

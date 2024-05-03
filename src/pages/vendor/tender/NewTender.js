@@ -10,6 +10,10 @@ import {
   FormGroup,
   Input,
   Label,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Row,
   Spinner,
 } from 'reactstrap';
@@ -25,9 +29,15 @@ const NewTender = () => {
   const [pascaKualifikasi, setPaskaKualifikasi] = useState(true);
   const [dokTenderFile, setDokTenderFile] = useState();
   const [dokDeskTenderFile, setDokDeskTenderFile] = useState();
-  const [dokSuratPenyampaianFile, setDokSuratPenyampaianFile] = useState();
+  // const [dokSuratPenyampaianFile, setDokSuratPenyampaianFile] = useState();
+  const [dokUntukVendorFile, setDokUntukVendorFile] = useState();
   const [kblis, setKblis] = useState([]);
   const [kblisSelected, setKblisSelected] = useState([]);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [jenisPengadaanSelected, setJenisPengadaanSelected] = useState('barang');
+  const [companiesToInvite, setCompaniesToInvite] = useState([]);
+  const [companySelected, setCompanySelected] = useState([]);
 
   const [documentsCheck, setDocumentsCheck] = useState({
     dok_fakta_integritas: false,
@@ -60,6 +70,24 @@ const NewTender = () => {
     fetchKblis();
   }, []);
 
+  useEffect(() => {
+    async function fetchTalent() {
+      await api
+        .get(`dapi/vendor/companies-to-invite?type=${jenisPengadaanSelected}`)
+        .then((res) => setCompaniesToInvite(res.data.data))
+        .catch((err) => console.log(err));
+    }
+
+    fetchTalent();
+  }, [jenisPengadaanSelected]);
+
+  useEffect(() => {
+    companiesToInvite.unshift({
+      label: `Semua Vendor (${companiesToInvite.length})`,
+      value: 'all_vendor',
+    });
+  }, [companiesToInvite]);
+
   const handleInput = (e) => {
     setValues((prev) => ({
       ...prev,
@@ -76,7 +104,7 @@ const NewTender = () => {
 
   const handleMetodePengadaan = (e) => {
     handleInput(e);
-    if (e.target.value === 'umum' || e.target.value === 'terbatas') {
+    if (e.target.value === 'seleksi_umum' || e.target.value === 'tender_umum') {
       setTenderUmum(true);
     } else {
       setTenderUmum(false);
@@ -104,10 +132,25 @@ const NewTender = () => {
       .catch((err) => console.log(err));
   };
 
-  const handleDokSuratPenyampaian = (val) => {
+  // const handleDokSuratPenyampaian = (val) => {
+  //   getBase64(val)
+  //     .then((res) => setDokSuratPenyampaianFile(res.split(',')[1]))
+  //     .catch((err) => console.log(err));
+  // };
+
+  const handleDokUntukVendorFile = (val) => {
     getBase64(val)
-      .then((res) => setDokSuratPenyampaianFile(res.split(',')[1]))
+      .then((res) => setDokUntukVendorFile(res.split(',')[1]))
       .catch((err) => console.log(err));
+  };
+
+  const handleConfirm = (e) => {
+    e.preventDefault();
+    if (values) {
+      setModal(true);
+    } else {
+      alert('error', 'Tidak ada data yang di isi');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -120,8 +163,10 @@ const NewTender = () => {
       values.centang_dok_wajib = documentsCheck;
       values.dok_tender = dokTenderFile;
       values.dok_deskripsi_tender = dokDeskTenderFile;
-      values.doc_penyampaian_penawaran = dokSuratPenyampaianFile;
+      // values.doc_penyampaian_penawaran = dokSuratPenyampaianFile;
+      values.dok_untuk_vendor = dokUntukVendorFile;
       values.kbli = theKblis;
+      values.company_selected = companySelected;
 
       await api
         .post('dapi/vendor/tender', values)
@@ -129,13 +174,19 @@ const NewTender = () => {
           alert('success', 'New tender has been created.');
           document.getElementById('new-tender').reset();
         })
-        .catch(() => {
-          alert('error', 'Something went wrong.');
+        .catch((err) => {
+          console.log('ERROR', err);
+          alert('error', err.response.data.message);
         });
     } else {
       alert('error', 'Tidak ada data yang diisi');
     }
+    setModal(false);
     setIsSubmitting(false);
+  };
+
+  const toggle = () => {
+    setModal(!modal);
   };
 
   return (
@@ -147,11 +198,13 @@ const NewTender = () => {
             <Link to="projects" style={{ textDecoration: 'none' }}></Link>
           </div>
           <Row className="mt-3">
-            <Form onSubmit={handleSubmit} id="new-tender">
+            <Form onSubmit={handleConfirm} id="new-tender">
               <Row>
                 <Col md="6">
                   <FormGroup>
-                    <Label htmlFor="metode_pengadaan">Metode Pengadaan</Label>
+                    <Label htmlFor="metode_pengadaan">
+                      Metode Pengadaan <span className="text-danger">*</span>
+                    </Label>
                     <Input
                       type="select"
                       name="metode_pengadaan"
@@ -162,15 +215,17 @@ const NewTender = () => {
                       <option value="" disabled>
                         - Pilih -
                       </option>
-                      <option value="umum">Umum</option>
-                      <option value="terbatas">Terbatas</option>
-                      <option value="pengadaan langsung">Pengadaan Langsung</option>
-                      <option value="penunjukkan langsung">Penunjukkan Langsung</option>
+                      <option value="seleksi_umum">Seleksi Umum</option>
+                      <option value="seleksi_terbatas">Seleksi Terbatas</option>
+                      <option value="tender_umum">Tender Umum</option>
+                      <option value="tender_terbatas">Tender Terbatas</option>
                     </Input>
                   </FormGroup>
                   {tenderUmum && (
                     <FormGroup>
-                      <Label htmlFor="sistem_kualifikasi">Sistem Kualifikasi</Label>
+                      <Label htmlFor="sistem_kualifikasi">
+                        Sistem Kualifikasi <span className="text-danger">*</span>
+                      </Label>
                       <Input
                         type="select"
                         name="sistem_kualifikasi"
@@ -187,17 +242,23 @@ const NewTender = () => {
                     </FormGroup>
                   )}
                   <FormGroup>
-                    <Label htmlFor="nama_tender">Nama Tender</Label>
+                    <Label htmlFor="nama_tender">
+                      Nama Paket Pengadaan <span className="text-danger">*</span>
+                    </Label>
                     <Input type="text" name="nama_tender" id="nama_tender" onChange={handleInput} />
                   </FormGroup>
                   <FormGroup>
-                    <Label htmlFor="lokasi">Lokasi Pekerjaan</Label>
+                    <Label htmlFor="lokasi">
+                      Lokasi Pekerjaan <span className="text-danger">*</span>
+                    </Label>
                     <Input type="text" name="lokasi" id="lokasi" onChange={handleInput} />
                   </FormGroup>
                   <Row>
                     <Col sm="12" md="6">
                       <FormGroup>
-                        <Label htmlFor="tgl_pendaftaran">Tanggal Pendaftaran</Label>
+                        <Label htmlFor="tgl_pendaftaran">
+                          Tanggal Pendaftaran <span className="text-danger">*</span>
+                        </Label>
                         <Input
                           type="date"
                           name="tgl_pendaftaran"
@@ -208,7 +269,9 @@ const NewTender = () => {
                     </Col>
                     <Col sm="12" md="6">
                       <FormGroup>
-                        <Label htmlFor="batas_pendaftaran">Batas Pendaftaran</Label>
+                        <Label htmlFor="batas_pendaftaran">
+                          Batas Pendaftaran <span className="text-danger">*</span>
+                        </Label>
                         <Input
                           type="date"
                           name="batas_pendaftaran"
@@ -218,7 +281,7 @@ const NewTender = () => {
                       </FormGroup>
                     </Col>
                   </Row>
-                  {documentsCheck?.dok_surat_penyampaian_penawaran === true && (
+                  {/* {documentsCheck?.dok_surat_penyampaian_penawaran === true && (
                     <Row>
                       <Col sm="12" md="12">
                         <FormGroup>
@@ -235,19 +298,40 @@ const NewTender = () => {
                         </FormGroup>
                       </Col>
                     </Row>
-                  )}
+                  )} */}
+
+                  <Row>
+                    <Col sm="12" md="12">
+                      <FormGroup>
+                        <Label htmlFor="dok_untuk_vendor">
+                          Upload Template Dokumen Untuk Vendor{' '}
+                          <span className="text-danger">*</span>
+                        </Label>
+                        <Input
+                          type="file"
+                          name="dok_untuk_vendor"
+                          id="dok_untuk_vendor"
+                          onChange={(e) => handleDokUntukVendorFile(e.target.files[0])}
+                          accept=".rar"
+                        />
+                        <small className="text-muted">File format .rar (max. 10mb)</small>
+                      </FormGroup>
+                    </Col>
+                  </Row>
 
                   {tenderUmum ? (
                     ''
                   ) : (
                     <>
                       <FormGroup>
-                        <Label htmlFor="jenis_pengadaan">Jenis Pengadaan</Label>
+                        <Label htmlFor="jenis_pengadaan">
+                          Jenis Pengadaan <span className="text-danger">*</span>
+                        </Label>
                         <Input
                           type="select"
                           name="jenis_pengadaan"
                           id="jenis_pengadaan"
-                          onChange={handleInput}
+                          onChange={(e) => handleInput(e)}
                           defaultValue=""
                         >
                           <option value="" disabled>
@@ -260,19 +344,15 @@ const NewTender = () => {
                         </Input>
                       </FormGroup>
                       <FormGroup>
-                        <Label htmlFor="kbli">Nomor KBLI</Label>
-                        <Input
-                          type="select"
-                          name="kbli"
-                          id="kbli"
-                          onChange={handleInput}
-                          defaultValue=""
-                        >
-                          <option value="" disabled>
-                            - Pilih -
-                          </option>
-                          <option value="12345678">12345678 - ABCD</option>
-                        </Input>
+                        <Label htmlFor="kbli">
+                          Nomor KBLI <span className="text-danger">*</span>
+                        </Label>
+                        <Select
+                          closeMenuOnSelect
+                          options={kblis}
+                          onChange={(choice) => setKblisSelected(choice)}
+                          isMulti
+                        />
                       </FormGroup>
                     </>
                   )}
@@ -281,12 +361,14 @@ const NewTender = () => {
                   {tenderUmum && (
                     <>
                       <FormGroup>
-                        <Label htmlFor="jenis_pengadaan">Jenis Pengadaan</Label>
+                        <Label htmlFor="jenis_pengadaan">
+                          Jenis Pengadaan <span className="text-danger">*</span>
+                        </Label>
                         <Input
                           type="select"
                           name="jenis_pengadaan"
                           id="jenis_pengadaan"
-                          onChange={handleInput}
+                          onChange={(e) => handleInput(e)}
                           defaultValue=""
                         >
                           <option value="" disabled>
@@ -299,7 +381,9 @@ const NewTender = () => {
                         </Input>
                       </FormGroup>
                       <FormGroup>
-                        <Label htmlFor="kbli">Nomor KBLI</Label>
+                        <Label htmlFor="kbli">
+                          Nomor KBLI <span className="text-danger">*</span>
+                        </Label>
                         {/* <Input
                           type="select"
                           name="kbli"
@@ -322,11 +406,15 @@ const NewTender = () => {
                     </>
                   )}
                   <FormGroup>
-                    <Label htmlFor="hps">HPS</Label>
+                    <Label htmlFor="hps">
+                      HPS <span className="text-danger">*</span>
+                    </Label>
                     <Input type="number" name="hps" id="hps" onChange={handleInput} />
                   </FormGroup>
                   <FormGroup>
-                    <Label htmlFor="dok_tender">Dokumen Tender</Label>
+                    <Label htmlFor="dok_tender">
+                      Dokumen Pengadaan <span className="text-danger">*</span>
+                    </Label>
                     <Input
                       type="file"
                       name="dok_tender"
@@ -334,9 +422,12 @@ const NewTender = () => {
                       onChange={(e) => handleDokTenderFile(e.target.files[0])}
                       accept="application/pdf"
                     />
+                    <small className="text-muted">File format .pdf (max. 10mb)</small>
                   </FormGroup>
                   <FormGroup>
-                    <Label htmlFor="dok_deskripsi_tender">Dokumen Deskripsi Tender</Label>
+                    <Label htmlFor="dok_deskripsi_tender">
+                      Deskripsi Pekerjaan <span className="text-danger">*</span>
+                    </Label>
                     <Input
                       type="file"
                       name="dok_deskripsi_tender"
@@ -344,14 +435,44 @@ const NewTender = () => {
                       onChange={(e) => handleDokDeskTenderFile(e.target.files[0])}
                       accept="application/pdf"
                     />
+                    <small className="text-muted">File format .pdf (max. 10mb)</small>
                   </FormGroup>
                   {!tenderUmum && (
-                    <FormGroup>
-                      <Label htmlFor="perusahaan">Perusahaan Yang Ditunjuk</Label>
-                      <Input type="select" name="perusahaan" id="perusahaan" onChange={handleInput}>
-                        <option value="">ambil dari db</option>
-                      </Input>
-                    </FormGroup>
+                    <>
+                      <FormGroup>
+                        <Label htmlFor="tipe_penyedia">
+                          Tipe Penyedia <span className="text-danger">*</span>
+                        </Label>
+                        <Input
+                          type="select"
+                          name="tipe_penyedia"
+                          id="tipe_penyedia"
+                          onChange={(e) => {
+                            handleInput(e);
+                            setJenisPengadaanSelected(e.target.value);
+                          }}
+                          defaultValue=""
+                        >
+                          <option value="" disabled>
+                            - Pilih -
+                          </option>
+                          <option value="Barang">Barang</option>
+                          <option value="Jasa">Jasa</option>
+                          <option value="Barang dan Jasa">Barang & Jasa</option>
+                        </Input>
+                      </FormGroup>
+                      <FormGroup>
+                        <Label htmlFor="perusahaan">
+                          Perusahaan Yang Diundang <span className="text-danger">*</span>
+                        </Label>
+                        <Select
+                          closeMenuOnSelect
+                          options={companiesToInvite}
+                          onChange={(choice) => setCompanySelected(choice)}
+                          isMulti
+                        />
+                      </FormGroup>
+                    </>
                   )}
                 </Col>
               </Row>
@@ -549,12 +670,50 @@ const NewTender = () => {
                       </div>
                     </Button>
                   ) : (
-                    <Button type="submit" color="success" onClick={handleSubmit}>
-                      Simpan
+                    <Button type="submit" color="success" disabled={values === undefined}>
+                      Submit
                     </Button>
                   )}
                 </div>
               </div>
+              <Modal isOpen={modal} toggle={toggle.bind(null)} centered>
+                <ModalHeader>Konfirmasi</ModalHeader>
+                <ModalBody>
+                  <div className="d-flex flex-row gap-2">
+                    <Input
+                      id="confirm"
+                      type="checkbox"
+                      checked={isConfirmed}
+                      onChange={(e) => setIsConfirmed(e.target.checked)}
+                    />
+                    <Label htmlFor="confirm">
+                      Silakan cek kembali data pengadaan. Centang jika data sudah benar.
+                    </Label>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  {isSubmitting ? (
+                    <Button type="button" color="success" disabled>
+                      <div className="d-flex align-items-center gap-2">
+                        <Spinner size="sm" />
+                        Menyimpan..
+                      </div>
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      color="success"
+                      onClick={handleSubmit}
+                      disabled={!isConfirmed}
+                    >
+                      Submit
+                    </Button>
+                  )}
+                  <Button color="secondary" outline onClick={toggle.bind(null)}>
+                    Cancel
+                  </Button>
+                </ModalFooter>
+              </Modal>
             </Form>
           </Row>
         </CardBody>

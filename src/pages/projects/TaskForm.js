@@ -13,7 +13,8 @@ import useAxios from '../../hooks/useAxios';
 
 const TaskForm = (props) => {
   const { auth } = useAuth();
-  const { projectId, setNewTaskOpen, setAddSubtaskOpen, refetch, type, taskId, title } = props;
+  const { projectId, setNewTaskOpen, setAddSubtaskOpen, refetch, type, taskId, title, name } =
+    props;
   const [loading, setLoading] = useState(false);
   const [task, setTask] = useState({});
   const [modal, setModal] = useState(false);
@@ -33,7 +34,7 @@ const TaskForm = (props) => {
   useEffect(() => {
     async function fetchEmployees() {
       await api
-        .get(`api/employe/assignment-list`)
+        .get(`api/employe/assignment-list?search=${name}`)
         .then((res) => {
           setListEmploye(res.data.data);
         })
@@ -215,7 +216,7 @@ const TaskForm = (props) => {
         </div>
       </form>
       <Modal isOpen={modal} toggle={toggle.bind(null)} size="md" fade={false} centered>
-        <ModalHeader toggle={toggle.bind(null)}>Assigne Employee</ModalHeader>
+        <ModalHeader toggle={toggle.bind(null)}>Assign to</ModalHeader>
         <ModalBody>
           <Select
             // closeMenuOnSelect={false}
@@ -239,6 +240,7 @@ TaskForm.propTypes = {
   type: PropTypes.number,
   taskId: PropTypes.number,
   title: PropTypes.string,
+  name: PropTypes.string,
 };
 
 export default TaskForm;

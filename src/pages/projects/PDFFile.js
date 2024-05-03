@@ -147,14 +147,14 @@ const PDFFile = ({ projectTitle, data }) => {
                   <Text style={styles.tableCell}>{item.end_date}</Text>
                 </View>
                 <View style={{ ...styles.tableCol, width: '30%' }}>
-                  {item.pics.map((p) => (
+                  {item.pics?.map((p) => (
                     <Text style={styles.tableCell} key={p.id}>
                       {p.first_name}
                     </Text>
                   ))}
                 </View>
               </View>
-              {item.level_2.map((st) => (
+              {item.level_2?.map((st) => (
                 <View style={styles.tableRow} key={st.task_id}>
                   <View style={{ ...styles.tableCol, width: '5%' }}>
                     <Text style={styles.tableCell}></Text>
@@ -169,7 +169,7 @@ const PDFFile = ({ projectTitle, data }) => {
                     <Text style={styles.tableCell}>{st.end_date}</Text>
                   </View>
                   <View style={{ ...styles.tableCol, width: '30%' }}>
-                    {st.pics.map((p) => (
+                    {st.pics?.map((p) => (
                       <Text style={styles.tableCell} key={p.id}>
                         {p.first_name}
                       </Text>

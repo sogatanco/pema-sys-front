@@ -28,13 +28,13 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
   const [division, setDivision] = useState({});
   const [options, setOptions] = useState({});
   const [partnerOptions, setPartnerOptions] = useState([]);
-  const [partner, setPartner] = useState();
+  const [partner, setPartner] = useState({});
   const [loading, setLoading] = useState(false);
   const [otherPartner, setOtherPartner] = useState(false);
   const [anotherBaseId, setAnotherBaseId] = useState(false);
   const [isSavingBaseId, setIsSavingBaseId] = useState(false);
   const [newBaseId, setNewBaseId] = useState();
-  const [businessPlan, setBusinessPlan] = useState();
+  const [businessPlan, setBusinessPlan] = useState({});
   const animatedComponents = makeAnimated();
 
   const api = useAxios();
@@ -68,9 +68,20 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
     fetchPartnerOptions();
   }, []);
 
+  useEffect(() => {
+    partnerOptions.unshift({ label: 'TAMBAH LAINNYA', value: 'LAINNYA' });
+  }, [partnerOptions]);
+
   const handleChange = (e) => {
     setNewProject((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  useEffect(() => {
+    if (partner?.value === 'LAINNYA') {
+      setOtherPartner(true);
+      setPartner({});
+    }
+  }, [partner]);
 
   useEffect(() => {
     if (newProject?.base_id === 'another') {
@@ -81,21 +92,28 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
   const newProjectSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    newProject.division = division.organization_id;
-    newProject.partner = partner.value;
-    newProject.business_id = businessPlan.value;
+    newProject.division = division?.organization_id;
+    newProject.partner = otherPartner ? newProject.partner : partner?.value;
+    newProject.business_id = businessPlan?.value;
 
-    await api
-      .post(`api/project`, newProject)
-      .then(() => {
-        alert('success', 'Project has been created.');
-        refetch();
-      })
-      .catch(() => {
-        alert('error', 'Something went wrong.');
-      });
+    if (newProject.base_id === '3' && newProject.business_id === undefined) {
+      alert('error', 'Field Business Plan cannot be empty');
+    } else if (newProject.base_id === undefined) {
+      alert('error', 'Field Activity Base cannot be empty');
+    } else {
+      await api
+        .post(`api/project`, newProject)
+        .then(() => {
+          alert('success', 'Project has been created.');
+          refetch();
+        })
+        .catch(() => {
+          alert('error', 'Something went wrong.');
+        });
 
-    setModal(false);
+      setModal(false);
+    }
+    setOtherPartner(false);
     setLoading(false);
   };
 
@@ -132,6 +150,7 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
               id="project_number"
               placeholder="Project number here"
               onChange={handleChange}
+              required
             />
           </FormGroup>
           <FormGroup>
@@ -142,19 +161,26 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
               id="project_name"
               placeholder="Project name here"
               onChange={handleChange}
+              required
             />
           </FormGroup>
           <Row>
             <Col md="6">
               <FormGroup>
                 <Label for="start_date">Start date</Label>
-                <Input type="date" id="start_date" name="start_date" onChange={handleChange} />
+                <Input
+                  type="date"
+                  id="start_date"
+                  name="start_date"
+                  onChange={handleChange}
+                  required
+                />
               </FormGroup>
             </Col>
             <Col md="6">
               <FormGroup>
                 <Label for="end_date">End date</Label>
-                <Input type="date" id="end_date" name="end_date" onChange={handleChange} />
+                <Input type="date" id="end_date" name="end_date" onChange={handleChange} required />
               </FormGroup>
             </Col>
           </Row>
@@ -167,6 +193,7 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
               placeholder="Explain the goals of the project here"
               rows="3"
               onChange={handleChange}
+              required
             />
           </FormGroup>
           <Row>
@@ -177,10 +204,11 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
                   type="select"
                   id="level_id"
                   name="level_id"
-                  defaultValue="al"
+                  defaultValue=""
                   onChange={handleChange}
+                  required
                 >
-                  <option disabled value="al">
+                  <option disabled value="">
                     - Select -
                   </option>
                   {options?.activity_level?.map((al) => (
@@ -198,10 +226,11 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
                   type="select"
                   id="category"
                   name="category"
-                  defaultValue="cat"
+                  defaultValue=""
                   onChange={handleChange}
+                  required
                 >
-                  <option disabled value="cat">
+                  <option disabled value="">
                     - Select -
                   </option>
                   <option value="business">Business</option>
@@ -234,44 +263,22 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
               </FormGroup> */}
               <FormGroup>
                 <Label for="partner">{otherPartner ? 'Add Other Partner' : 'Partner'}</Label>
-                <div className="d-flex gap-3">
-                  <div style={{ width: '80%' }}>
-                    {otherPartner ? (
-                      <Input
-                        type="text"
-                        name="partner"
-                        id="partner"
-                        placeholder="Type here.."
-                        onChange={handleChange}
-                      />
-                    ) : (
-                      <Select
-                        components={animatedComponents}
-                        options={partnerOptions}
-                        onChange={(choice) => setPartner(choice)}
-                      />
-                    )}
-                  </div>
-                  {otherPartner ? (
-                    <Button
-                      type="button"
-                      color="secondary"
-                      outline
-                      onClick={() => setOtherPartner(false)}
-                    >
-                      Cancel
-                    </Button>
-                  ) : (
-                    <Button
-                      type="button"
-                      color="secondary"
-                      outline
-                      onClick={() => setOtherPartner(true)}
-                    >
-                      Add Other
-                    </Button>
-                  )}
-                </div>
+                {otherPartner ? (
+                  <Input
+                    type="text"
+                    name="partner"
+                    id="partner"
+                    placeholder="Type here.."
+                    onChange={handleChange}
+                    required
+                  />
+                ) : (
+                  <Select
+                    components={animatedComponents}
+                    options={partnerOptions}
+                    onChange={(choice) => setPartner(choice)}
+                  />
+                )}
               </FormGroup>
               <FormGroup>
                 <Label htmlFor="desc">Description for Initiation & Definition phase</Label>
@@ -291,7 +298,8 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
                     <InputGroup>
                       <InputGroupText>Rp.</InputGroupText>
                       <Input
-                        type="text"
+                        type="number"
+                        min="1"
                         id="estimated_income"
                         name="estimated_income"
                         onChange={handleChange}
@@ -305,7 +313,8 @@ const NewProjectModal = ({ modal, setModal, toggle, refetch }) => {
                     <InputGroup>
                       <InputGroupText>Rp.</InputGroupText>
                       <Input
-                        type="text"
+                        type="number"
+                        min="1"
                         id="estimated_cost"
                         name="estimated_cost"
                         onChange={handleChange}

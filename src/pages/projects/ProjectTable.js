@@ -8,6 +8,8 @@ import NewProjectModal from './NewProjectModal';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import './ProjectTable.scss';
+import IndoDate from '../../utils/IndoDate';
+import isExpired from '../../utils/isExpired';
 
 const ProjectTables = ({ nav }) => {
   const { auth } = useAuth();
@@ -20,7 +22,7 @@ const ProjectTables = ({ nav }) => {
 
   const api = useAxios();
 
-  const { isLoading, error, data, refetch, isRefetching } = useQuery({
+  const { isLoading, error, data, refetch } = useQuery({
     queryKey: ['projects'],
     queryFn: () =>
       // api.get(`api/project`).then((res) => {
@@ -29,8 +31,10 @@ const ProjectTables = ({ nav }) => {
           `${
             nav === 1 || auth?.user.roles.includes('Director')
               ? 'api/project'
-              : `api/project/${auth?.user.employe_id}/list`
-          } `,
+              : nav === 2
+              ? `api/project/${auth?.user.employe_id}/list`
+              : `api/project/manager/assigned/list`
+          }`,
         )
         .then((res) => {
           return res.data.data;
@@ -44,8 +48,8 @@ const ProjectTables = ({ nav }) => {
   const allowedRoles = ['Staff', 'Manager'];
 
   return (
-    <div>
-      <Card>
+    <Card className="rounded-2">
+      {nav === 1 || nav === 2 ? (
         <CardBody style={{ position: 'relative' }}>
           <Col className="d-flex justify-content-between mb-3" col="12">
             <div className="">
@@ -72,7 +76,7 @@ const ProjectTables = ({ nav }) => {
               </div>
             )}
           </Col>
-          {isLoading || isRefetching ? (
+          {isLoading ? (
             <div className="d-flex justify-content-center">
               <h6>Loading...</h6>
             </div>
@@ -81,14 +85,20 @@ const ProjectTables = ({ nav }) => {
               <h6>Something went wrong.</h6>
             </div>
           ) : data.length > 0 ? (
-            <Table className="no-wrap mt-0 align-middle" responsive hover>
+            <Table
+              className="no-wrap mt-0 align-middle"
+              responsive
+              hover
+              style={{ fontSize: '13px' }}
+            >
               <thead>
                 <tr>
                   <th>No.</th>
-                  <th>Projects</th>
-                  <th>Numbers</th>
-                  <th>Levels</th>
-                  <th>Start at</th>
+                  <th style={{ minWidth: '400px' }}>Projects</th>
+                  <th style={{ minWidth: '180px' }}>Numbers</th>
+                  <th style={{ minWidth: '200px' }}>Levels</th>
+                  <th style={{ minWidth: '120px' }}>Start date</th>
+                  <th style={{ minWidth: '120px' }}>Due date</th>
                   <th>Status</th>
                   {/* <th>Action</th> */}
                 </tr>
@@ -110,9 +120,14 @@ const ProjectTables = ({ nav }) => {
                     </td>
                     <td className="text-muted">{p.project_number}</td>
                     <td className="text-muted">{p.level_desc}</td>
-                    <td className="text-muted">{`${p?.current_stage?.start_date?.split('-')[2]}-${
-                      p?.current_stage?.start_date?.split('-')[1]
-                    }-${p?.current_stage?.start_date?.split('-')[0]}`}</td>
+                    <td className="text-muted">{IndoDate(p.current_stage?.start_date)}</td>
+                    <td
+                      className={`${
+                        isExpired(p.current_stage?.end_date) ? 'text-danger' : 'text-muted'
+                      }`}
+                    >
+                      {IndoDate(p.current_stage?.end_date)}
+                    </td>
                     <td>
                       {p?.category === 'business' ? (
                         <>
@@ -189,8 +204,104 @@ const ProjectTables = ({ nav }) => {
             </div>
           )}
         </CardBody>
-      </Card>
-    </div>
+      ) : (
+        <CardBody style={{ position: 'relative' }}>
+          <Col className="d-flex justify-content-between mb-3" col="12">
+            <div className="">
+              <CardTitle tag="h5" className="fw-bold">
+                Project Assigned Listing
+              </CardTitle>
+            </div>
+          </Col>
+          {isLoading ? (
+            <div className="d-flex justify-content-center">
+              <h6>Loading...</h6>
+            </div>
+          ) : error ? (
+            <div className="d-flex justify-content-center">
+              <h6>Something went wrong.</h6>
+            </div>
+          ) : data.length > 0 ? (
+            <Table
+              className="no-wrap mt-0 align-middle"
+              responsive
+              hover
+              style={{ fontSize: '13px' }}
+            >
+              <thead>
+                <tr>
+                  <th>No.</th>
+                  <th style={{ minWidth: '400px' }}>Projects</th>
+                  <th style={{ minWidth: '180px' }}>Numbers</th>
+                  <th style={{ minWidth: '200px' }}>Levels</th>
+                  <th style={{ minWidth: '120px' }}>Start date</th>
+                  <th style={{ minWidth: '120px' }}>Due date</th>
+                  <th>Status</th>
+                  {/* <th>Action</th> */}
+                </tr>
+              </thead>
+              <tbody style={{ overflow: 'hidden' }}>
+                {data?.map((p, i) => (
+                  <tr key={p.project_id} className="border-top">
+                    <td>{i + 1}.</td>
+                    <td className="text-success">
+                      <Link
+                        className="fw-bold"
+                        to={`details/${p.project_id}`}
+                        style={{ textDecoration: 'none' }}
+                      >
+                        {p.project_name}
+                      </Link>
+                      <br></br>
+                      <span className="fs-7 text-muted fw-bold">{p.organization_name}</span>
+                    </td>
+                    <td className="text-muted">{p.project_number}</td>
+                    <td className="text-muted">{p.level_desc}</td>
+                    <td className="text-muted">{IndoDate(p.current_stage?.start_date)}</td>
+                    <td
+                      className={`${
+                        isExpired(p.current_stage?.end_date) ? 'text-danger' : 'text-muted'
+                      }`}
+                    >
+                      {IndoDate(p.current_stage?.end_date)}
+                    </td>
+                    <td>
+                      {p?.category === 'business' ? (
+                        <>
+                          {p.status === 'new' && (
+                            <span className="badge bg-light-info text-info rounded-pill d-inline-block fw-bold">
+                              New
+                            </span>
+                          )}
+                          {p.status === 'ongoing' && (
+                            <span className="badge bg-light-primary text-primary rounded-pill d-inline-block fw-bold">
+                              {p?.current_stage?.phase}
+                            </span>
+                          )}
+                          {p.status === 'done' && (
+                            <span className="badge bg-light-success text-success rounded-pill d-inline-block fw-bold">
+                              Done
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="badge bg-light-success text-success rounded-pill d-inline-block fw-bold">
+                          New
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          ) : (
+            <div className="d-flex justify-content-center">
+              <h6>No project yet.</h6>
+            </div>
+          )}
+        </CardBody>
+      )}
+    </Card>
   );
 };
 

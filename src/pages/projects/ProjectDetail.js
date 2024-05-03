@@ -34,7 +34,7 @@ const ProjectDetail = () => {
     <TaskContextProvider>
       <>
         <ProjectNav {...{ navActive, setNavActive, totalReview, totalBastReview }} />
-        <ProjectDetailTab {...{ navActive, setTotalReview, setTotalBastReview }} />
+        <ProjectDetailTab {...{ navActive, setTotalReview, setTotalBastReview, roles }} />
       </>
     </TaskContextProvider>
   );
