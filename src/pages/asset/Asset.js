@@ -56,9 +56,10 @@ const Asset = () => {
   const refetch1 = useCallback(()=> {
     result[1].refetch();
   }, [result[1]]);
-  // const refetch2 = useCallback(()=> {
-  //   result[2].refetch();
-  // }, [result[2]]);
+
+  const refetch2=useCallback(()=>{
+    result[2].refetch();
+  }, [result[2]]);
 
   useEffect(() => {
     setListAsset(result[0].data);
@@ -68,9 +69,10 @@ const Asset = () => {
 
   return (
     <>
-      <TabContext value={value}>
-        <Card className="mb-1">
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
+      <TabContext value={value} >
+        <Card className="mb-1" >
+          <TabList onChange={handleChange} aria-label="lab API tabs example" vertical="sm"   variant="scrollable"
+          scrollButtons="on">
             {auth?.user.roles.includes('PicAsset') ? (
               <Tab
                 label={
@@ -150,7 +152,7 @@ const Asset = () => {
         <TabPanel value="3" className="ps-0 pe-0">
           <Card>
             <CardBody>
-              <Request {...{ reqser }} />
+              <Request {...{ reqser, refetch2 }} />
             </CardBody>
           </Card>
         </TabPanel>
