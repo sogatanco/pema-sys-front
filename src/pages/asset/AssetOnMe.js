@@ -9,7 +9,7 @@ import { alert } from '../../components/atoms/Toast';
 
 const baseURL = process.env.REACT_APP_BASEURL;
 
-const AssetOnMe = ({ onMe, handleChange, refetch1 }) => {
+const AssetOnMe = ({ onMe, handleChange, refetch1, refetch2 }) => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState([]);
   const [sesImg, setSesImg] = useState(new Date());
@@ -96,6 +96,7 @@ const AssetOnMe = ({ onMe, handleChange, refetch1 }) => {
           toggle();
           handleChange('', '3');
           alert('success', `Request Submitted succesfully !`);
+          refetch2();
           refetch1();
         }
       })
@@ -168,6 +169,7 @@ AssetOnMe.propTypes = {
   onMe: PropTypes.array,
   handleChange: PropTypes.func,
   refetch1: PropTypes.func,
+  refetch2:PropTypes.func
 };
 
 export default AssetOnMe;

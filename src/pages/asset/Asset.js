@@ -64,7 +64,9 @@ const Asset = () => {
   useEffect(() => {
     setListAsset(result[0].data);
     setReqser(result[2].data);
+    console.log(reqser)
     setOnMe(result[1].data);
+    console.log(onMe)
   }, [result[0].data, result[1].data,  result[2].data]);
 
   return (
@@ -145,7 +147,7 @@ const Asset = () => {
         <TabPanel value="2" className="ps-0 pe-0">
           <Card>
             <CardBody>
-              <AssetOnMe {...{ onMe, handleChange, refetch1 }} />
+              <AssetOnMe {...{ onMe, handleChange, refetch1 , refetch2}} />
             </CardBody>
           </Card>
         </TabPanel>
