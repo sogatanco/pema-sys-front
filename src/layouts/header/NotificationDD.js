@@ -28,6 +28,8 @@ const NotificationDD = ({ data, refetch, setIsNotifOpen }) => {
             ? navigate(`/projects/details/${projectId}?n=${notifId}&to=handover`)
             : category === 'bast'
             ? navigate(`/projects/details/${projectId}?n=${notifId}&to=overview`)
+            : category === 'tender'
+            ? navigate(`/tender/approval?n=${notifId}`)
             : navigate(`/projects/details/${projectId}?n=${notifId}&to=review`)
           : auth.user.roles.includes('Director')
           ? navigate(`/projects/details/${projectId}?n=${notifId}&to=bast-review`)

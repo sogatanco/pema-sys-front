@@ -105,34 +105,39 @@ const TaskDetail = ({ showTask, setShowTask, taskId }) => {
                     className={`${tabActive === 1 ? 'active' : ''}`}
                     onClick={() => setTabActive(1)}
                   >
-                    Overview
+                    <MaterialIcon icon="layers" />
+                    <span>Overview</span>
                   </Link>
                   <Link
                     className={`${tabActive === 2 ? 'active' : ''}`}
                     onClick={() => setTabActive(2)}
                   >
-                    Edit
+                    <MaterialIcon icon="edit" />
+                    <span>Edit</span>
                   </Link>
                   <Link
                     className={`${tabActive === 3 ? 'active' : ''}`}
                     onClick={() => setTabActive(3)}
                   >
-                    Comment
-                    <div className="count">
+                    <MaterialIcon icon="comment" />
+                    <span>Comment</span>
+                    {/* <div className="count">
                       <span>2</span>
-                    </div>
+                    </div> */}
                   </Link>
                   <Link
                     className={`${tabActive === 4 ? 'active' : ''}`}
                     onClick={() => setTabActive(4)}
                   >
-                    Log
+                    <MaterialIcon icon="history" />
+                    <span>Log</span>
                   </Link>
                   <Link
                     className={`${tabActive === 5 ? 'active' : ''}`}
                     onClick={() => setTabActive(5)}
                   >
-                    Attachment
+                    <MaterialIcon icon="attach_file" />
+                    <span>Attachment</span>
                   </Link>
                 </div>
                 <div className="data">

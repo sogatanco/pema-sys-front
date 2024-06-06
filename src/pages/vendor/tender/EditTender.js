@@ -74,7 +74,7 @@ const EditTender = () => {
 
   useEffect(() => {
     setTenderTemp(data);
-    if (data?.metode_pengadaan === 'umum' || data?.metode_pengadaan === 'terbatas') {
+    if (data?.metode_pengadaan === 'seleksi_umum' || data?.metode_pengadaan === 'tender_umum') {
       setTenderUmum(true);
       if (data?.sistem_kualifikasi === 'pasca kualifikasi') {
         setPascaKualifikasi(true);
@@ -103,7 +103,7 @@ const EditTender = () => {
 
   const handleMetodePengadaan = (e) => {
     handleInput(e);
-    if (e.target.value === 'umum' || e.target.value === 'terbatas') {
+    if (e.target.value === 'seleksi_umum' || e.target.value === 'tender_umum') {
       setTenderUmum(true);
     } else {
       setTenderUmum(false);
@@ -135,15 +135,30 @@ const EditTender = () => {
     e.preventDefault();
     setIsSaving(true);
     const theKblis = [];
-    kblisSelected.map((item) => theKblis.push(item.value));
+
+    if (kblisSelected.length > 0) {
+      kblisSelected.map((item) => theKblis.push(item.value));
+    } else {
+      data.kbli_list.map((item) => theKblis.push(item.value));
+    }
+
     tenderTemp.id = tenderTemp?.id_tender;
     tenderTemp.centang_dok_wajib = documentsCheck;
     tenderTemp.dok_tender = dokTenderFile;
     tenderTemp.dok_deskripsi_tender = dokDeskTenderFile;
     tenderTemp.kbli = theKblis;
 
+    console.log('selet', tenderTemp);
+
     await api
-      .post('dapi/vendor/tender/update', tenderTemp)
+      .put('dapi/vendor/tender/update', tenderTemp, {
+        headers: {
+          'Access-Control-Allow-Origin': true,
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        },
+      })
       .then(() => {
         alert('success', 'Tender updated successfully.');
         refetch();
@@ -171,7 +186,7 @@ const EditTender = () => {
           {isLoading ? (
             'Loading..'
           ) : (
-            <Form onSubmit={handleSave}>
+            <Form onSubmit={handleSave} encType="multipart/form-data">
               <Row lg="12">
                 <Col md="6">
                   <FormGroup>
@@ -185,10 +200,12 @@ const EditTender = () => {
                       }}
                       value={tenderTemp?.metode_pengadaan || ''}
                     >
-                      <option value="umum">Umum</option>
-                      <option value="terbatas">Terbatas</option>
-                      <option value="pengadaan langsung">Pengadaan Langsung</option>
-                      <option value="penunjukkan langsung">Penunjukkan Langsung</option>
+                      <option value="seleksi_umum">Seleksi Umum</option>
+                      <option value="seleksi_terbatas">Seleksi Terbatas</option>
+                      <option value="tender_umum">Tender Umum</option>
+                      <option value="tender_terbatas">Tender Terbatas</option>
+                      <option value="pengadaan_langsung">Pengadaan Langsung</option>
+                      <option value="penunjukkan_langsung">Penunjukkan Langsung</option>
                     </Input>
                   </FormGroup>
                   {tenderUmum && (

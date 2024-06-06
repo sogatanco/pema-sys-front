@@ -42,6 +42,7 @@ const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive 
   const [isDeletingSub, setIsDeletingSub] = useState(false);
   const [idTaskParams, setIdTaskParams] = useState(null);
   const [isDuplicating, setIsDuplicating] = useState(false);
+  const [levelTaskClicked, setLevelTaskClicked] = useState('');
   const api = useAxios();
 
   const userRoles = auth?.user?.roles;
@@ -419,7 +420,13 @@ const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive 
                   {l2.level_3?.length > 0 &&
                     l2.level_3.map((l3) => (
                       <div key={l3.task_id} className="board-body subtask-level3">
-                        <div className="task-title" onClick={() => openPopup(l3)}>
+                        <div
+                          className="task-title"
+                          onClick={() => {
+                            openPopup(l3);
+                            setLevelTaskClicked('activity');
+                          }}
+                        >
                           {l3.task_title}
                         </div>
                         <div className="task-bottom">
@@ -606,7 +613,9 @@ const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive 
           </div>
         ))}
       </div>
-      {modal && <TaskPopup {...{ modal, setModal, toggle, task, refetch }} />}
+      {modal && (
+        <TaskPopup {...{ modal, setModal, toggle, task, refetch }} name={levelTaskClicked} />
+      )}
     </>
   );
 };

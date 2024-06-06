@@ -118,6 +118,10 @@ const ActivityTab = () => {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
+  useEffect(() => {
+    refetch();
+  }, [projectId]);
+
   return (
     <>
       <Col>

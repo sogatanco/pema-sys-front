@@ -35,7 +35,7 @@ const sortHistoryByDate = (data) => {
   return data?.sort((a, b) => a.created_at.localeCompare(b.created_at));
 };
 
-const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
+const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode, name }) => {
   const { projectId } = useParams();
   const { auth } = useAuth();
   const [history, setHistory] = useState();
@@ -109,7 +109,7 @@ const TaskPopup = ({ modal, setModal, toggle, task, refetch, mode }) => {
   useEffect(() => {
     async function fetchEmployees() {
       await api
-        .get(`api/employe/assignment-list`)
+        .get(`api/employe/assignment-list?search=${name}`)
         .then((res) => setListEmploye(res.data.data))
         .catch((err) => console.log(err));
     }
@@ -769,6 +769,7 @@ TaskPopup.propTypes = {
   task: PropTypes.any,
   refetch: PropTypes.func,
   mode: PropTypes.string,
+  name: PropTypes.string,
 };
 
 export default TaskPopup;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardBody, Col } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
@@ -17,7 +17,7 @@ const MemberTab = () => {
 
   const { projectId } = useParams();
 
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data, refetch } = useQuery({
     queryKey: ['members'],
     queryFn: () =>
       api.get(`api/project/${projectId}/members`).then((res) => {
@@ -25,6 +25,10 @@ const MemberTab = () => {
         return res.data.data;
       }),
   });
+
+  useEffect(() => {
+    refetch();
+  }, [projectId]);
 
   // const addMemberAllowedRole = 'Manager';
 

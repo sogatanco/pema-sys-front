@@ -19,12 +19,12 @@ const Request = () => {
 
   useEffect(() => {
     const reviewSubmitFiltered = data?.filter((item) => {
-      return item.status_verifikasi === 'review_submit';
+      return item.status_verifikasi_admin === 'review_submit';
     });
     setSubmitList(reviewSubmitFiltered);
 
     const reviewUpdateFiltered = data?.filter((item) => {
-      return item.status_verifikasi === 'review_update';
+      return item.status_verifikasi_admin === 'review_update';
     });
     setUpdateList(reviewUpdateFiltered);
   }, [data]);

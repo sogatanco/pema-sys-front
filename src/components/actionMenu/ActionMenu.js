@@ -33,7 +33,12 @@ const ActionMenu = ({ menuOptions, taskId, status, action, progress, duplicateFn
             {menuOptions?.options.map((op) => (
               <div key={op.id}>
                 {op.to === 'duplicate' ? (
-                  <button type="button" className="text-muted" onClick={() => duplicateFn(taskId)}>
+                  <button
+                    type="button"
+                    className="text-muted"
+                    disabled
+                    onClick={() => duplicateFn(taskId)}
+                  >
                     {op.icon}
                     Duplicate
                   </button>

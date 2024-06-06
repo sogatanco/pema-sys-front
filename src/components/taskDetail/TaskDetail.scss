@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .task-container {
   position: fixed;
   display: flex;
@@ -8,7 +12,7 @@
   background-color: #e8e6e6;
   z-index: 10;
   border-radius: 20px 20px 0 0;
-  overflow-x: hidden;
+  // overflow-x: hidden;
   transition: all 350ms ease;
   overflow: hidden;
 
@@ -93,8 +97,7 @@
           display: flex;
           flex-direction: column;
           padding: 0 10px;
-          gap: 6px;
-          // background-color: white;
+          gap: 8px;
           border-right: 1px solid rgb(225, 225, 225);
 
           a {
@@ -105,7 +108,7 @@
             border-radius: 8px;
             text-decoration: none;
             font-size: 13px;
-            color: darkolivegreen;
+            color: grey;
             transition: all 300ms ease;
 
             &:hover {
@@ -136,12 +139,55 @@
             color: white;
             font-weight: 600;
           }
+
+          // @media screen and (min-width: 600px) {
+          //   a {
+          //     width: 50px;
+          //   }
+
+          //   i {
+          //     font-size: 30px;
+          //   }
+
+          //   a > span {
+          //     display: none;
+          //   }
+          // }
+
+          @media screen and (max-width: 768px) {
+            a {
+              width: 45px;
+            }
+
+            i {
+              display: block;
+            }
+
+            a > span {
+              display: none;
+            }
+          }
+
+          @media screen and (min-width: 768px) {
+            a {
+              width: 140px;
+            }
+
+            i {
+              display: none;
+            }
+
+            a > span {
+              display: block;
+            }
+          }
         }
 
         .data {
           flex: 1;
           height: 95%;
           padding: 0 20px;
+          overflow-x: auto;
 
           .edit,
           input,
@@ -283,10 +329,23 @@
               }
             }
           }
-        }
 
-        .table {
-          font-size: 13px;
+          .table {
+            width: 100%;
+            overflow-x: auto;
+            box-sizing: border-box !important;
+          }
+
+          .table > table {
+            min-width: 150%;
+          }
+
+          .table > table > tbody > tr > td {
+            font-size: 13px;
+            line-height: 20px;
+            padding: 10px 0px;
+            min-width: 7px;
+          }
         }
       }
     }

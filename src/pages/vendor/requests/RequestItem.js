@@ -117,7 +117,7 @@ const RequestItem = ({ title, data, source, refetch }) => {
           {data?.length > 0
             ? data.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.perusahaan_id}
                   className="d-flex justify-content-between rounded-3 px-3 py-3 align-items-center text-dark bg-light"
                 >
                   <div className="d-flex flex-column">
@@ -127,7 +127,7 @@ const RequestItem = ({ title, data, source, refetch }) => {
                     <small>Request at {formatDate(item.updated_at)}</small>
                   </div>
                   <div className="d-flex gap-3">
-                    <Link to={`check/${item.id}?source=${source}`}>
+                    <Link to={`check/${item.perusahaan_id}?source=${source}`}>
                       <Button type="button" color="secondary">
                         Document
                       </Button>
@@ -135,7 +135,7 @@ const RequestItem = ({ title, data, source, refetch }) => {
                     <Button
                       type="button"
                       color="secondary"
-                      onClick={() => handleEmailPopup(item.id, item.email)}
+                      onClick={() => handleEmailPopup(item.perusahaan_id, item.email)}
                     >
                       Email
                     </Button>
@@ -178,7 +178,7 @@ const RequestItem = ({ title, data, source, refetch }) => {
                     </Modal>
                     <Button
                       color="secondary"
-                      onClick={() => handleConfirmation(item.id, item.nama_perusahaan)}
+                      onClick={() => handleConfirmation(item.perusahaan_id, item.nama_perusahaan)}
                     >
                       Approve
                     </Button>
@@ -186,8 +186,11 @@ const RequestItem = ({ title, data, source, refetch }) => {
                       <ModalHeader toggle={toggle4.bind(null)}>Konfirmasi</ModalHeader>
                       <ModalBody>
                         <div className="d-flex text-center">
-                          Data perusahaan {selectedName} akan diubah menjadi terverifikasi.
-                          Lanjutkan?
+                          <p>
+                            {' '}
+                            Data perusahaan <strong>{selectedName}</strong> akan diubah menjadi
+                            terverifikasi. Lanjutkan?
+                          </p>
                         </div>
                       </ModalBody>
                       <ModalFooter>
@@ -211,7 +214,7 @@ const RequestItem = ({ title, data, source, refetch }) => {
                     <Button
                       color="secondary"
                       outline
-                      onClick={() => handleLogModal(item.id, item.nama_perusahaan)}
+                      onClick={() => handleLogModal(item.perusahaan_id, item.nama_perusahaan)}
                     >
                       Log
                     </Button>

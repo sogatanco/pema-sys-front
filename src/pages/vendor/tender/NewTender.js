@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
+  Badge,
   Button,
   Card,
   CardBody,
@@ -38,6 +39,8 @@ const NewTender = () => {
   const [jenisPengadaanSelected, setJenisPengadaanSelected] = useState('barang');
   const [companiesToInvite, setCompaniesToInvite] = useState([]);
   const [companySelected, setCompanySelected] = useState([]);
+  const [needToReview, setNeedToReview] = useState([]);
+  // const [needToReviewFilterd, setNeedToReviewFiltered] = useState([]);
 
   const [documentsCheck, setDocumentsCheck] = useState({
     dok_fakta_integritas: false,
@@ -87,6 +90,19 @@ const NewTender = () => {
       value: 'all_vendor',
     });
   }, [companiesToInvite]);
+
+  useEffect(() => {
+    const list = [];
+    if (companySelected.length > 0) {
+      companySelected.map((cs) => cs.isApproved === false && list.push(cs));
+    }
+
+    const removeDuplicateList = list.filter(
+      (c, i) => i === list.findIndex((other) => c.value === other.value),
+    );
+
+    setNeedToReview(removeDuplicateList);
+  }, [companySelected]);
 
   const handleInput = (e) => {
     setValues((prev) => ({
@@ -175,7 +191,6 @@ const NewTender = () => {
           document.getElementById('new-tender').reset();
         })
         .catch((err) => {
-          console.log('ERROR', err);
           alert('error', err.response.data.message);
         });
     } else {
@@ -219,6 +234,8 @@ const NewTender = () => {
                       <option value="seleksi_terbatas">Seleksi Terbatas</option>
                       <option value="tender_umum">Tender Umum</option>
                       <option value="tender_terbatas">Tender Terbatas</option>
+                      <option value="pengadaan_langsung">Pengadaan Langsung</option>
+                      <option value="penunjukkan_langsung">Penunjukkan Langsung</option>
                     </Input>
                   </FormGroup>
                   {tenderUmum && (
@@ -243,7 +260,7 @@ const NewTender = () => {
                   )}
                   <FormGroup>
                     <Label htmlFor="nama_tender">
-                      Nama Paket Pengadaan <span className="text-danger">*</span>
+                      Nama Paket Pekerjaan <span className="text-danger">*</span>
                     </Label>
                     <Input type="text" name="nama_tender" id="nama_tender" onChange={handleInput} />
                   </FormGroup>
@@ -469,9 +486,25 @@ const NewTender = () => {
                           closeMenuOnSelect
                           options={companiesToInvite}
                           onChange={(choice) => setCompanySelected(choice)}
-                          isMulti
+                          isMulti={companySelected[0]?.value !== 'all_vendor'}
                         />
                       </FormGroup>
+                      <div className="d-flex flex-column gap-2 justify-content-center">
+                        {needToReview.length > 0 &&
+                          needToReview.map((nr) =>
+                            companySelected.map(
+                              (cs) =>
+                                nr.value === cs.value && (
+                                  <div className="d-flex gap-3" key={nr.value}>
+                                    <span className="fw-bold">{nr.label}</span>
+                                    <Link to={`/vendor/requests/check/${nr.value}`} target="blank">
+                                      <Badge color="danger">Need Review</Badge>
+                                    </Link>
+                                  </div>
+                                ),
+                            ),
+                          )}
+                      </div>
                     </>
                   )}
                 </Col>
@@ -649,10 +682,10 @@ const NewTender = () => {
                       <FormGroup check>
                         <Input
                           type="checkbox"
-                          id="dok_penawaran_komersial"
+                          id="dok_jaminan_penawaran"
                           onChange={handleChecked}
                         />
-                        <Label check htmlFor="dok_penawaran_komersial" className="form-label">
+                        <Label check htmlFor="dok_jaminan_penawaran" className="form-label">
                           Jaminan Penawaran
                         </Label>
                       </FormGroup>
@@ -687,7 +720,7 @@ const NewTender = () => {
                       onChange={(e) => setIsConfirmed(e.target.checked)}
                     />
                     <Label htmlFor="confirm">
-                      Silakan cek kembali data pengadaan. Centang jika data sudah benar.
+                      Silakan cek kembali data pengadaan. Centang jika data sudah lengkap dan benar.
                     </Label>
                   </div>
                 </ModalBody>

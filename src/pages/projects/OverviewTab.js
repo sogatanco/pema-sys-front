@@ -83,7 +83,7 @@ const OverviewTab = () => {
     setModal(!modal);
   };
 
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data, refetch } = useQuery({
     queryKey: ['overview'],
     queryFn: () =>
       api.get(`api/project/${projectId}`).then((res) => {
@@ -196,6 +196,10 @@ const OverviewTab = () => {
     }
     fetchPartnerOptions();
   }, []);
+
+  useEffect(() => {
+    refetch();
+  }, [projectId]);
 
   return (
     <>

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable react/no-this-in-sfc */
+import React, { Fragment, useEffect, useState } from 'react';
 import {
   Button,
   Card,
   CardBody,
   Col,
   Collapse,
+  FormGroup,
   Input,
   Label,
   Modal,
@@ -12,6 +14,9 @@ import {
   ModalFooter,
   ModalHeader,
   Row,
+  Spinner,
+  Form,
+  Badge,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
@@ -22,6 +27,9 @@ import formatDate from '../../../utils/formatDate';
 import rupiah from '../../../utils/rupiah';
 import { alert } from '../../../components/atoms/Toast';
 import getBase64 from '../../../utils/generateFile';
+import CheckDocument from './CheckDocument';
+
+const API_URL = process.env.REACT_APP_BASEURL;
 
 const TenderCollapse = ({ tender, action }) => {
   const [modal2, setModal2] = useState(false);
@@ -42,6 +50,17 @@ const TenderCollapse = ({ tender, action }) => {
   const [pemenang, setPemenang] = useState();
   const [isUploadingBa, setIsUploadingBa] = useState(false);
   const [baKey, setBaKey] = useState();
+  const [modal4, setModal4] = useState(false);
+  const [modal5, setModal5] = useState(false);
+  const [modal6, setModal6] = useState(false);
+  const [modal7, setModal7] = useState(false);
+  const [updateStatusValues, setUpdateStatusValues] = useState();
+  const [updateStatusFile, setUpdateStatusFile] = useState();
+  const [isStatusUpdating, setIsStatusUpdating] = useState(false);
+  const [selectedCompanyName, setSelectedCompanyName] = useState('');
+  const [selectedCompanyData, setSelectedCompanyData] = useState(undefined);
+  const [selectedNote, setSelectedNote] = useState('');
+  const [selectedStage, setSelectedStage] = useState('');
 
   const api = useAxios();
 
@@ -51,6 +70,15 @@ const TenderCollapse = ({ tender, action }) => {
 
   const toggle3 = () => {
     setModal3(!modal3);
+  };
+
+  const toggle6 = () => {
+    setModal6(!modal6);
+  };
+
+  const deleteConfirmation = (id) => {
+    setModal4(!modal4);
+    setSelectedTender(id);
   };
 
   const toggle = () => setCollapse(!collapse);
@@ -83,8 +111,9 @@ const TenderCollapse = ({ tender, action }) => {
     setSecondPhaseList(secondPhaseFiltered);
 
     setPhaseTwoCandidate(submitFiltered);
+
     setWinningCandidat(
-      tender.sistem_kualifikasi === 'pasca kualifikasi' ? submitFiltered : secondPhaseFiltered,
+      tender.sistem_kualifikasi === 'pra kualifikasi' ? secondPhaseFiltered : submitFiltered,
     );
     setPemenang(pemenangSet);
   }, [registeredList]);
@@ -156,11 +185,58 @@ const TenderCollapse = ({ tender, action }) => {
       })
       .then(() => {
         alert('success', 'Berita Acara Penetapan Berhasil didupload');
+        action();
         fetch();
       })
       .catch(() => alert('error', 'Something went wrong'));
     setBaKey();
     setIsUploadingBa(false);
+  };
+
+  const handleStatusChange = (e) => {
+    setUpdateStatusValues((prev) => ({
+      ...prev,
+      [e.target.id]: e.target.value,
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    setUpdateStatusFile((prev) => ({
+      ...prev,
+      [e.target.id]: e.target.files[0],
+    }));
+  };
+
+  const showNote = () => {
+    setModal7(true);
+  };
+
+  const handleStatusSubmit = async (e) => {
+    e.preventDefault();
+    setIsStatusUpdating(true);
+
+    const values = {
+      status_tender: updateStatusValues?.status_tender,
+      file_document: updateStatusFile?.status_dokumen,
+    };
+
+    await api
+      .post(`dapi/vendor/tender/status-update/${tender.id_tender}`, values, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(() => {
+        action();
+        setModal5(false);
+        setIsStatusUpdating(false);
+        alert('success', 'Tender status updated successfully');
+      })
+      .catch(() => {
+        setModal5(false);
+        setIsStatusUpdating(false);
+        alert('error', 'Action failed.');
+      });
   };
 
   return (
@@ -201,29 +277,31 @@ const TenderCollapse = ({ tender, action }) => {
                       <tr>
                         <td>Lokasi Pengerjaan</td>
                         <td>:</td>
-                        <td>{tender.lokasi}</td>
+                        <td className="fw-bold">{tender.lokasi}</td>
                       </tr>
                       <tr>
                         <td>Waktu Pendaftaran</td>
                         <td>:</td>
-                        <td>
+                        <td className="fw-bold">
                           {tender.tgl_pendaftaran} s/d {tender.batas_pendaftaran}
                         </td>
                       </tr>
                       <tr>
                         <td>Jenis Pengadaan</td>
                         <td>:</td>
-                        <td>{tender.jenis_pengadaan}</td>
+                        <td className="fw-bold" style={{ textTransform: 'capitalize' }}>
+                          {tender.jenis_pengadaan}
+                        </td>
                       </tr>
                       <tr>
                         <td>HPS</td>
                         <td>:</td>
-                        <td>{rupiah(tender.hps)}</td>
+                        <td className="fw-bold">{rupiah(tender.hps)}</td>
                       </tr>
                       <tr>
                         <td>Nomor KBLI</td>
                         <td>:</td>
-                        <td>
+                        <td className="fw-bold">
                           <div className="d-flex gap 1">
                             {Array.isArray(JSON.parse(tender.kbli))
                               ? JSON.parse(tender.kbli).map((element, i) => {
@@ -241,7 +319,9 @@ const TenderCollapse = ({ tender, action }) => {
                       <tr>
                         <td>Sistem Kualifikasi</td>
                         <td>:</td>
-                        <td>{tender.sistem_kualifikasi}</td>
+                        <td className="fw-bold" style={{ textTransform: 'capitalize' }}>
+                          {tender.sistem_kualifikasi}
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -261,6 +341,19 @@ const TenderCollapse = ({ tender, action }) => {
                                 <div className="d-flex gap-2">
                                   <span>{i + 1}.</span>
                                   {p.detail.bentuk_usaha} {p.detail.nama_perusahaan}
+                                  {((tender.owner === 'umum' &&
+                                    p.detail.status_verifikasi_umum !== 'terverifikasi') ||
+                                    (tender.owner === 'scm' &&
+                                      p.detail.status_verifikasi_scm !== 'terverifikasi')) && (
+                                    <Link
+                                      to={`/vendor/requests/check/${p.perusahaan_id}`}
+                                      target="blank"
+                                    >
+                                      <Badge className="bg-light-danger text-danger" outline>
+                                        Need Approval
+                                      </Badge>
+                                    </Link>
+                                  )}
                                 </div>
                               </td>
                               <td>{formatDate(p.detail.created_at)}</td>
@@ -275,33 +368,52 @@ const TenderCollapse = ({ tender, action }) => {
                           <td colSpan="2">&nbsp;</td>
                         </tr>
                       </tbody>
-                      <thead>
-                        <tr>
-                          <th>Perusahaan Yang Input Dokumen</th>
-                          <th>Dokumen Penawaran</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {submittedList?.length > 0 ? (
-                          submittedList?.map((p, i) => (
-                            <tr key={p.id_peserta}>
-                              <td>
-                                <div className="d-flex gap-2">
-                                  <span>{i + 1}.</span>
-                                  {p.detail.bentuk_usaha} {p.detail.nama_perusahaan}
-                                </div>
-                              </td>
-                              <td>
-                                <Link to="">Download</Link>
-                              </td>
+                      {(tender.sistem_kualifikasi === null ||
+                        tender.sistem_kualifikasi === 'pasca kualifikasi') && (
+                        <>
+                          <thead>
+                            <tr>
+                              <th>Perusahaan Yang Input Dokumen</th>
+                              <th>Aksi</th>
                             </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan="2">No data.</td>
-                          </tr>
-                        )}
-                      </tbody>
+                          </thead>
+                          <tbody>
+                            {submittedList?.length > 0 ? (
+                              submittedList?.map((p, i) => (
+                                <tr key={p.id_peserta}>
+                                  <td>
+                                    <div className="d-flex gap-2">
+                                      <span>{i + 1}.</span>
+                                      {p.detail.bentuk_usaha} {p.detail.nama_perusahaan}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <Link
+                                      onClick={() => {
+                                        setModal6(true);
+                                        setSelectedCompanyName(
+                                          `${p.detail.bentuk_usaha} ${p.detail.nama_perusahaan}`,
+                                        );
+                                        setSelectedCompanyData(p);
+                                        setSelectedStage('');
+                                      }}
+                                      style={{
+                                        textDecoration: 'none',
+                                      }}
+                                    >
+                                      Cek Dokumen
+                                    </Link>
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan="2">No data.</td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </>
+                      )}
                     </table>
                   </Col>
                 </Col>
@@ -318,7 +430,7 @@ const TenderCollapse = ({ tender, action }) => {
                         <tbody>
                           {submittedList?.length > 0 ? (
                             submittedList?.map((p, i) => (
-                              <>
+                              <Fragment key={p.id_peserta}>
                                 <tr key={p.id_peserta}>
                                   <td>
                                     <div className="d-flex gap-2">
@@ -327,10 +439,24 @@ const TenderCollapse = ({ tender, action }) => {
                                     </div>
                                   </td>
                                   <td>
-                                    <Link to="">Download</Link>
+                                    <Link
+                                      onClick={() => {
+                                        setModal6(true);
+                                        setSelectedCompanyName(
+                                          `${p.detail.bentuk_usaha} ${p.detail.nama_perusahaan}`,
+                                        );
+                                        setSelectedCompanyData(p);
+                                        setSelectedStage('Tahap I');
+                                      }}
+                                      style={{
+                                        textDecoration: 'none',
+                                      }}
+                                    >
+                                      Cek Dokumen
+                                    </Link>
                                   </td>
                                 </tr>
-                              </>
+                              </Fragment>
                             ))
                           ) : (
                             <tr>
@@ -350,7 +476,7 @@ const TenderCollapse = ({ tender, action }) => {
                         <tbody>
                           {secondPhaseList?.length > 0 ? (
                             secondPhaseList?.map((p, i) => (
-                              <>
+                              <Fragment key={p.id_peserta}>
                                 <tr key={p.id_peserta}>
                                   <td>
                                     <div className="d-flex gap-2">
@@ -359,43 +485,157 @@ const TenderCollapse = ({ tender, action }) => {
                                     </div>
                                   </td>
                                   <td>
-                                    <Link to="">Download</Link>
+                                    <Link
+                                      onClick={() => {
+                                        setModal6(true);
+                                        setSelectedCompanyName(
+                                          `${p.detail.bentuk_usaha} ${p.detail.nama_perusahaan}`,
+                                        );
+                                        setSelectedCompanyData(p);
+                                        setSelectedStage('Tahap II');
+                                      }}
+                                      style={{
+                                        textDecoration: 'none',
+                                      }}
+                                    >
+                                      Cek Dokumen
+                                    </Link>
                                   </td>
                                 </tr>
                                 {i + 1 === submittedList?.length && (
-                                  <tr>
-                                    <td className="fw-bold">Berita Acara</td>
+                                  <>
+                                    <tr>
+                                      <th>Status</th>
+                                      <th className="fw-bold">Berita Acara</th>
+                                    </tr>
                                     {tender?.upload_ba_seleksi !== null ? (
-                                      <td>
-                                        <Link>Download</Link>
-                                      </td>
+                                      <tr>
+                                        <td>
+                                          {tender?.status_approval === 'submit_tahap_2' ? (
+                                            <Badge color="warning">Under Review</Badge>
+                                          ) : tender?.status_approval === 'revisi_tahap_2' ? (
+                                            <Badge color="danger">
+                                              <button
+                                                type="button"
+                                                style={{
+                                                  background: 'none',
+                                                  border: 'none',
+                                                  color: 'white',
+                                                }}
+                                                onClick={() => {
+                                                  showNote();
+                                                  setSelectedNote(tender.catatan);
+                                                }}
+                                              >
+                                                Revisi
+                                              </button>
+                                            </Badge>
+                                          ) : (
+                                            <Badge color="success">Approved</Badge>
+                                          )}
+                                        </td>
+                                        <td>
+                                          {tender?.upload_ba_seleksi !== null ? (
+                                            <>
+                                              {tender?.status_approval === 'submit_pemenang' ||
+                                              tender?.status_approval === 'submit_tahap_2' ? (
+                                                <Link
+                                                  to={`${API_URL}vendor_file/${tender.upload_ba_seleksi}`}
+                                                  target="blank"
+                                                >
+                                                  Download
+                                                </Link>
+                                              ) : tender?.status_approval === 'revisi_tahap_2' ? (
+                                                isUploadingBa && baKey === 'upload_ba_seleksi' ? (
+                                                  'Uploding..'
+                                                ) : (
+                                                  <>
+                                                    <Label
+                                                      htmlFor={`uploadBa${tender.id_tender}`}
+                                                      className="btn btn-outline-info btn-sm outline"
+                                                    >
+                                                      Upload
+                                                    </Label>
+                                                    <Input
+                                                      hidden
+                                                      id={`uploadBa${tender.id_tender}`}
+                                                      type="file"
+                                                      onChange={(e) => {
+                                                        uploadBa(
+                                                          e.target.files[0],
+                                                          'upload_ba_seleksi',
+                                                        );
+                                                      }}
+                                                    ></Input>
+                                                  </>
+                                                )
+                                              ) : (
+                                                <Link
+                                                  to={`${API_URL}vendor_file/${tender.upload_ba_seleksi}`}
+                                                  target="blank"
+                                                >
+                                                  Download
+                                                </Link>
+                                              )}
+                                            </>
+                                          ) : (
+                                            <td>
+                                              {isUploadingBa && baKey === 'upload_ba_seleksi' ? (
+                                                'Uploding..'
+                                              ) : (
+                                                <>
+                                                  <Label
+                                                    htmlFor={`uploadBa${tender.id_tender}`}
+                                                    className="btn btn-outline-info btn-sm outline"
+                                                  >
+                                                    Upload Penetapan
+                                                  </Label>
+                                                  <Input
+                                                    hidden
+                                                    id={`uploadBa${tender.id_tender}`}
+                                                    type="file"
+                                                    onChange={(e) => {
+                                                      uploadBa(
+                                                        e.target.files[0],
+                                                        'upload_ba_seleksi',
+                                                      );
+                                                    }}
+                                                  ></Input>
+                                                </>
+                                              )}
+                                            </td>
+                                          )}
+                                        </td>
+                                      </tr>
                                     ) : (
-                                      <td>
-                                        {isUploadingBa && baKey === 'upload_ba_seleksi' ? (
-                                          'Uploding..'
-                                        ) : (
-                                          <>
-                                            <Label
-                                              htmlFor={`uploadBaSeleksi${tender.id_tender}`}
-                                              className="btn btn-outline-info btn-sm outline"
-                                            >
-                                              Upload Berita Acara
-                                            </Label>
-                                            <Input
-                                              hidden
-                                              id={`uploadBaSeleksi${tender.id_tender}`}
-                                              type="file"
-                                              onChange={(e) => {
-                                                uploadBa(e.target.files[0], 'upload_ba_seleksi');
-                                              }}
-                                            ></Input>
-                                          </>
-                                        )}
-                                      </td>
+                                      <>
+                                        <td>
+                                          {isUploadingBa && baKey === 'upload_ba_seleksi' ? (
+                                            'Uploding..'
+                                          ) : (
+                                            <>
+                                              <Label
+                                                htmlFor={`uploadBaSeleksi${tender.id_tender}`}
+                                                className="btn btn-outline-info btn-sm outline"
+                                              >
+                                                Upload Berita Acara
+                                              </Label>
+                                              <Input
+                                                hidden
+                                                id={`uploadBaSeleksi${tender.id_tender}`}
+                                                type="file"
+                                                onChange={(e) => {
+                                                  uploadBa(e.target.files[0], 'upload_ba_seleksi');
+                                                }}
+                                              ></Input>
+                                            </>
+                                          )}
+                                        </td>
+                                      </>
                                     )}
-                                  </tr>
+                                  </>
                                 )}
-                              </>
+                              </Fragment>
                             ))
                           ) : (
                             <tr>
@@ -420,24 +660,43 @@ const TenderCollapse = ({ tender, action }) => {
                             Pilih Peserta Tahap II
                           </ModalHeader>
                           <ModalBody>
-                            <Select
-                              closeMenuOnSelect
-                              options={phaseTwoCandidate}
-                              onChange={(choice) => setPhaseTwoSelected(choice)}
-                              isMulti
-                            />
+                            {phaseTwoCandidate?.length === 0 ? (
+                              <div className="text-center">
+                                Belum ada perusahaan yang submit dokumen.
+                              </div>
+                            ) : (
+                              <Select
+                                closeMenuOnSelect
+                                options={phaseTwoCandidate}
+                                onChange={(choice) => setPhaseTwoSelected(choice)}
+                                isMulti
+                              />
+                            )}
                           </ModalBody>
                           <ModalFooter>
-                            <Button
-                              color="primary"
-                              onClick={submitPesertTahapII}
-                              disabled={submittingPhaseTwo}
-                            >
-                              {submittingPhaseTwo ? 'Menyimpan..' : 'Simpan'}
-                            </Button>
-                            <Button color="secondary" onClick={toggle2.bind(null)}>
-                              Cancel
-                            </Button>
+                            {phaseTwoCandidate?.length === 0 ? (
+                              <Button
+                                color="secondary"
+                                size="sm"
+                                outline
+                                onClick={toggle2.bind(null)}
+                              >
+                                Tutup
+                              </Button>
+                            ) : (
+                              <>
+                                <Button
+                                  color="primary"
+                                  onClick={submitPesertTahapII}
+                                  disabled={submittingPhaseTwo}
+                                >
+                                  {submittingPhaseTwo ? 'Menyimpan..' : 'Simpan'}
+                                </Button>
+                                <Button color="secondary" onClick={toggle2.bind(null)}>
+                                  Cancel
+                                </Button>
+                              </>
+                            )}
                           </ModalFooter>
                         </Modal>
                       </>
@@ -445,7 +704,8 @@ const TenderCollapse = ({ tender, action }) => {
                     <thead>
                       <tr>
                         <th>Penetapan Pemenang</th>
-                        <th>Dokumen Penetapan</th>
+                        <th>Status</th>
+                        <th>Berita Acara</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -455,9 +715,68 @@ const TenderCollapse = ({ tender, action }) => {
                             <td>
                               {pemenang[0].detail.bentuk_usaha} {pemenang[0].detail.nama_perusahaan}
                             </td>
+                            <td>
+                              {tender?.status_approval === 'submit_pemenang' ? (
+                                <Badge color="warning">Under Review</Badge>
+                              ) : tender?.status_approval === 'revisi_pemenang' ? (
+                                <Badge color="danger">
+                                  <button
+                                    type="button"
+                                    style={{ background: 'none', border: 'none', color: 'white' }}
+                                    onClick={() => {
+                                      showNote();
+                                      setSelectedNote(tender.catatan);
+                                    }}
+                                  >
+                                    Revisi
+                                  </button>
+                                </Badge>
+                              ) : tender?.status_approval === 'approved_pemenang' ? (
+                                <Badge color="success">Approved</Badge>
+                              ) : (
+                                '-'
+                              )}
+                            </td>
                             {tender?.upload_ba_pemenang !== null ? (
                               <td>
-                                <Link>Download</Link>
+                                {tender?.status_approval === 'submit_pemenang' ||
+                                tender?.status_approval === 'submit_tahap_2' ? (
+                                  <Link
+                                    to={`${API_URL}vendor_file/${tender.upload_ba_pemenang}`}
+                                    target="blank"
+                                  >
+                                    Download
+                                  </Link>
+                                ) : tender?.status_approval === 'revisi_pemenang' ||
+                                  tender?.status_approval === 'revisi_tahap_2' ? (
+                                  isUploadingBa && baKey === 'upload_ba_pemenang' ? (
+                                    'Uploding..'
+                                  ) : (
+                                    <>
+                                      <Label
+                                        htmlFor={`uploadBa${tender.id_tender}`}
+                                        className="btn btn-outline-info btn-sm outline"
+                                      >
+                                        Upload
+                                      </Label>
+                                      <Input
+                                        hidden
+                                        id={`uploadBa${tender.id_tender}`}
+                                        type="file"
+                                        onChange={(e) => {
+                                          uploadBa(e.target.files[0], 'upload_ba_pemenang');
+                                        }}
+                                      ></Input>
+                                    </>
+                                  )
+                                ) : (
+                                  <Link
+                                    to={`${API_URL}vendor_file/${tender.upload_ba_pemenang}`}
+                                    target="blank"
+                                  >
+                                    Download
+                                  </Link>
+                                )}
                               </td>
                             ) : (
                               <td>
@@ -495,13 +814,16 @@ const TenderCollapse = ({ tender, action }) => {
                                 color="info"
                                 onClick={toggle3.bind(null)}
                               >
-                                Piih Pemenang
+                                Pilih Pemenang
                               </Button>
                             </td>
+                            <td> - </td>
                             <td>
-                              <Button type="button" size="sm" color="info" outline disabled>
-                                Upload Penetapan
-                              </Button>
+                              <div>
+                                <Button type="button" size="sm" color="info" outline disabled>
+                                  Upload Penetapan
+                                </Button>
+                              </div>
                             </td>
                           </tr>
                         </>
@@ -510,48 +832,181 @@ const TenderCollapse = ({ tender, action }) => {
                     <Modal isOpen={modal3} toggle={toggle3.bind(null)} centered size="lg">
                       <ModalHeader toggle={toggle3.bind(null)}>Pilih Pemenang</ModalHeader>
                       <ModalBody>
-                        <Select
-                          closeMenuOnSelect
-                          options={winningCandidate}
-                          onChange={(choice) => setWinnerSelected(choice)}
-                        />
+                        {winningCandidate?.length === 0 ? (
+                          <div className="text-center">Belum ada list kandidat pemenang.</div>
+                        ) : (
+                          <Select
+                            closeMenuOnSelect
+                            options={winningCandidate}
+                            onChange={(choice) => setWinnerSelected(choice)}
+                          />
+                        )}
                       </ModalBody>
                       <ModalFooter>
-                        <Button
-                          color="primary"
-                          onClick={submitTheWinner}
-                          disabled={submittingTheWinner}
-                        >
-                          {submittingTheWinner ? 'Menyimpan..' : 'Simpan'}
-                        </Button>
-                        <Button color="secondary" onClick={toggle3.bind(null)}>
-                          Cancel
-                        </Button>
+                        {submittedList?.length === 0 ? (
+                          <Button color="secondary" size="sm" outline onClick={toggle3.bind(null)}>
+                            Tutup
+                          </Button>
+                        ) : (
+                          <>
+                            <Button
+                              color="primary"
+                              onClick={submitTheWinner}
+                              disabled={submittingTheWinner}
+                            >
+                              {submittingTheWinner ? 'Menyimpan..' : 'Simpan'}
+                            </Button>
+                            <Button color="secondary" onClick={toggle3.bind(null)}>
+                              Cancel
+                            </Button>
+                          </>
+                        )}
                       </ModalFooter>
                     </Modal>
                   </table>
                 </Col>
               </Row>
-              <div className="d-flex justify-content-end">
-                <abbr title="Hapus Tender">
-                  <Button
-                    type="button"
-                    size="sm"
-                    color="danger"
-                    outline
-                    onClick={() => {
-                      handleDelete(tender.id_tender);
-                      setSelectedTender(tender.id_tender);
-                    }}
-                  >
-                    {isDeleting && selectedTender === tender.id_tender ? (
-                      'Deleting..'
-                    ) : (
-                      <MaterialIcon icon="delete" />
-                    )}
-                  </Button>
-                </abbr>
+              <div className="d-flex justify-content-end bg-light-secondary rounded-3 p-2 mt-4">
+                <div className="d-flex gap-3 ">
+                  <abbr title="Edit Status">
+                    <Button
+                      type="button"
+                      size="sm"
+                      color="primary"
+                      outline
+                      onClick={() => setModal5(true)}
+                    >
+                      Edit Status
+                    </Button>
+                  </abbr>
+                  <abbr title="Hapus Tender">
+                    <Button
+                      type="button"
+                      size="sm"
+                      color="danger"
+                      outline
+                      onClick={() => {
+                        // handleDelete(tender.id_tender);
+                        deleteConfirmation(tender.id_tender);
+                      }}
+                    >
+                      {isDeleting && selectedTender === tender.id_tender ? (
+                        'Deleting..'
+                      ) : (
+                        <MaterialIcon icon="delete" style={{ fontSize: '14px' }} />
+                      )}
+                    </Button>
+                  </abbr>
+                </div>
               </div>
+              {/* delete confirmation modal */}
+              <Modal isOpen={modal4} centered>
+                <ModalHeader>Konfirmasi</ModalHeader>
+                <ModalBody>
+                  <div className="d-flex flex-row gap-2">
+                    Apakah Anda yakin akan menghapus data pengadaan ini?
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  {isDeleting ? (
+                    <Button type="button" color="success" disabled>
+                      <div className="d-flex align-items-center gap-2">
+                        <Spinner size="sm" />
+                        Deleting..
+                      </div>
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      color="danger"
+                      onClick={() => handleDelete(tender.id_tender)}
+                      disabled={isDeleting}
+                      size="sm"
+                    >
+                      Ya
+                    </Button>
+                  )}
+                  <Button color="secondary" size="sm" outline onClick={() => setModal4(false)}>
+                    Batal
+                  </Button>
+                </ModalFooter>
+              </Modal>
+              {/* delete confirmation modal */}
+
+              {/* note modal */}
+              <Modal isOpen={modal7} centered fade={false}>
+                <ModalHeader>Catatan Revisi</ModalHeader>
+                <ModalBody>
+                  <p>{selectedNote}</p>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="secondary" size="sm" outline onClick={() => setModal7(false)}>
+                    Tutup
+                  </Button>
+                </ModalFooter>
+              </Modal>
+              {/* note modal */}
+
+              {/* edit status modal */}
+              <Modal isOpen={modal5} centered>
+                <ModalHeader>Status Tender</ModalHeader>
+                <Form onSubmit={handleStatusSubmit}>
+                  <ModalBody>
+                    <FormGroup>
+                      <Label for="status_tender">Status</Label>
+                      <Input
+                        type="select"
+                        id="status_tender"
+                        name="status_tender"
+                        onChange={(e) => handleStatusChange(e)}
+                        defaultValue={tender?.status_tender}
+                      >
+                        <option value="buka">Buka</option>
+                        <option value="tutup">Tutup</option>
+                        <option value="batal">Batal</option>
+                      </Input>
+                    </FormGroup>
+                    <FormGroup>
+                      <Label for="status_dokumen">Upload Dokumen</Label>
+                      <Input
+                        type="file"
+                        id="status_dokumen"
+                        name="status_dokumen"
+                        accept="application/pdf"
+                        onChange={(e) => handleFileChange(e)}
+                      />
+                      <div className="d-flex justify-content-between">
+                        <small className="text-muted">File format .pdf (max. 10mb)</small>
+                        <small className="text-muted">
+                          <i>Opsional</i>
+                        </small>
+                      </div>
+                    </FormGroup>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button type="submit" color="primary" size="sm" disabled={isStatusUpdating}>
+                      {isStatusUpdating ? 'Menyimpan..' : 'Submit'}
+                    </Button>
+                    <Button color="secondary" size="sm" outline onClick={() => setModal5(false)}>
+                      Batal
+                    </Button>
+                  </ModalFooter>
+                </Form>
+              </Modal>
+              {/* edit status modal */}
+
+              {/* check document modal */}
+              <CheckDocument
+                {...{
+                  modal6,
+                  toggle6,
+                  tender,
+                  selectedCompanyName,
+                  selectedCompanyData,
+                  selectedStage,
+                }}
+              />
+              {/* check document modal */}
             </CardBody>
           )}
         </Card>

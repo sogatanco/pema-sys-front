@@ -52,6 +52,10 @@ const BoardTab = () => {
     setDone(removeDuplicates(DoneFiltered));
   }, [data]);
 
+  useEffect(() => {
+    refetch();
+  }, [projectId]);
+
   return (
     <Row>
       {/* <Col lg="12">

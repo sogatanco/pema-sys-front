@@ -7,7 +7,7 @@ import Header from './header/Header';
 import Sidebar from './sidebars/vertical/Sidebar';
 import HorizontalHeader from './header/HorizontalHeader';
 import HorizontalSidebar from './sidebars/horizontal/HorizontalSidebar';
-// import NotificationP from './notification/NotificationP';
+import NotificationP from './notification/NotificationP';
 
 const FullLayout = () => {
   const customizerToggle = useSelector((state) => state.customizer.customizerSidebar);
@@ -38,7 +38,7 @@ const FullLayout = () => {
             {LayoutHorizontal ? <HorizontalHeader /> : <Header />}
             {LayoutHorizontal ? <HorizontalSidebar /> : ''}
             {/********Middle Content**********/}
-            {/* <NotificationP /> */}
+            <NotificationP />
             <Container fluid className="p-4 boxContainer">
               <div className={isFixedSidebar && LayoutHorizontal ? 'HsidebarFixed' : ''}>
                 <Outlet />

@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
+import { Button, Table } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import useAxios from '../../../hooks/useAxios';
 
-const TabGeneral = ({ companyId }) => {
+const TabGeneral = ({ companyId, setSelectedName }) => {
   const api = useAxios();
 
   const { isLoading, error, data } = useQuery({
@@ -16,12 +16,18 @@ const TabGeneral = ({ companyId }) => {
       }),
   });
 
+  useEffect(() => {
+    setSelectedName(data?.nama_perusahaan);
+  }, [data]);
+
+  console.log(data);
+
   return isLoading ? (
     'Loading..'
   ) : error ? (
     'Something went wrong.'
   ) : (
-    <table className="w-100">
+    <Table className="w-100">
       <tbody>
         <tr>
           <td width="300">Bentuk Perusahaan</td>
@@ -50,7 +56,7 @@ const TabGeneral = ({ companyId }) => {
         <tr>
           <td width="300">File NPWP</td>
           <td className="fw-bold">
-            <Link to={`data:application/pdf;base64, ${data?.npwp_base64}`} download="npwp.pdf">
+            <Link to={`data:application/pdf;base64, ${data?.base64_npwp}`} download="npwp.pdf">
               <Button type="button" size="sm" color="light">
                 Download File NPWP
               </Button>
@@ -80,12 +86,13 @@ const TabGeneral = ({ companyId }) => {
           </td>
         </tr>
       </tbody>
-    </table>
+    </Table>
   );
 };
 
 TabGeneral.propTypes = {
   companyId: PropTypes.string,
+  setSelectedName: PropTypes.func,
 };
 
 export default TabGeneral;

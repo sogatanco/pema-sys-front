@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   Badge,
@@ -37,7 +37,7 @@ const HandoverTab = () => {
   };
 
   const { isLoading, error, data, refetch, isRefetching } = useQuery({
-    queryKey: ['review'],
+    queryKey: ['handover'],
     queryFn: () =>
       api.get(`api/project/${auth?.user.employe_id}/${projectId}/handover`).then((res) => {
         return res.data.data;
@@ -65,6 +65,10 @@ const HandoverTab = () => {
   const handleChange = (e) => {
     setNewStage((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  useEffect(() => {
+    refetch();
+  }, [projectId]);
 
   return (
     <>

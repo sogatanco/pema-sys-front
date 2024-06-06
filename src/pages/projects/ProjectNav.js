@@ -102,6 +102,10 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
   });
 
   useEffect(() => {
+    refetch();
+  }, [projectId]);
+
+  useEffect(() => {
     if (data?.category === 'business') {
       setIsBusiness(true);
     } else {

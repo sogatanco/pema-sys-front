@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardBody, Table } from 'reactstrap';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
@@ -16,13 +16,17 @@ const FileTab = () => {
 
   const fileUrl = process.env.REACT_APP_BASEURL;
 
-  const { isLoading, error, data } = useQuery({
+  const { isLoading, error, data, refetch } = useQuery({
     queryKey: ['files'],
     queryFn: () =>
       api.get(`api/project/${projectId}/files`).then((res) => {
         return res.data.data;
       }),
   });
+
+  useEffect(() => {
+    refetch();
+  }, [projectId]);
 
   return (
     <Card className="rounded-3">

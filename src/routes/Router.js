@@ -47,6 +47,10 @@ const UpdateTenderPage = Loadable(lazy(() => import('../pages/vendor/tender/Edit
 const VendorCompanyDetail = Loadable(lazy(() => import('../pages/vendor/CompanyDetail')));
 const VendorDocPreview = Loadable(lazy(() => import('../pages/vendor/DocumentPreview')));
 
+// Manager Pages
+const ApprovalTender = Loadable(lazy(() => import('../pages/vendor/approval/Tender')));
+// Manager Pages
+
 /***** Vendor ****/
 
 /***** Forms ****/
@@ -87,10 +91,11 @@ const ROLES = {
 };
 
 const formAllowedRoles = ['Picpentry', 'Picatk'];
-const vendorAllowedRoles = ['AdminVendor'];
+const vendorAllowedRoles = ['AdminVendorUmum', 'AdminVendorScm'];
 const reportAllowedRoles = ['Picpentry', 'Picatk'];
 const assetAllowedRoles = ['Employee'];
 const inProgressTaskAllowedRoles = ['Director'];
+const ApprovalTenderAllowedRoles = ['Manager'];
 
 /*****Routes******/
 const ThemeRoutes = [
@@ -210,6 +215,11 @@ const ThemeRoutes = [
                 element: <UpdateTenderPage />,
               },
             ],
+          },
+          {
+            path: 'tender/approval',
+            name: 'Tender',
+            element: <ApprovalTender allowedRoles={ApprovalTenderAllowedRoles} />,
           },
           {
             path: 'forms',
