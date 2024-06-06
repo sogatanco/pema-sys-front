@@ -18,9 +18,8 @@ const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data }) => {
     if (entity === 'TASK') {
       handleShowTask(entityId);
     } else {
-      navigate(`/${url}/${entityId}`);
+      navigate(`/${url}${entityId !== null ? `/${entityId}` : ''}`);
     }
-    console.log(id);
   };
 
   const handleCheck = () => {
