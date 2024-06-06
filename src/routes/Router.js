@@ -2,6 +2,7 @@ import { lazy } from 'react';
 import Loadable from '../layouts/loader/Loadable';
 import RequireAuth from '../components/RequireAuth';
 import Login from '../pages/auth/Login';
+import PemaReport from '../pages/PemaReport';
 /****Layouts*****/
 
 const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
@@ -70,6 +71,10 @@ const Unauthorized = Loadable(lazy(() => import('../pages/auth/Unauthorized')));
 const ChangePassword = Loadable(lazy(() => import('../pages/auth/ChangePassword')));
 
 /***** CASL Access Control ****/
+
+// Report
+// const PemaReport= Loadable(lazy(() => import('../pages/PemaReport')));
+
 // const CASL = Loadable(lazy(() => import('../views/apps/accessControlCASL/AccessControl')));
 
 /***** Auth Pages ****/
@@ -309,6 +314,11 @@ const ThemeRoutes = [
         element: <Unauthorized />,
       },
     ],
+  },
+  // report
+  {
+    path: '/pema-report',
+    element: <PemaReport />,  
   },
   // Unauthorized
 ];

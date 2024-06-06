@@ -31,7 +31,8 @@ const Home = () => {
     <>
       <TabContext value={value}>
         <Card className="mb-1">
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
+          <TabList onChange={handleChange} aria-label="lab API tabs example"  variant="scrollable"
+          scrollButtons="auto">
             <Tab
               label={
                 <Badge

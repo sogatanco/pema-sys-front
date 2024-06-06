@@ -118,7 +118,7 @@ const TeamAct = () => {
             </div>
           </div>
           {data?.length > 0 ? (
-            <Table striped className="mt-2" id="printablediv">
+            <Table striped className="mt-2" id="printablediv" responsive>
               <thead>
                 <tr>
                   <th>Activities</th>

@@ -136,7 +136,7 @@ const Review = ({ misal, refetch }) => {
       <Card>
         <CardBody>
           {misal?.length > 0 ? (
-            <Table striped className="mt-2">
+            <Table striped className="mt-2" responsive>
               <thead>
                 <tr>
                   <th>Activities</th>
