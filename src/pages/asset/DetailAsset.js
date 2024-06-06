@@ -21,6 +21,7 @@ import DataTable from 'react-data-table-component';
 import { useQueries } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import useAxios from '../../hooks/useAxios';
+import useAuth from '../../hooks/useAuth';
 import rupiah from '../../utils/rupiah';
 import './Asset.scss';
 import { alert } from '../../components/atoms/Toast';
@@ -28,6 +29,8 @@ import { alert } from '../../components/atoms/Toast';
 const animatedComponents = makeAnimated();
 
 const DetailAsset = () => {
+  const { auth } = useAuth();
+
   const inputRef = useRef(null);
   const baseURL = process.env.REACT_APP_BASEURL;
   const { assetId } = useParams();
@@ -124,9 +127,11 @@ const DetailAsset = () => {
       name: 'Responsible',
       selector: (row) => (
         <>
-          <Badge color="warning" onClick={() => toggle(row?.id, row?.res_list)} className="ms-2">
-            + add
-          </Badge>
+          {auth.user.roles.includes('PicAsset') ? (
+            <Badge color="warning" onClick={() => toggle(row?.id, row?.res_list)} className="ms-2">
+              + add
+            </Badge>
+          ) : ''}
           {row?.res_list?.map((r) => (
             <Badge color="primary" key={r?.employe_id} className="ms-2">
               {r?.first_name}
@@ -295,17 +300,19 @@ const DetailAsset = () => {
                   backgroundImage: `url('${baseURL}inven${result[0].data?.file}?s=${sesImg}')`,
                 }}
               >
-                <div className="d-flex justify-content-end">
-                  <Button
-                    color="dark"
-                    outline
-                    className="pb-0"
-                    size="sm"
-                    onClick={() => openFile()}
-                  >
-                    <MaterialIcon icon="photo_camera" />
-                  </Button>
-                </div>
+                {auth.user.roles.includes('PicAsset') ? (
+                  <div className="d-flex justify-content-end">
+                    <Button
+                      color="dark"
+                      outline
+                      className="pb-0"
+                      size="sm"
+                      onClick={() => openFile()}
+                    >
+                      <MaterialIcon icon="photo_camera" />
+                    </Button>
+                  </div>
+                ) : ''}
               </Col>
             ) : (
               ''
@@ -313,9 +320,11 @@ const DetailAsset = () => {
             <Col sm="12" lg="7" className="py-4 text">
               <div className="d-flex justify-content-between">
                 <h2 className="text-bold mb-0">{result[0].data?.name}</h2>
-                <Button color="dark" size="sm" outline className="pb-0" onClick={toggle2}>
-                  <MaterialIcon icon="mode_edit" />
-                </Button>
+                {auth.user.roles.includes('PicAsset') ? (
+                  <Button color="dark" size="sm" outline className="pb-0" onClick={toggle2}>
+                    <MaterialIcon icon="mode_edit" />
+                  </Button>
+                ) : ''}
               </div>
 
               <hr />
@@ -388,10 +397,11 @@ const DetailAsset = () => {
             columns={columns}
             data={result[0].data?.child}
             pagination
-            selectableRows
+            selectableRows={ auth.user.roles.includes('PicAsset') ? (true):''}
             onSelectedRowsChange={handleChange}
             subHeader
             subHeaderComponent={
+            auth.user.roles.includes('PicAsset') ? (
               <ButtonGroup className="me-auto mt-5" size="sm">
                 <Button
                   className="pb-0"
@@ -404,7 +414,7 @@ const DetailAsset = () => {
                 <Button outline color="success" onClick={toggle1}>
                   + Add Child
                 </Button>
-              </ButtonGroup>
+              </ButtonGroup>):''
             }
           />
         </CardBody>
