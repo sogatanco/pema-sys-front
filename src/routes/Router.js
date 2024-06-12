@@ -13,6 +13,10 @@ const StarterKit = Loadable(lazy(() => import('../pages/Starterkit')));
 const ProfilePage = Loadable(lazy(() => import('../pages/profile')));
 /***** Profile ****/
 
+/***** Notification ****/
+const NotificationPage = Loadable(lazy(() => import('../pages/notification')));
+/***** Notification ****/
+
 /***** Daily ****/
 const DailyPage = Loadable(lazy(() => import('../pages/daily')));
 /***** Daily ****/
@@ -117,6 +121,11 @@ const ThemeRoutes = [
             path: '',
             name: 'Dashboard',
             element: <Dashboard2 />,
+          },
+          {
+            path: 'all-notifications',
+            name: 'Notifications',
+            element: <NotificationPage />,
           },
           {
             path: 'director',
@@ -319,7 +328,7 @@ const ThemeRoutes = [
   // report
   {
     path: '/pema-report',
-    element: <PemaReport />,  
+    element: <PemaReport />,
   },
   // Unauthorized
 ];
