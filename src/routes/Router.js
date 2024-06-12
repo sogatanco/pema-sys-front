@@ -9,10 +9,6 @@ const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
 const BlankLayout = Loadable(lazy(() => import('../layouts/BlankLayout')));
 const StarterKit = Loadable(lazy(() => import('../pages/Starterkit')));
 
-/***** Notification ****/
-const NotificationPage = Loadable(lazy(() => import('../pages/notification')));
-/***** Notification ****/
-
 /***** Profile ****/
 const ProfilePage = Loadable(lazy(() => import('../pages/profile')));
 /***** Profile ****/
@@ -49,7 +45,6 @@ const RequestPage = Loadable(lazy(() => import('../pages/vendor/requests/Request
 const VerificationPage = Loadable(lazy(() => import('../pages/vendor/checks/DocumentCheck')));
 const NewTenderPage = Loadable(lazy(() => import('../pages/vendor/tender/NewTender')));
 const UpdateTenderPage = Loadable(lazy(() => import('../pages/vendor/tender/EditTender')));
-const DetailTender = Loadable(lazy(() => import('../pages/vendor/tender/DetailTender')));
 const VendorCompanyDetail = Loadable(lazy(() => import('../pages/vendor/CompanyDetail')));
 const VendorDocPreview = Loadable(lazy(() => import('../pages/vendor/DocumentPreview')));
 
@@ -101,7 +96,7 @@ const ROLES = {
 };
 
 const formAllowedRoles = ['Picpentry', 'Picatk'];
-const vendorAllowedRoles = ['AdminVendorUmum', 'AdminVendorScm', 'ChiefTender'];
+const vendorAllowedRoles = ['AdminVendorUmum', 'AdminVendorScm'];
 const reportAllowedRoles = ['Picpentry', 'Picatk'];
 const assetAllowedRoles = ['Employee'];
 const inProgressTaskAllowedRoles = ['Director'];
@@ -122,11 +117,6 @@ const ThemeRoutes = [
             path: '',
             name: 'Dashboard',
             element: <Dashboard2 />,
-          },
-          {
-            path: 'all-notifications',
-            name: 'Notifications',
-            element: <NotificationPage />,
           },
           {
             path: 'director',
@@ -229,11 +219,6 @@ const ThemeRoutes = [
                 name: 'Update Tender',
                 element: <UpdateTenderPage />,
               },
-              {
-                path: 'tender/:id',
-                name: 'Detail Tender',
-                element: <DetailTender />,
-              },
             ],
           },
           {
@@ -319,6 +304,7 @@ const ThemeRoutes = [
   // report page
 
   // Unauthorized
+
   {
     path: '/',
     element: <BlankLayout />,
@@ -333,7 +319,7 @@ const ThemeRoutes = [
   // report
   {
     path: '/pema-report',
-    element: <PemaReport />,
+    element: <PemaReport />,  
   },
   // Unauthorized
 ];

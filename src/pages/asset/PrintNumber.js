@@ -37,7 +37,7 @@ const PrintNumber = ({ acet }) => {
               }}
               key={ast.id}
             >
-              <Image style={styles.image} src={`https://products.aspose.app/barcode/embed/image.Png?BarcodeType=QR&Content=https://sys.ptpema.co.id/inven/${ast.id}&TextLocation=None&Height=118&Width=118`} />
+              <Image style={styles.image} src={`https://products.aspose.app/barcode/embed/image.Png?BarcodeType=QR&Content=https://sys.ptpema.co.id/asset/${ast.id}&TextLocation=None&Height=118&Width=118`} />
               <View
                 style={{ display: 'flex', flexDirection: 'column', gap: '5px', marginVertical: 8 }}
               >

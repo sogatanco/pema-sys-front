@@ -47,7 +47,7 @@ const EditTab = ({ data, fetchTask }) => {
   useEffect(() => {
     async function fetchEmployees() {
       await api
-        .get(`api/employe/assignment-list`)
+        .get(`api/employe/assignment-list?search=all`)
         .then((res) => setListEmploye(res.data.data))
         .catch((err) => console.log(err));
     }
