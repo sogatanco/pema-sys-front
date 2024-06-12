@@ -304,6 +304,7 @@ const ThemeRoutes = [
   // report page
 
   // Unauthorized
+
   {
     path: '/',
     element: <BlankLayout />,
@@ -317,7 +318,7 @@ const ThemeRoutes = [
   },
   // report
   {
-    path: '/pema-report',
+    path: '/pema-report/1',
     element: <PemaReport />,  
   },
   // Unauthorized

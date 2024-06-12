@@ -38,7 +38,7 @@ const Daily = () => {
       {
         queryKey: ['cat', 1],
         queryFn: () =>
-          api.get(`api/employe/assignment-list`).then((res) => {
+          api.get(`api/employe/assignment-list?search=all`).then((res) => {
             return res.data.data;
           }),
       },

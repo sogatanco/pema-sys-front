@@ -6,6 +6,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { useQueries } from '@tanstack/react-query';
+import { useLocation } from "react-router-dom";
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import NewAsset from './NewAsset';
@@ -13,8 +14,10 @@ import AssetOnMe from './AssetOnMe';
 import ListAsset from './ListAsset';
 import Request from './Request';
 
+
 const Asset = () => {
-  const [value, setValue] = React.useState('2');
+  const { hash } = useLocation();
+  const [value, setValue] = useState('2');
   const [onMe, setOnMe] = useState();
   const { auth } = useAuth();
   const api = useAxios();
@@ -48,33 +51,45 @@ const Asset = () => {
     ],
   });
 
+  console.log(hash)
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   const { refetch } = result[0];
-  const refetch1 = useCallback(()=> {
+  const refetch1 = useCallback(() => {
     result[1].refetch();
   }, [result[1]]);
 
-  const refetch2=useCallback(()=>{
+  const refetch2 = useCallback(() => {
     result[2].refetch();
   }, [result[2]]);
 
   useEffect(() => {
+    if (hash === '#request') {
+      setValue('3')
+    } else if (hash === '#all') {
+      setValue('1')
+    }else{
+      setValue('2')
+    }
+  }, [hash])
+  useEffect(() => {
+
     setListAsset(result[0].data);
     setReqser(result[2].data);
     console.log(reqser)
     setOnMe(result[1].data);
     console.log(onMe)
-  }, [result[0].data, result[1].data,  result[2].data]);
+  }, [result[0].data, result[1].data, result[2].data]);
 
   return (
     <>
       <TabContext value={value} >
         <Card className="mb-1" >
-          <TabList onChange={handleChange} aria-label="lab API tabs example" vertical="sm"   variant="scrollable"
-          scrollButtons="on">
+          <TabList onChange={handleChange} aria-label="lab API tabs example" vertical="sm" variant="scrollable"
+            scrollButtons="on">
             {auth?.user.roles.includes('PicAsset') ? (
               <Tab
                 label={
@@ -147,7 +162,7 @@ const Asset = () => {
         <TabPanel value="2" className="ps-0 pe-0">
           <Card>
             <CardBody>
-              <AssetOnMe {...{ onMe, handleChange, refetch1 , refetch2}} />
+              <AssetOnMe {...{ onMe, handleChange, refetch1, refetch2 }} />
             </CardBody>
           </Card>
         </TabPanel>

@@ -123,6 +123,7 @@ const doneButton = async () => {
     if (res?.data?.success) {
       alert('success', `service done !`);
       refetch2();
+      toggle2();
     }
   }).catch((err) => {
     alert('error', err);
