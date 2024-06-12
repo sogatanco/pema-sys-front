@@ -5,22 +5,43 @@ import { Button } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import newDate from '../../utils/formatDate';
 import user1 from '../../assets/images/users/user1.jpg';
+import relax from '../../assets/images/icons/nonotif.png';
 
 const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data }) => {
   const navigate = useNavigate();
   const handleShowTask = (id) => {
-    setShowTask(true);
+    setShowTask(false);
     setTaskId(id);
   };
 
-  const handleAction = (id, entity, entityId, url) => {
+  const handleAction = (id, entity, entityId, url, queryKey) => {
     setOpenNotif(false);
-    if (entity === 'TASK') {
+
+    const entitySplit = entityId.split('/');
+
+    console.log('SPLIT', entitySplit[1]);
+
+    navigate(
+      `/${url}${entityId !== null ? `/${entitySplit[0]}` : ''}${
+        queryKey !== null && entitySplit[1] !== undefined ? `?${queryKey}=${entitySplit[1]}` : ''
+      }`,
+    );
+
+    if (entity === 'TASK_NEW') {
       handleShowTask(entityId);
-    } else {
-      navigate(`/${url}/${entityId}`);
     }
-    console.log(id);
+
+    // if (entity === 'TASK') {
+    //   handleShowTask(entityId);
+    //   navigate(
+    //     `/${url}${entityId !== null ? `/${entitySplit[0]}` : ''}${
+    //       queryKey !== null ? `?${queryKey}=${entitySplit[1]}` : ''
+    //     }`,
+    //   );
+    // } else {
+    //   navigate(`/${url}${entityId !== null ? `/${entityId}` : ''}`);
+    // }
+    console.log(id + entityId);
   };
 
   const handleCheck = () => {
@@ -40,11 +61,13 @@ const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data }) => {
       </div> */}
       <div className="not">
         <div className="not-overflow">
-          {data?.length > 0 &&
+          {data?.length > 0 ? (
             data.map((not) => (
               <div
                 className="not-item"
-                onClick={() => handleAction(not.id, not.entity, not.entity_id, not.url)}
+                onClick={() =>
+                  handleAction(not.id, not.entity, not.entity_id, not.url, not.query_key)
+                }
                 key={not.id}
               >
                 <div className="not-header">
@@ -70,20 +93,29 @@ const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data }) => {
                   </div>
                 </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="d-flex flex-column justify-content-center align-items-center">
+              <img src={relax} alt="relax" width="150" />
+              {/* <span className="text-muted">Relax</span> */}
+            </div>
+          )}
         </div>
       </div>
-      <div className="checkall">
-        <Button
-          type="button"
-          color="primary"
-          size="sm"
-          className="mt-2 rounded-3"
-          onClick={() => handleCheck()}
-        >
-          Check All
-        </Button>
-      </div>
+      {data.length !== 0 && (
+        <div className="checkall">
+          <Button
+            type="button"
+            color="primary"
+            size="sm"
+            className="mt-2 rounded-3"
+            onClick={() => handleCheck()}
+            disabled
+          >
+            Check All
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

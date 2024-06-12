@@ -194,12 +194,12 @@ const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive 
     ],
   };
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const params = queryParams.get('task');
+  const queryParams = new URLSearchParams(window.location.search);
+  const params = queryParams.get('task');
 
+  useEffect(() => {
     setIdTaskParams(params);
-  }, []);
+  }, [queryParams]);
 
   useEffect(() => {
     if (idTaskParams !== null) {
@@ -328,7 +328,11 @@ const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive 
                 ''
               )}
             </div>
-            <div className="board-body task">
+            <div
+              className={`board-body task ${
+                params === td.task_id.toString() && 'bg-light-warning'
+              }`}
+            >
               <div
                 className="task-title fw-bold"
                 onClick={() => openPopup(td)}
@@ -372,7 +376,12 @@ const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive 
               td.level_2.map((l2) => (
                 // <div key={l2.task_id} className="board-body subtask" onClick={() => openPopup(st)}>
                 <div key={l2.task_id} className="board-container">
-                  <div key={l2.task_id} className="board-body subtask">
+                  <div
+                    key={l2.task_id}
+                    className={`board-body subtask ${
+                      params === l2.task_id.toString() && 'bg-light-warning'
+                    }`}
+                  >
                     {/* <div className="task-title" onClick={() => openPopup(l2)}> */}
                     <div
                       className="task-title"
@@ -419,7 +428,12 @@ const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive 
                   </div>
                   {l2.level_3?.length > 0 &&
                     l2.level_3.map((l3) => (
-                      <div key={l3.task_id} className="board-body subtask-level3">
+                      <div
+                        key={l3.task_id}
+                        className={`board-body subtask-level3 ${
+                          params === l3.task_id.toString() && 'bg-light-warning'
+                        }`}
+                      >
                         <div
                           className="task-title"
                           onClick={() => {
