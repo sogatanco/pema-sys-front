@@ -4,7 +4,7 @@ import MaterialIcon from '@material/react-material-icon';
 import PropTypes from 'prop-types';
 import NotificationList from './NotificationList';
 
-const Bell = ({ setShowTask, setTaskId, data }) => {
+const Bell = ({ setShowTask, setTaskId, data, refetch }) => {
   const [openNotif, setOpenNotif] = useState(false);
 
   return (
@@ -14,7 +14,9 @@ const Bell = ({ setShowTask, setTaskId, data }) => {
         onClick={() => setOpenNotif(!openNotif)}
       />
       <div className="bell-container">
-        {openNotif && <NotificationList {...{ setOpenNotif, setShowTask, setTaskId, data }} />}
+        {openNotif && (
+          <NotificationList {...{ setOpenNotif, setShowTask, setTaskId, data, refetch }} />
+        )}
         <div className="bell-button">
           <div className="bell-icon" onClick={() => setOpenNotif(!openNotif)}>
             <MaterialIcon icon="notifications" />
@@ -32,6 +34,7 @@ Bell.propTypes = {
   setShowTask: PropTypes.func,
   setTaskId: PropTypes.func,
   data: PropTypes.array,
+  refetch: PropTypes.func,
 };
 
 export default Bell;

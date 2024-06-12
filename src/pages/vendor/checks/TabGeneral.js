@@ -20,8 +20,6 @@ const TabGeneral = ({ companyId, setSelectedName }) => {
     setSelectedName(data?.nama_perusahaan);
   }, [data]);
 
-  console.log(data);
-
   return isLoading ? (
     'Loading..'
   ) : error ? (

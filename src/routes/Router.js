@@ -318,7 +318,7 @@ const ThemeRoutes = [
   },
   // report
   {
-    path: '/pema-report/1',
+    path: '/pema-report',
     element: <PemaReport />,  
   },
   // Unauthorized

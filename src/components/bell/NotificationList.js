@@ -1,32 +1,55 @@
 import MaterialIcon from '@material/react-material-icon';
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'reactstrap';
+import { Button, Spinner } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import newDate from '../../utils/formatDate';
 import user1 from '../../assets/images/users/user1.jpg';
 import relax from '../../assets/images/icons/nonotif.png';
+import useAxios from '../../hooks/useAxios';
 
-const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data }) => {
+const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data, refetch }) => {
   const navigate = useNavigate();
   const handleShowTask = (id) => {
     setShowTask(false);
     setTaskId(id);
   };
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [selectedNotifId, setSelectedNotifId] = useState(undefined);
 
-  const handleAction = (id, entity, entityId, url, queryKey) => {
-    setOpenNotif(false);
+  const api = useAxios();
 
-    const entitySplit = entityId.split('/');
+  const handleAction = async (id, entity, entityId, url, queryKey) => {
+    let entitySplit;
+    if (entityId !== null) {
+      entitySplit = entityId?.split('/');
+    } else {
+      entitySplit = '';
+    }
 
-    console.log('SPLIT', entitySplit[1]);
+    setSelectedNotifId(id);
+    setIsDeleting(true);
 
-    navigate(
-      `/${url}${entityId !== null ? `/${entitySplit[0]}` : ''}${
-        queryKey !== null && entitySplit[1] !== undefined ? `?${queryKey}=${entitySplit[1]}` : ''
-      }`,
-    );
+    await api
+      .delete(`api/notification/${id}`)
+      .then(() => {
+        setOpenNotif(false);
+        refetch();
+        setIsDeleting(false);
+        navigate(
+          `/${url}${entitySplit !== '' ? `/${entitySplit[0]}` : ''}${
+            queryKey !== null && entitySplit[1] !== undefined
+              ? `?${queryKey}=${entitySplit[1]}`
+              : ''
+          }`,
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsDeleting(false);
+      });
 
+    setSelectedNotifId(id);
     if (entity === 'TASK_NEW') {
       handleShowTask(entityId);
     }
@@ -45,6 +68,7 @@ const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data }) => {
   };
 
   const handleCheck = () => {
+    setOpenNotif(false);
     navigate('/all-notifications');
   };
 
@@ -72,8 +96,13 @@ const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data }) => {
               >
                 <div className="not-header">
                   <div className="not-header-info">
-                    <h6 className="text-primary fw-bold">{not.actor}</h6>
-                    <span>{not.position}</span>
+                    <h6 className="text-primary fw-bold">
+                      {not.actor}
+                      {not.entity === 'COMMENT' && (
+                        <span className="text-muted">Memberikan komentar</span>
+                      )}
+                    </h6>
+                    {not.entity === 'VENDOR' ? <span>Vendor</span> : <span>{not.position}</span>}
                   </div>
                   <img src={user1} className="rounded-circle" alt="avatar" width="28" height="28" />
                 </div>
@@ -88,8 +117,10 @@ const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data }) => {
                 <div className="not-footer">
                   <span>{newDate(not.created_at)}</span>
                   <div className="delete">
-                    <span></span>
-                    <MaterialIcon icon="delete" />
+                    {isDeleting && selectedNotifId === not.id && (
+                      <Spinner color="success" size="sm"></Spinner>
+                    )}
+                    {/* <MaterialIcon icon="delete" /> */}
                   </div>
                 </div>
               </div>
@@ -102,15 +133,16 @@ const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data }) => {
           )}
         </div>
       </div>
-      {data.length !== 0 && (
+      <hr />
+      {data?.length !== 0 && (
         <div className="checkall">
           <Button
             type="button"
             color="primary"
             size="sm"
+            block
             className="mt-2 rounded-3"
             onClick={() => handleCheck()}
-            disabled
           >
             Check All
           </Button>
@@ -125,6 +157,7 @@ NotificationList.propTypes = {
   setShowTask: PropTypes.func,
   setTaskId: PropTypes.func,
   data: PropTypes.array,
+  refetch: PropTypes.func,
 };
 
 export default NotificationList;

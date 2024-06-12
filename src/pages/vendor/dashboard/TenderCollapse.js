@@ -180,7 +180,7 @@ const TenderCollapse = ({ tender, action }) => {
 
     await api
       .post(`dapi/vendor/tender/ba/${tender.id_tender}`, {
-        base64,
+        file: base64,
         key,
       })
       .then(() => {

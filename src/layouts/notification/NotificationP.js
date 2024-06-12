@@ -10,7 +10,7 @@ const NotificationP = () => {
 
   const api = useAxios();
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['notification-list'],
     queryFn: () =>
       api.get(`api/notification`).then((res) => {
@@ -20,7 +20,7 @@ const NotificationP = () => {
 
   return (
     <>
-      <Bell {...{ setShowTask, setTaskId, data }} />
+      <Bell {...{ setShowTask, setTaskId, data, refetch }} />
       <TaskDetail {...{ showTask, setShowTask, taskId }} />
     </>
   );

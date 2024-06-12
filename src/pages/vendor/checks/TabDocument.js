@@ -20,22 +20,35 @@ const TabDocument = ({ companyId }) => {
   const [akta, setAkta] = useState();
   const [izin, setIzin] = useState();
   const [dokumen, setDokumen] = useState();
+  const [aktaIsLoading, setAktaIsLoading] = useState(false);
+  const [izinIsLoading, setIzinIsLoading] = useState(false);
+  const [dokumenIsLoading, setDokumenIsLoading] = useState(false);
 
   const api = useAxios();
 
   useEffect(() => {
     async function fetchAkta() {
-      await api.get(`dapi/vendor/${companyId}/list-akta`).then((res) => setAkta(res.data.data));
+      setAktaIsLoading(true);
+      await api.get(`dapi/vendor/${companyId}/list-akta`).then((res) => {
+        setAkta(res.data.data);
+        setAktaIsLoading(false);
+      });
     }
 
     async function fetchIzin() {
-      await api.get(`dapi/vendor/${companyId}/list-izin`).then((res) => setIzin(res.data.data));
+      setIzinIsLoading(true);
+      await api.get(`dapi/vendor/${companyId}/list-izin`).then((res) => {
+        setIzin(res.data.data);
+        setIzinIsLoading(false);
+      });
     }
 
     async function fetchDokumen() {
-      await api
-        .get(`dapi/vendor/${companyId}/list-dokumen`)
-        .then((res) => setDokumen(res.data.data));
+      setDokumenIsLoading(true);
+      await api.get(`dapi/vendor/${companyId}/list-dokumen`).then((res) => {
+        setDokumen(res.data.data);
+        setDokumenIsLoading(false);
+      });
     }
 
     fetchAkta();
@@ -47,7 +60,9 @@ const TabDocument = ({ companyId }) => {
     <>
       <Col>
         <h4>Akta Perusahaan</h4>
-        {akta?.length > 0 ? (
+        {aktaIsLoading ? (
+          'Loading..'
+        ) : akta?.length > 0 ? (
           <Table hover bordered>
             <thead>
               <tr>
@@ -82,12 +97,14 @@ const TabDocument = ({ companyId }) => {
             </tbody>
           </Table>
         ) : (
-          'Loading..'
+          <div>Belum ada data akta</div>
         )}
       </Col>
       <Col className="mt-4">
         <h4>Izin Perusahaan</h4>
-        {izin?.length > 0 ? (
+        {izinIsLoading ? (
+          'Loading..'
+        ) : izin?.length > 0 ? (
           <Table hover bordered>
             <thead>
               <tr>
@@ -109,7 +126,7 @@ const TabDocument = ({ companyId }) => {
                   <td>{iz.tgl_berakhir}</td>
                   <td>
                     <Link
-                      to={`data:application/pdf;base64, ${iz.nomor}`}
+                      to={`data:application/pdf;base64, ${iz.file_base64}`}
                       download={`izin_berusaha_${iz.nomor}.pdf`}
                     >
                       <Button type="button" size="sm" color="light">
@@ -122,16 +139,21 @@ const TabDocument = ({ companyId }) => {
             </tbody>
           </Table>
         ) : (
-          'Loading..'
+          <div>Belum ada data izin</div>
         )}
       </Col>
-      {dokumen?.length > 0
-        ? dokumen.map((dok, i) => (
-            <Col sm="12" md="8" key={dok.name} className="mt-4">
-              <FileView filename={fileName[i]} mode="preview" base64={dok.base_64} />
-            </Col>
+      <Col sm="12" md="8" className="mt-4">
+        <h4>Dokumen Perusahaan</h4>
+        {dokumenIsLoading ? (
+          'Loading..'
+        ) : dokumen?.length > 0 ? (
+          dokumen.map((dok, i) => (
+            <FileView filename={fileName[i]} mode="preview" base64={dok.base_64} key={dok.name} />
           ))
-        : ''}
+        ) : (
+          <div>Belum ada data dokumen</div>
+        )}
+      </Col>
     </>
   );
 };
