@@ -31,21 +31,31 @@ const TabOfficial = ({ companyId }) => {
           </tr>
         </thead>
         <tbody>
-          {data?.jajaran.map((item, i) => (
-            <tr key={item.id}>
-              <td>{i + 1}</td>
-              <td>{item.nama}</td>
-              <td>{item.jabatan}</td>
+          {data?.jajaran?.length > 0 ? (
+            data?.jajaran.map((item, i) => (
+              <tr key={item.id}>
+                <td>{i + 1}</td>
+                <td>{item.nama}</td>
+                <td>{item.jabatan}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={3} className="text-center">
+                Belum ada data jajaran
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </Table>
 
-      <FileView
-        filename="File Struktur dan NPWP Jajaran Direksi/Komisaris Perusahaan"
-        base64={data?.struktur_base64}
-        mode="preview"
-      />
+      {data?.struktur_base64 !== null && (
+        <FileView
+          filename="File Struktur dan NPWP Jajaran Direksi/Komisaris Perusahaan"
+          base64={data?.struktur_base64}
+          mode="preview"
+        />
+      )}
     </>
   );
 };

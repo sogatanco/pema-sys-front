@@ -1,27 +1,27 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import {
   Navbar,
   Nav,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem,
+  // DropdownItem,
   Button,
   Container,
 } from 'reactstrap';
-import { Bell } from 'react-feather';
+// import { Bell } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import SimpleBar from 'simplebar-react';
-import { useQuery } from '@tanstack/react-query';
-import NotificationDD from './NotificationDD';
+// import SimpleBar from 'simplebar-react';
+// import { useQuery } from '@tanstack/react-query';
+// import NotificationDD from './NotificationDD';
 import MegaDD from './MegaDD';
 import user1 from '../../assets/images/users/user1.jpg';
 
 // import MessageDD from './MessageDD';
 import { ToggleMobileSidebar } from '../../store/customizer/CustomizerSlice';
 import ProfileDD from './ProfileDD';
-import useAxios from '../../hooks/useAxios';
+// import useAxios from '../../hooks/useAxios';
 
 import HorizontalLogo from '../logo/HorizontalLogo';
 import { AuthContext } from '../../context/AuthContext';
@@ -34,19 +34,19 @@ const HorizontalHeader = () => {
   const isMobileSidebar = useSelector((state) => state.customizer.isMobileSidebar);
   const toggleDispatch = useDispatch();
   const { dispatch } = useContext(AuthContext);
-  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  // const [isNotifOpen, setIsNotifOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  const api = useAxios();
+  // const api = useAxios();
 
-  const { isLoading, error, data, refetch } = useQuery({
-    queryKey: ['notification'],
-    queryFn: () =>
-      api.get(`api/employe/notification/list`).then((res) => {
-        return res.data.data;
-      }),
-  });
+  // const { isLoading, error, data, refetch } = useQuery({
+  //   queryKey: ['notification'],
+  //   queryFn: () =>
+  //     api.get(`api/employe/notification/list`).then((res) => {
+  //       return res.data.data;
+  //     }),
+  // });
 
   const handleLogout = () => {
     dispatch({ type: 'LOGOUT' });
@@ -100,7 +100,7 @@ const HorizontalHeader = () => {
             {/**********Notification DD**********/}
             {/******************************/}
             <UncontrolledDropdown>
-              <DropdownToggle
+              {/* <DropdownToggle
                 className="border-0"
                 color={topbarColor}
                 onClick={() => setIsNotifOpen(true)}
@@ -109,8 +109,8 @@ const HorizontalHeader = () => {
                   <Bell size={18} />
                   {data?.length > 0 && <div className="notif-count">{data?.length}</div>}
                 </div>
-              </DropdownToggle>
-              {isNotifOpen && (
+              </DropdownToggle> */}
+              {/* {isNotifOpen && (
                 <DropdownMenu className="notif-view">
                   <DropdownItem header>
                     <span className="mb-0 fs-5">Notifications</span>
@@ -132,7 +132,7 @@ const HorizontalHeader = () => {
                     </Button>
                   </div>
                 </DropdownMenu>
-              )}
+              )} */}
             </UncontrolledDropdown>
             {/******************************/}
             {/**********Message DD**********/}

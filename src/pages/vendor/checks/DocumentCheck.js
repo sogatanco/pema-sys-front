@@ -161,6 +161,11 @@ const DocumentCheck = () => {
                     <td>:</td>
 
                     <td>
+                      {data?.status_verifikasi_scm === 'register' && (
+                        <Badge color="success" style={{ textTransform: 'capitalize' }}>
+                          Registered
+                        </Badge>
+                      )}
                       {(data?.status_verifikasi_scm === 'review_submit' ||
                         data?.status_verifikasi_scm === 'review_update') && (
                         <Badge color="warning" style={{ textTransform: 'capitalize' }}>
@@ -176,7 +181,7 @@ const DocumentCheck = () => {
                         <Badge color="success" style={{ textTransform: 'capitalize' }}>
                           Terverifikasi
                         </Badge>
-                      )}{' '}
+                      )}
                       <small> {data?.scm_updated_at ? `at ${data?.scm_updated_at}` : ''}</small>
                     </td>
                   </tr>
