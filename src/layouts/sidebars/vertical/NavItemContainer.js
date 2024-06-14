@@ -6,7 +6,7 @@ import '@material/react-material-icon/dist/material-icon.css';
 
 const NavItemContainer = ({ to, icon, title, toggle, className, suffix, suffixColor }) => {
   return (
-    <NavItem onClick={toggle} className={className}>
+    <NavItem onClick={toggle} className={`${className}`}>
       <NavLink tag={Link} to={to} className="gap-3">
         <span className="sidebarIcon d-flex align-items-center">{icon}</span>
         <span className="hide-mini w-100">

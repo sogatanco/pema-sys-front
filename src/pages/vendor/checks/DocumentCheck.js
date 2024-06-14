@@ -137,6 +137,11 @@ const DocumentCheck = () => {
                     <td width="150">Admin Umum</td>
                     <td>:</td>
                     <td>
+                      {data?.status_verifikasi_umum === 'register' && (
+                        <Badge color="success" style={{ textTransform: 'capitalize' }}>
+                          Registered
+                        </Badge>
+                      )}
                       {(data?.status_verifikasi_umum === 'review_submit' ||
                         data?.status_verifikasi_umum === 'review_update') && (
                         <Badge color="warning" style={{ textTransform: 'capitalize' }}>
