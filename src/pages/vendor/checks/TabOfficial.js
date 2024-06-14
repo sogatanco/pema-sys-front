@@ -26,8 +26,9 @@ const TabOfficial = ({ companyId }) => {
         <thead>
           <tr>
             <th width="50">#</th>
-            <th>Nama</th>
-            <th>Jabatan</th>
+            <th className="text-center">Nama</th>
+            <th className="text-center">Jabatan</th>
+            <th className="text-center">NPWP</th>
           </tr>
         </thead>
         <tbody>
@@ -37,6 +38,7 @@ const TabOfficial = ({ companyId }) => {
                 <td>{i + 1}</td>
                 <td>{item.nama}</td>
                 <td>{item.jabatan}</td>
+                <td>{item.no_npwp_direksi}</td>
               </tr>
             ))
           ) : (

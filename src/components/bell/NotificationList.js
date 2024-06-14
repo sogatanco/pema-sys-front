@@ -64,7 +64,6 @@ const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data, refetch 
     // } else {
     //   navigate(`/${url}${entityId !== null ? `/${entityId}` : ''}`);
     // }
-    console.log(id + entityId);
   };
 
   const handleCheck = () => {

@@ -58,7 +58,12 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div>
-                  <Button href={`vendor/update-tender/${d.id_tender}`} color="primary" size="sm">
+                  <Button
+                    href={`vendor/update-tender/${d.id_tender}`}
+                    color="primary"
+                    size="sm"
+                    disabled
+                  >
                     Edit Tender
                   </Button>
                 </div>

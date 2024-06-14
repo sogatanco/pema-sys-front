@@ -1,7 +1,9 @@
 import { Outlet } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container } from 'reactstrap';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+// eslint-disable-next-line import/extensions
+import { ToggleMobileSidebar } from '../store/customizer/CustomizerSlice';
 import Header from './header/Header';
 // import Customizer from './customizer/Customizer';
 import Sidebar from './sidebars/vertical/Sidebar';
@@ -16,6 +18,7 @@ const FullLayout = () => {
   const topbarFixed = useSelector((state) => state.customizer.isTopbarFixed);
   const LayoutHorizontal = useSelector((state) => state.customizer.isLayoutHorizontal);
   const isFixedSidebar = useSelector((state) => state.customizer.isSidebarFixed);
+  const toggleDispatch = useDispatch();
   const queryClient = new QueryClient();
   return (
     <main>
@@ -44,7 +47,14 @@ const FullLayout = () => {
                 <Outlet />
               </div>
               {/* <Customizer className={customizerToggle ? 'showCustomizer' : ''} /> */}
-              {showMobileSidebar || customizerToggle ? <div className="sidebarOverlay" /> : ''}
+              {showMobileSidebar || customizerToggle ? (
+                <div
+                  className="sidebarOverlay"
+                  onClick={() => toggleDispatch(ToggleMobileSidebar())}
+                />
+              ) : (
+                ''
+              )}
             </Container>
           </div>
         </QueryClientProvider>
