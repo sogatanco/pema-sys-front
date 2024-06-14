@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
+import * as XLSX from 'xlsx';
 import {
   Card,
   CardBody,
@@ -15,12 +16,15 @@ import {
   Col,
   Row,
   Container,
+  Button
 } from 'reactstrap';
+import PropTypes from 'prop-types';
 import useAxios from '../../hooks/useAxios';
+import useAuth from '../../hooks/useAuth';
 import { alert } from '../../components/atoms/Toast';
 import TopCardsData from '../../views/dashboards/TopCardsData';
 
-const TeamAct = () => {
+const TeamAct = ({ tipetab }) => {
   const [filterby, setFilterby] = useState('today');
   const [modal, setModal] = useState(false);
   const [assignee, SetAssignee] = useState();
@@ -30,10 +34,11 @@ const TeamAct = () => {
   const [done, setDone] = useState(0);
   const toggle1 = () => setDropdownOpen((prevState) => !prevState);
   const api = useAxios();
+  const { auth } = useAuth();
   const { data, refetch, isLoading } = useQuery({
     queryKey: ['catdfhds'],
     queryFn: () =>
-      api.get(`dapi/myteam/activities/${filterby}`).then((res) => {
+      api.get(`dapi/${auth?.user.roles.includes('AllDaily') && tipetab === 'all' ? 'all' : 'myteam'}/activities/${filterby}`).then((res) => {
         return res.data.data;
       }),
   });
@@ -63,7 +68,37 @@ const TeamAct = () => {
     setProgress(progressFiltered?.length);
     setDone(doneFiltered?.length);
   }, [data]);
-  console.log(data);
+  // console.log(data);
+
+  const exportData=()=>{
+    console.log('te', data)
+    const rows = data.map((da) => ({
+      activity: da.activity,
+      category: da.category_name,
+      member:da.member.map((m)=>{
+        return m.first_name
+      }).toString(),
+      progress:da.progress,
+      status:da.status,
+      poin:da.poin,
+      start:da.start,
+      end:da.end,
+    
+    }));
+
+    console.log(rows)
+
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+
+    XLSX.utils.sheet_add_aoa(worksheet, [
+      [ "Activity Name", "Category", "Members", "Progress", "Status", "Poin", "Start", "End"],
+    ]);
+
+    XLSX.writeFile(workbook, "ReportFor2023.xlsx", { compression: true });
+  }
 
   return (
     <>
@@ -101,7 +136,16 @@ const TeamAct = () => {
                 </Col>
               </Row>
             </Container>
+            <div className='me-2'>
+            {auth?.user.roles.includes('AllDaily') && tipetab === 'all' ? <Button
+              color="warning" onClick={exportData}
+            >
+              <MaterialIcon icon="print" size="lg"/>
+            </Button> : ''}
+            </div>
+            
             <div>
+
               <Dropdown isOpen={dropdownOpen} toggle={toggle1} className="mb-3">
                 <DropdownToggle caret>
                   <MaterialIcon icon="filter_alt" />
@@ -115,8 +159,12 @@ const TeamAct = () => {
                   <DropdownItem onClick={() => handleFiltere('all')}>All The Time</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
+
+
             </div>
+
           </div>
+
           {data?.length > 0 ? (
             <Table striped className="mt-2" id="printablediv" responsive>
               <thead>
@@ -201,5 +249,9 @@ const TeamAct = () => {
     </>
   );
 };
+
+TeamAct.propTypes = {
+  tipetab: PropTypes.string
+}
 
 export default TeamAct;

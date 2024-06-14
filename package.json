@@ -84,6 +84,7 @@
     "simplebar-react": "^3.2.4",
     "styled-components": "^4.4.1",
     "web-vitals": "^3.3.2",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz",
     "yup": "^1.2.0"
   },
   "devDependencies": {

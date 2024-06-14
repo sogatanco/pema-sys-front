@@ -8,6 +8,7 @@ import Badge from '@mui/material/Badge';
 import { Card } from 'reactstrap';
 import Daily from './Daily';
 import useAxios from '../../hooks/useAxios';
+import useAuth from '../../hooks/useAuth';
 import Review from './Review';
 import TeamAct from './TeamAct';
 
@@ -18,6 +19,7 @@ const Home = () => {
   };
 
   const api = useAxios();
+  const { auth } = useAuth();
 
   const { data, refetch } = useQuery({
     queryKey: ['todos'],
@@ -31,8 +33,8 @@ const Home = () => {
     <>
       <TabContext value={value}>
         <Card className="mb-1">
-          <TabList onChange={handleChange} aria-label="lab API tabs example"  variant="scrollable"
-          scrollButtons="auto">
+          <TabList onChange={handleChange} aria-label="lab API tabs example" variant="scrollable"
+            scrollButtons="auto">
             <Tab
               label={
                 <Badge
@@ -79,6 +81,22 @@ const Home = () => {
               }
               value="3"
             />
+
+            {auth?.user.roles.includes('AllDaily') ? (<Tab
+              label={
+                <Badge
+                  badgeContent={0}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  color="primary"
+                >
+                  <strong>ALL ACTIVITIES</strong> &nbsp;&nbsp;
+                </Badge>
+              }
+              value="4"
+            />) : ''}
           </TabList>
         </Card>
 
@@ -86,10 +104,13 @@ const Home = () => {
           <Daily></Daily>
         </TabPanel>
         <TabPanel value="2" className="ps-0 pe-0">
-          <TeamAct></TeamAct>
+          <TeamAct tipetab='team'></TeamAct>
         </TabPanel>
         <TabPanel value="3" className="ps-0 pe-0">
           <Review misal={data} {...{ refetch }}></Review>
+        </TabPanel>
+        <TabPanel value="4" className="ps-0 pe-0">
+          <TeamAct tipetab='all'></TeamAct>
         </TabPanel>
       </TabContext>
     </>
