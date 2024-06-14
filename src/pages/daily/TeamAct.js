@@ -16,13 +16,14 @@ import {
   Col,
   Row,
   Container,
-  Button
+  Button,
 } from 'reactstrap';
 import PropTypes from 'prop-types';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
 import { alert } from '../../components/atoms/Toast';
 import TopCardsData from '../../views/dashboards/TopCardsData';
+import IndoDate from '../../utils/IndoDate';
 
 const TeamAct = ({ tipetab }) => {
   const [filterby, setFilterby] = useState('today');
@@ -38,9 +39,15 @@ const TeamAct = ({ tipetab }) => {
   const { data, refetch, isLoading } = useQuery({
     queryKey: ['catdfhds'],
     queryFn: () =>
-      api.get(`dapi/${auth?.user.roles.includes('AllDaily') && tipetab === 'all' ? 'all' : 'myteam'}/activities/${filterby}`).then((res) => {
-        return res.data.data;
-      }),
+      api
+        .get(
+          `dapi/${
+            auth?.user.roles.includes('AllDaily') && tipetab === 'all' ? 'all' : 'myteam'
+          }/activities/${filterby}`,
+        )
+        .then((res) => {
+          return res.data.data;
+        }),
   });
   const toggle = (p) => {
     setModal(!modal);
@@ -70,35 +77,38 @@ const TeamAct = ({ tipetab }) => {
   }, [data]);
   // console.log(data);
 
-  const exportData=()=>{
-    console.log('te', data)
+  const exportData = () => {
+    console.log('te', data);
     const rows = data.map((da) => ({
       activity: da.activity,
       category: da.category_name,
-      member:da.member.map((m)=>{
-        return m.first_name
-      }).toString(),
-      progress:da.progress,
-      status:da.status,
-      poin:da.poin,
-      start:da.start,
-      end:da.end,
-    
+      member: da.member
+        .map((m) => {
+          return m.first_name;
+        })
+        .toString(),
+      progress: da.progress,
+      status: da.status,
+      poin: da.poin,
+      start: da.start,
+      end: da.end,
     }));
 
-    console.log(rows)
+    console.log(rows);
 
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(rows);
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Products");
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
 
     XLSX.utils.sheet_add_aoa(worksheet, [
-      [ "Activity Name", "Category", "Members", "Progress", "Status", "Poin", "Start", "End"],
+      ['Activity Name', 'Category', 'Members', 'Progress', 'Status', 'Poin', 'Start', 'End'],
     ]);
 
-    XLSX.writeFile(workbook, "ReportFor2023.xlsx", { compression: true });
-  }
+    XLSX.writeFile(workbook, `Report-daily-${filterby}-${IndoDate(new Date())}.xlsx`, {
+      compression: true,
+    });
+  };
 
   return (
     <>
@@ -136,16 +146,17 @@ const TeamAct = ({ tipetab }) => {
                 </Col>
               </Row>
             </Container>
-            <div className='me-2'>
-            {auth?.user.roles.includes('AllDaily') && tipetab === 'all' ? <Button
-              color="warning" onClick={exportData}
-            >
-              <MaterialIcon icon="print" size="lg"/>
-            </Button> : ''}
+            <div className="me-2">
+              {auth?.user.roles.includes('AllDaily') && tipetab === 'all' ? (
+                <Button color="warning" onClick={exportData}>
+                  <MaterialIcon icon="print" size="lg" />
+                </Button>
+              ) : (
+                ''
+              )}
             </div>
-            
-            <div>
 
+            <div>
               <Dropdown isOpen={dropdownOpen} toggle={toggle1} className="mb-3">
                 <DropdownToggle caret>
                   <MaterialIcon icon="filter_alt" />
@@ -159,10 +170,7 @@ const TeamAct = ({ tipetab }) => {
                   <DropdownItem onClick={() => handleFiltere('all')}>All The Time</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
-
-
             </div>
-
           </div>
 
           {data?.length > 0 ? (
@@ -251,7 +259,7 @@ const TeamAct = ({ tipetab }) => {
 };
 
 TeamAct.propTypes = {
-  tipetab: PropTypes.string
-}
+  tipetab: PropTypes.string,
+};
 
 export default TeamAct;

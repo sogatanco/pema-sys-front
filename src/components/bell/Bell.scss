@@ -139,9 +139,10 @@
         gap: 4px;
         overflow-y: auto;
         padding-right: 5px;
+        overflow-x: hidden;
 
         .not-item {
-          height: max-content;
+          min-height: max-content;
           width: 100%;
           background-color: #f3f3f3;
           border-radius: 10px;
@@ -149,6 +150,7 @@
           border: 1.7px solid white;
           transition: all 200ms ease;
           cursor: pointer;
+          // overflow-x: hidden;
 
           &:hover {
             border: 1.7px solid #1e88e5;
@@ -175,7 +177,7 @@
           .not-body {
             display: flex;
             gap: 5px;
-            width: 360px;
+            max-width: 180px;
 
             .not-content {
               display: flex;
@@ -191,7 +193,7 @@
                 text-overflow: ellipsis;
                 overflow: hidden;
                 white-space: nowrap;
-                width: 340px;
+                width: 300px;
               }
             }
 
