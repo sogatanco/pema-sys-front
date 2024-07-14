@@ -1,0 +1,53 @@
+.circular-progress {
+  height: 30px;
+  width: 45px;
+}
+
+.link-item {
+  transition: all 300ms ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgb(237, 236, 236);
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  }
+}
+
+.link-item-bordered {
+  transition: all 400ms ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &:hover {
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    border: 1px solid #62a9e6;
+  }
+}
+
+.fav-btn {
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 300ms ease;
+
+  i {
+    color: rgb(228, 228, 228);
+  }
+
+  .is_favorite {
+    color: #ffb22b;
+  }
+
+  &:hover {
+    background-color: white;
+
+    i {
+      color: #ffb22b;
+    }
+  }
+}
