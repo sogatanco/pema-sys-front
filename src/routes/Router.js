@@ -24,6 +24,7 @@ const DailyPage = Loadable(lazy(() => import('../pages/daily')));
 /***** Asset ****/
 const AssetPage = Loadable(lazy(() => import('../pages/asset')));
 const DetailAsset = Loadable(lazy(() => import('../pages/asset/DetailAsset')));
+const SAsset = Loadable(lazy(() => import('../pages/asset/Scan')));
 /***** Asset ****/
 
 /***** Projects ****/
@@ -339,6 +340,11 @@ const ThemeRoutes = [
     path: '/pema-report',
     element: <PemaReport />,
   },
+  {
+    path: '/asset/v/:assetId',
+    name: 'Scan Asset',
+    element: <SAsset />,
+  }
   // Unauthorized
 ];
 
