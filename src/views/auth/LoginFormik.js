@@ -3,7 +3,7 @@ import { Button, Label, FormGroup, Container, Row, Col, Card, CardBody, Input } 
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthLogo from "../../layouts/logo/AuthLogo";
+import AuthLogo from '../../layouts/logo/AuthLogo';
 import { ReactComponent as LeftBg } from '../../assets/images/bg/login-bgleft.svg';
 import { ReactComponent as RightBg } from '../../assets/images/bg/login-bg-right.svg';
 

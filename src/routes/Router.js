@@ -68,6 +68,10 @@ const PentryReportPage = Loadable(lazy(() => import('../pages/report/PentryRepor
 const AtkReportPage = Loadable(lazy(() => import('../pages/report/AtkReport')));
 /***** Forms ****/
 
+/***** QrCode ****/
+const QrCodeGenerator = Loadable(lazy(() => import('../pages/qrcode/QrCodeGenerator')));
+/***** QrCode ****/
+
 /***** Pages ****/
 
 const Dashboard2 = Loadable(lazy(() => import('../views/dashboards/Dashboard2')));
@@ -322,6 +326,11 @@ const ThemeRoutes = [
         path: 'unauthorized',
         name: 'Unauthorized',
         element: <Unauthorized />,
+      },
+      {
+        path: 'qrcode-generator',
+        name: 'QrCode Generator',
+        element: <QrCodeGenerator />,
       },
     ],
   },

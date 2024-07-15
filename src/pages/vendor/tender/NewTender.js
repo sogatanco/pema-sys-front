@@ -175,7 +175,6 @@ const NewTender = () => {
     const theKblis = [];
     kblisSelected.map((item) => theKblis.push(item.value));
     if (values) {
-      values.pilihan_tender = 'eksternal project';
       values.centang_dok_wajib = documentsCheck;
       values.dok_tender = dokTenderFile;
       values.dok_deskripsi_tender = dokDeskTenderFile;

@@ -1,0 +1,214 @@
+.qr-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .qr-body {
+    display: flex;
+    // min-width: 600px;
+    height: max-content;
+    background-color: white;
+    border-radius: 20px;
+    overflow: hidden;
+
+    .qr-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding: 30px;
+      width: 400px;
+
+      .frame {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 8px;
+        border-radius: 20px;
+        background-color: white;
+        width: max-content;
+      }
+
+      .download {
+        display: none;
+
+        .frame-download {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 10px 8px;
+          border-radius: 20px;
+          background-color: white;
+          width: max-content;
+        }
+      }
+
+      input {
+        width: 100%;
+        border-radius: 10px;
+        padding: 10px;
+        border: 1px solid #0c69c7;
+        transition: all 300ms ease;
+
+        &:focus {
+          outline: 2px solid #0c69c7;
+        }
+      }
+    }
+
+    .qr-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 30px;
+      background-color: #0c69c7;
+      color: white;
+
+      .pattern {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        background-color: #054381;
+        padding: 20px;
+        border-radius: 10px;
+        gap: 10px;
+
+        .pattern-item {
+          display: flex;
+          justify-content: space-between;
+
+          & > div {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 75px;
+            width: 75px;
+            background-color: white;
+            border-radius: 8px;
+            color: #0c69c7;
+            cursor: pointer;
+          }
+
+          .checked-mark {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: rgb(249, 183, 84);
+            top: 30%;
+            right: 30%;
+            border: 3px solid white;
+
+            i {
+              padding: 0;
+              font-size: 14px;
+              color: white;
+            }
+          }
+
+          .color-1 {
+            background-color: #0f0f0f;
+          }
+
+          .color-2 {
+            background-color: #0c69c7;
+          }
+
+          .color-3 {
+            background-color: #5dcf8b;
+          }
+        }
+      }
+
+      .qr-radio {
+        display: flex;
+        gap: 6px;
+        cursor: pointer;
+        align-items: center;
+
+        .logo-check {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 17px;
+          height: 17px;
+          border-radius: 4px;
+          background-color: white;
+          padding-top: 1px;
+
+          i {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+          }
+        }
+
+        .isChecked {
+          background-color: rgb(249, 183, 84);
+        }
+      }
+
+      .btn-download {
+        button {
+          width: 100%;
+          height: 40px;
+          border-radius: 10px;
+          background-color: white;
+          color: #0c69c7;
+          border: none;
+
+          &:hover {
+            background-color: rgb(238, 238, 238);
+            color: #0c69c7;
+            transition: all 300ms ease;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .qr-container {
+    padding: 20px;
+    height: auto;
+
+    .qr-body {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: auto;
+
+      .qr-left,
+      .qr-right {
+        width: 100%;
+      }
+
+      .qr-left {
+        // display: none;
+        width: 90vw;
+
+        .frame {
+          width: max-content;
+          padding: 10px;
+        }
+      }
+
+      .qr-right {
+        align-items: center;
+        width: auto;
+
+        .pattern {
+          width: 80vw;
+        }
+      }
+    }
+  }
+}
