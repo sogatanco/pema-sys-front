@@ -51,7 +51,6 @@ const Asset = () => {
     ],
   });
 
-  console.log(hash)
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -61,6 +60,8 @@ const Asset = () => {
   const refetch1 = useCallback(() => {
     result[1].refetch();
   }, [result[1]]);
+
+  const loading1=result[0].isLoading;
 
   const refetch2 = useCallback(() => {
     result[2].refetch();
@@ -74,7 +75,15 @@ const Asset = () => {
     }else{
       setValue('2')
     }
-  }, [hash])
+  }, [hash]);
+
+  useEffect(()=>{
+    if(auth?.user.roles.includes('PicAsset')){
+      setValue('1')
+    }else{
+      setValue('2')
+    }
+  },[auth])
   useEffect(() => {
 
     setListAsset(result[0].data);
@@ -150,7 +159,7 @@ const Asset = () => {
               <CardBody>
                 <>
                   <NewAsset {...{ refetch }} />
-                  <ListAsset {...{ listAsset, refetch }} className="mt-2"></ListAsset>
+                  <ListAsset {...{ listAsset, refetch, loading1 }} className="mt-2"></ListAsset>
                 </>
               </CardBody>
             </Card>

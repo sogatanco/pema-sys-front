@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Input, Modal, ModalBody, ModalHeader, FormGroup, Label } from 'reactstrap';
 import DataTable from 'react-data-table-component';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './Asset.scss';
 import user1 from '../../assets/images/users/user1.jpg';
@@ -16,6 +17,7 @@ const AssetOnMe = ({ onMe, handleChange, refetch1, refetch2 }) => {
   const [modal, setModal] = useState(false);
   const [complaint, setComplaint] = useState();
   const [assetId, setAssetId] = useState();
+  const navigate = useNavigate();
 
   const api = useAxios();
   const toggle = (id) => {
@@ -23,6 +25,10 @@ const AssetOnMe = ({ onMe, handleChange, refetch1, refetch2 }) => {
     if (!modal) {
       setAssetId(id);
     }
+  };
+  const go = (r) => {
+    console.log(r);
+    navigate(`${r.id}`);
   };
   const columns = [
     {
@@ -73,7 +79,8 @@ const AssetOnMe = ({ onMe, handleChange, refetch1, refetch2 }) => {
     {
       name: 'Action',
       selector: (row) => (
-        <Button
+        <>
+         <Button
           color="primary"
           outline
           size="sm"
@@ -82,6 +89,11 @@ const AssetOnMe = ({ onMe, handleChange, refetch1, refetch2 }) => {
         >
           {row.request_service ? 'Service Requested' : 'Request Service'}
         </Button>
+         <Button color="primary" outline onClick={() => go(row)} size="sm">
+         {' '}
+         Check Detail
+       </Button></>
+       
       ),
     },
   ];

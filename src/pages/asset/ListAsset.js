@@ -9,11 +9,12 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import user1 from '../../assets/images/users/user1.jpg';
 import useAxios from '../../hooks/useAxios';
 import PrintNumber from './PrintNumber';
+import Loader from '../../layouts/loader/Loader';
 import { alert } from '../../components/atoms/Toast';
 
 const baseURL = process.env.REACT_APP_BASEURL;
 
-const ListAsset = ({ listAsset, refetch }) => {
+const ListAsset = ({ listAsset, refetch , loading1}) => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState([]);
   const [sesImg, setSesImg] = useState(new Date());
@@ -122,9 +123,16 @@ const ListAsset = ({ listAsset, refetch }) => {
       });
   };
 
+  const handlePage=(page)=>{
+    console.log(page)
+    localStorage.setItem('page', page);
+    // console.log(totalRows)
+  }
+
   useEffect(() => {
     setFilter(listAsset);
     setSesImg(new Date());
+    console.log()
   }, [listAsset]);
 
   useEffect(() => {
@@ -132,16 +140,19 @@ const ListAsset = ({ listAsset, refetch }) => {
       p.name.toLocaleLowerCase().match(search.toLocaleLowerCase()),
     );
     setFilter(result);
+    console.log(DataTable.c)
   }, [search]);
 
   return (
     <>
-      <DataTable
+    {loading1?<Loader/>:<DataTable
         columns={columns}
         data={filter}
         selectableRows
         onSelectedRowsChange={handleChange}
+        onChangePage={handlePage}
         pagination
+        paginationDefaultPage={localStorage.getItem('page')}
         subHeader
         subHeaderComponent={
           <div className="d-flex justify-content-end w-100">
@@ -164,7 +175,8 @@ const ListAsset = ({ listAsset, refetch }) => {
             />
           </div>
         }
-      />
+      />}
+      
     </>
   );
 };
@@ -172,5 +184,6 @@ const ListAsset = ({ listAsset, refetch }) => {
 ListAsset.propTypes = {
   listAsset: PropTypes.array,
   refetch: PropTypes.func,
+  loading1:PropTypes.bool,
 };
 export default ListAsset;
