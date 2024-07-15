@@ -14,6 +14,7 @@ import { alert } from '../../components/atoms/Toast';
 
 const baseURL = process.env.REACT_APP_BASEURL;
 
+// gsdgsdgsta
 const ListAsset = ({ listAsset, refetch , loading1}) => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState([]);
