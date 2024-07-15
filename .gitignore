@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-.SynologyWorkingDirectory
-node_modules
-=======
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
@@ -26,4 +20,3 @@ node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
->>>>>>> bd9bbe8f7cbf1efe648eb7b15583f1438132a099
