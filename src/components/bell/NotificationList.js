@@ -131,22 +131,22 @@ const NotificationList = ({ setOpenNotif, setShowTask, setTaskId, data, refetch 
             </div>
           )}
         </div>
+        <hr />
+        {data?.length !== 0 && (
+          <div className="checkall">
+            <Button
+              type="button"
+              color="primary"
+              size="sm"
+              block
+              className="mt-2 rounded-3"
+              onClick={() => handleCheck()}
+            >
+              Check All
+            </Button>
+          </div>
+        )}
       </div>
-      <hr />
-      {data?.length !== 0 && (
-        <div className="checkall">
-          <Button
-            type="button"
-            color="primary"
-            size="sm"
-            block
-            className="mt-2 rounded-3"
-            onClick={() => handleCheck()}
-          >
-            Check All
-          </Button>
-        </div>
-      )}
     </div>
   );
 };

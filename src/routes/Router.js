@@ -3,7 +3,6 @@ import Loadable from '../layouts/loader/Loadable';
 import RequireAuth from '../components/RequireAuth';
 import Login from '../pages/auth/Login';
 import PemaReport from '../pages/PemaReport';
-
 /****Layouts*****/
 
 const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
