@@ -1,0 +1,135 @@
+.verified-status {
+    height: 100vh;
+    width: 100vw;
+    background-color: rgb(241, 241, 241);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+  
+    .content-status {
+      position: relative;
+      background-color: white;
+      height: max-content;
+      width: max-content;
+      padding: 35px 50px;
+      border-radius: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      border: 1px solid #82bcf7;
+      text-align: center;
+  
+      img {
+        position: absolute;
+        opacity: 0.05;
+        z-index: 1 !important;
+        top: 50px;
+      }
+  
+      h4 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #0c69c7;
+      }
+  
+      .verified {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        z-index: 5;
+      }
+  
+      .icon-check {
+        height: 60px;
+        width: 60px;
+        background-color: #2286e9;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+  
+        i {
+          font-size: 32px;
+        }
+      }
+
+      .icon-close {
+        height: 60px;
+        width: 60px;
+        background-color: #db4646;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+  
+        i {
+          font-size: 32px;
+        }
+      }
+  
+      .spda-status-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        // background-color: #f3f9ff91;
+        width: 100%;
+        border-radius: 14px;
+        z-index: 5;
+  
+        .no-spda {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 2px;
+  
+          span:first-child {
+            font-size: 10px;
+          }
+  
+          span:last-child {
+            font-weight: 500;
+            color: #0c69c7;
+            font-size: 14px;
+          }
+        }
+  
+        .spda-status {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 2px;
+  
+          span:first-child {
+            font-size: 10px;
+          }
+  
+          span:last-child {
+            font-weight: 500;
+            color: #0c69c7;
+          }
+        }
+      }
+  
+      .copyright {
+        bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+  
+        span:first-child {
+          font-size: 12px;
+          font-weight: 600;
+        }
+  
+        span:last-child {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+  

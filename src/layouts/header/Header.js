@@ -145,11 +145,11 @@ const Header = () => {
           {/******************************/}
           {/**********Profile DD**********/}
           {/******************************/}
-          <UncontrolledDropdown>
+          <UncontrolledDropdown  >
             <DropdownToggle color="transparent">
               <img src={user1} alt="profile" className="rounded-circle" width="30" />
             </DropdownToggle>
-            <DropdownMenu className="ddWidth profile-dd">
+            <DropdownMenu className="ddWidth profile-dd" >
               <ProfileDD />
               <div className="p-2 px-3">
                 <Button color="danger" size="sm">

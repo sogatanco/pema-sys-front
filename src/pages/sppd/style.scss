@@ -1,0 +1,14 @@
+@media only screen and (min-width: 700px) {
+  .rdt_TableCol:first-child,
+  .rdt_TableCell:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: inherit;
+  }
+}
+
+.btn{
+  --bs-btn-hover-color: #2f3d4a;
+    --bs-btn-hover-bg: #fff;
+}

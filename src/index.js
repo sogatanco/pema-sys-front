@@ -1,9 +1,10 @@
 /* eslint-disable import/no-named-as-default-member */
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import ReactDOMClient from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthContextProvider } from './context/AuthContext';
+
 // eslint-disable-next-line import/no-named-as-default
 import reportWebVitals from './reportWebVitals';
 import { store } from './store/Store';
@@ -11,7 +12,7 @@ import App from './App';
 import './data';
 
 const container = document.getElementById('root');
-const root = createRoot(container);
+const root = ReactDOMClient.createRoot(container);
 
 root.render(
   <Provider store={store}>

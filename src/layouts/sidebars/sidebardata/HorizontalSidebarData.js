@@ -104,15 +104,35 @@ const SidebarData = [
       },
     ],
   },
+  { caption: 'SPPD' },
+  {
+    title: 'SPPD',
+    href: '/sppd',
+    id: 6,
+    icon: <MaterialIcon icon="flight_takeoff" />,
+    // ddType: '-column',
+    allowedRoles: ['Employee'],
+  },
+  { caption: 'ADM' },
+  {
+    title: 'ADM',
+    href: '/adm',
+    id: 7,
+    icon: <MaterialIcon icon="history_edu" />,
+    // ddType: '-column',
+    allowedRoles: ['Employee'],
+  },
   { caption: 'Manual Book' },
   {
     title: 'Manual Book',
     href: 'https://drive.google.com/drive/folders/13u1UBwpLfVDsF0WoOMoNfU1_O1d3GTou?usp=sharing',
-    id: 6,
-    icon: <MaterialIcon icon="grid_view" />,
+    id: 8,
+    icon: <MaterialIcon icon="menu_book" />,
     ddType: 'two-column',
     allowedRoles: ['Employee'],
   },
+
+  
   // { caption: 'Form' },
   // {
   //   title: 'Form',

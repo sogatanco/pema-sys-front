@@ -5,6 +5,7 @@ import Themeroutes from './routes/Router';
 import ThemeSelector from './layouts/theme/ThemeSelector';
 import Loader from './layouts/loader/Loader';
 
+
 const App = () => {
   const routing = useRoutes(Themeroutes);
   const direction = useSelector((state) => state.customizer.isRTL);
@@ -17,7 +18,7 @@ const App = () => {
         dir={direction ? 'rtl' : 'ltr'}
       >
     {/* sdgsdg */}
-        <ThemeSelector />
+        <ThemeSelector   />
         {routing}
       </div>
     </Suspense>

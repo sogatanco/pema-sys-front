@@ -27,6 +27,20 @@ const DetailAsset = Loadable(lazy(() => import('../pages/asset/DetailAsset')));
 const SAsset = Loadable(lazy(() => import('../pages/asset/Scan')));
 /***** Asset ****/
 
+/***** Verification****/
+
+const Verification = Loadable(lazy(() => import('../pages/Verif/Verification')));
+/***** Verification****/
+
+
+/***** SPPD****/
+const SppdPage = Loadable(lazy(() => import('../pages/sppd')));
+
+/***** Adm****/
+const AdmPage = Loadable(lazy(() => import('../pages/adm')));
+
+/***** Asset ****/
+
 /***** Projects ****/
 const ProjectPage = Loadable(lazy(() => import('../pages/projects')));
 const ProjectDetail = Loadable(lazy(() => import('../pages/projects/ProjectDetail')));
@@ -177,6 +191,16 @@ const ThemeRoutes = [
             path: 'asset/:assetId',
             name: 'Detail Asset',
             element: <DetailAsset />,
+          },
+          {
+            path: 'sppd',
+            name: 'SPPD',
+            element: <SppdPage />,
+          },
+          {
+            path: 'adm',
+            name: 'Surat Menyurat',
+            element: <AdmPage />,
           },
           {
             path: 'projects/details/:projectId',
@@ -344,6 +368,11 @@ const ThemeRoutes = [
     path: '/asset/v/:assetId',
     name: 'Scan Asset',
     element: <SAsset />,
+  },
+  {
+    path: '/verification/:idDoc',
+    name: 'Verification',
+    element: <Verification />,
   }
   // Unauthorized
 ];

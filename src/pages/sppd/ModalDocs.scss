@@ -1,0 +1,10 @@
+.col-card {
+  position: relative;
+  cursor: pointer;
+}
+.my-card {
+  position: absolute;
+  top: -30px;
+  border-radius: 50%;
+  box-shadow: inset;
+}

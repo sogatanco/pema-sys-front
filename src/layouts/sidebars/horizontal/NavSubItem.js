@@ -1,11 +1,14 @@
 import React from 'react';
 import { NavItem, NavLink, Nav } from 'reactstrap';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
+import { ToggleMobileSidebar } from '../../../store/customizer/CustomizerSlice';
 
 const NavSubItem = ({ to, icon, title, items, suffix, activeBck, suffixColor, ddType, auth }) => {
   const location = useLocation();
   const [isOpen, setIsOpen] = React.useState(false);
+  const dispatch = useDispatch();
 
   const Handletoggle = () => {
     setIsOpen(!isOpen);
@@ -29,7 +32,7 @@ const NavSubItem = ({ to, icon, title, items, suffix, activeBck, suffixColor, dd
                 key={item.title}
                 className={`${location.pathname === item.href ? 'activeLink' : ''}`}
               >
-                <NavLink tag={Link} to={item.href} className="gap-3">
+                <NavLink tag={Link} to={item.href} className="gap-3" onClick={() => dispatch(ToggleMobileSidebar())}>
                   <span className="sidebarIcon">{item.icon}</span>
                   <span className="">
                     <span>{item.title}</span>

@@ -10,7 +10,7 @@ const ProfileDD = () => {
 
   return (
     <div>
-      <div className="d-flex gap-3 p-3 border-bottom pt-2 align-items-center">
+      <div className="d-flex gap-3 p-3 border-bottom pt-2 align-items-center" >
         <img src={user1} alt="user" className="rounded-circle" width="60" />
         <span>
           <h5 className="mb-0">{auth.user.first_name}</h5>

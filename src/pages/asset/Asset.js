@@ -98,7 +98,7 @@ const Asset = () => {
       <TabContext value={value} >
         <Card className="mb-1" >
           <TabList onChange={handleChange} aria-label="lab API tabs example" vertical="sm" variant="scrollable"
-            scrollButtons="on">
+            scrollButtons="auto">
             {auth?.user.roles.includes('PicAsset') ? (
               <Tab
                 label={
