@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import useAxios from '../../hooks/useAxios';
 import BandwidthUsage from './components/BandwidthUsage';
 import user1 from '../../assets/images/users/user1.jpg';
-import './Dasboard.css';
+import './Dasboard.scss';
 // import { set } from 'react-hook-form';
 
 const DashboardDirek = () => {
@@ -18,7 +18,7 @@ const DashboardDirek = () => {
 
   const [lebel, setLebel] = React.useState([]);
   const [val, setVal] = React.useState([]);
-  const [status, setStatus]=React.useState(false);
+  const [status, setStatus] = React.useState(false);
 
   const api = useAxios();
 
@@ -41,11 +41,10 @@ const DashboardDirek = () => {
     setDataKar(dataDash?.data?.groupKar);
     setLebel(dataDash?.data?.label);
     setVal(dataDash?.data?.value);
-    
   }, [dataDash]);
 
   useEffect(() => {
-      console.log(dataKar);
+    console.log(dataKar);
   }, [dataKar]);
   const optionsbar = {
     chart: {
@@ -139,11 +138,18 @@ const DashboardDirek = () => {
             <Col md={7} className="mt-3">
               <h4 className="mb-3">Aktual Penggunaan Biaya SPPD sesuai RKAP</h4>
               <hr />
-            {lebel?(  <Chart options={optionsbar} series={seriesbar} type="bar" height="500" />):'Loading Chart . . . . '}
+              {lebel ? (
+                <Chart options={optionsbar} series={seriesbar} type="bar" height="500" />
+              ) : (
+                'Loading Chart . . . . '
+              )}
             </Col>
             <Col md={5} className="mt-3">
               <div>
-                <Table className="text-nowrap mt-n3 mb-0 align-middle custom-table" borderless>
+                <Table
+                  className="dash-table text-nowrap mt-n3 mb-0 align-middle custom-table"
+                  borderless
+                >
                   <thead>
                     <tr>
                       <th width="60%"></th>
@@ -154,7 +160,7 @@ const DashboardDirek = () => {
                   <tbody>
                     {dataKar?.map((tdata) => (
                       <tr key={tdata.nama} className="border-top">
-                        <td width="60%" style={{overflow:'elipsis'}}>
+                        <td width="60%" style={{ overflow: 'elipsis' }}>
                           <div className="d-flex align-items-center">
                             <img
                               src={user1}

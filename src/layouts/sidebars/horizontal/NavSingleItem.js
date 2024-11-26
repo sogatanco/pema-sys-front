@@ -15,7 +15,7 @@ const NavSingleItem = ({ to, icon, title, toggle, className, suffix, suffixColor
           to={to}
           target="_blank"
           className="gap-3"
-          onClick={() => dispatch(ToggleMobileSidebar())}
+          onClick={() => isMobileSidebar && dispatch(ToggleMobileSidebar())}
         >
           <span className="sidebarIcon d-flex align-items-center">{icon}</span>
           <div className="d-flex flex-grow-1 align-items-center gap-2">
