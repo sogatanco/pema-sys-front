@@ -21,6 +21,8 @@ const HorizontalSidebar = () => {
     setSidebarData(SidebarData);
   }, []);
 
+  console.log('isSHow', isMobileSidebar);
+
   return (
     <div
       className={`horizontalNav shadow bg-${activeBg}  ${isFixed ? 'fixedSidebar' : ''} ${
