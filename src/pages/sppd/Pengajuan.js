@@ -59,10 +59,12 @@ const Pengajuan = ({
   closeForm,
   refetchSubmitted,
 }) => {
+
+  const [loading, setLoading] = React.useState(false)
   const [pihak, setPihak] = React.useState(1);
   const [modal, setModal] = useState(false);
   // variable sppd
-  const [inarasi, setNarasi]=React.useState('');
+  const [inarasi, setNarasi] = React.useState('');
   const [nama, setNama] = React.useState('');
   const [jabatan, setJabatan] = React.useState('');
   const [employeID, setEmployeID] = React.useState('');
@@ -317,6 +319,7 @@ const Pengajuan = ({
         {
           label: 'Yes',
           onClick: () => {
+            setLoading(true)
             console.log(tujuans);
             api
               .post('dapi/sppd/pengajuan', {
@@ -329,6 +332,7 @@ const Pengajuan = ({
                 tujuan_sppd: tujuans,
               })
               .then((res) => {
+                setLoading(false);
                 if (res.status === 200) {
                   alert('success', 'SPPD Berhasil diajukan !');
                   if (pihak === 1) {
@@ -347,7 +351,7 @@ const Pengajuan = ({
         },
         {
           label: 'No',
-          onClick: () => {},
+          onClick: () => { },
         },
       ],
     });
@@ -386,7 +390,7 @@ const Pengajuan = ({
         />
       </Box>
 
-     
+
       {pihak === 1 ? (
         // pihak internal
         <>
@@ -555,8 +559,9 @@ const Pengajuan = ({
               style={{ width: '100%' }}
               className="float-end"
               onClick={savePengajuan}
+              disabled={loading}
             >
-              Submit Pengajuan
+              {loading?'Loading . . .':'Submit Pengajuan'}
             </Button>
           </Box>
         </>
