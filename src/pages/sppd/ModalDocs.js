@@ -257,7 +257,7 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
     let paraf = ``;
     if (detailSppd?.tujuan_sppd?.length === 1) {
       tujuan = detailSppd?.tujuan_sppd[0].detail_tujuan;
-      transport = detailSppd?.tujuan_sppd[0].transport;
+      transport = detailSppd?.tujuan_sppd[0].moda;
       lama = `<table width="100%">
       <tbody>
         <tr style="border:none">
@@ -299,7 +299,7 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
 
       for (let i = 0; i < detailSppd?.tujuan_sppd?.length; i++) {
         tujuan += `<li>${detailSppd?.tujuan_sppd[i].detail_tujuan}</li>`;
-        transport += `<li>${detailSppd?.tujuan_sppd[i].transport}</li>`;
+        transport += `<li>${detailSppd?.tujuan_sppd[i].moda}</li>`;
         lama += `<li><table width="100%">
       <tbody>
         <tr style="border:none">

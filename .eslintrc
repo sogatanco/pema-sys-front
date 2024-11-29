@@ -24,6 +24,12 @@
   "plugins": ["prettier", "react", "react-hooks"],
   "parser": "",
   "rules": {
+    "import/extensions": ["error", "always", {
+      "js": "never",
+      "jsx": "never",
+      "ts": "never",
+      "tsx": "never"
+    }],
     "comma-dangle": "off",
     "import/no-unresolved": "off",
     "jsx-a11y/anchor-is-valid": "off",
