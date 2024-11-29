@@ -118,7 +118,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build-testing": "react-scripts build",
-    "build-prod": "react-scripts build && cp -R build/* pema-sys && cd pema-sys && git add . && git commit -m 'update' && git push -u origin master",
+    "build-prod": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint ./src",
