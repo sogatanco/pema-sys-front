@@ -12,7 +12,7 @@ import HorizontalSidebar from './sidebars/horizontal/HorizontalSidebar';
 import NotificationP from './notification/NotificationP';
 
 const FullLayout = () => {
-  const customizerToggle = useSelector((state) => state.customizer.customizerSidebar);
+  // const customizerToggle = useSelector((state) => state.customizer.customizerSidebar);
   const toggleMiniSidebar = useSelector((state) => state.customizer.isMiniSidebar);
   const showMobileSidebar = useSelector((state) => state.customizer.isMobileSidebar);
   const topbarFixed = useSelector((state) => state.customizer.isTopbarFixed);
@@ -47,7 +47,7 @@ const FullLayout = () => {
                 <Outlet />
               </div>
               {/* <Customizer className={customizerToggle ? 'showCustomizer' : ''} /> */}
-              {showMobileSidebar || customizerToggle ? (
+              {showMobileSidebar ? (
                 <div
                   className="sidebarOverlay"
                   onClick={() => toggleDispatch(ToggleMobileSidebar())}
