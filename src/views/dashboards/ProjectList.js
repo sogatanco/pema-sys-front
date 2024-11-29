@@ -182,7 +182,7 @@ const ProjectList = () => {
                         <Row lg="12" style={{ paddingRight: '5px' }}>
                           <Col lg="6">
                             <table>
-                              <tbody>
+                              <tbody style={{ height: 'auto !important' }}>
                                 <tr>
                                   <td style={{ minWidth: '30px', textAlign: 'left' }}>
                                     <span className="text-muted" style={{ marginLeft: '12px' }}>

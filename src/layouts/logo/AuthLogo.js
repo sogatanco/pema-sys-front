@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 // import { ReactComponent as LogoDarkText } from '../../assets/images/logos/dark-logo-text.svg';
 // import { ReactComponent as LogoWhiteIcon } from '../../assets/images/logos/white-logo-icon.svg';
 // import { ReactComponent as LogoWhiteText } from '../../assets/images/logos/white-logo-text.svg';
-import Logo from '../../assets/images/logos/pema-logo.png';
+import Logo from '../../assets/images/logos/logo.png';
 
 const AuthLogo = () => {
   const isDarkMode = useSelector((state) => state.customizer.isDark);
@@ -22,9 +22,9 @@ const AuthLogo = () => {
         <>
           <img src={Logo} alt="logo" width="75" height="75" />
           <div className="d-flex flex-column">
-            <h1 style={{ fontWeight: 'bold' }}>PEMA-Sys</h1>
+            <h1 style={{ fontWeight: 'bold', color: '#0C69C7' }}>PEMA-Sys</h1>
             <div className="d-flex justify-content-end" style={{ marginTop: '-10px' }}>
-              <small className="text-danger">Beta Version 0.1</small>
+              <small className="text-danger">Beta Version 0.2</small>
             </div>
           </div>
           {/* <LogoDarkIcon /> */}

@@ -32,7 +32,6 @@ const SAsset = Loadable(lazy(() => import('../pages/asset/Scan')));
 const Verification = Loadable(lazy(() => import('../pages/Verif/Verification')));
 /***** Verification****/
 
-
 /***** SPPD****/
 const SppdPage = Loadable(lazy(() => import('../pages/sppd')));
 
@@ -92,7 +91,8 @@ const QrCodeGenerator = Loadable(lazy(() => import('../pages/qrcode/QrCodeGenera
 const Dashboard2 = Loadable(lazy(() => import('../views/dashboards/Dashboard2')));
 const Unauthorized = Loadable(lazy(() => import('../pages/auth/Unauthorized')));
 const ChangePassword = Loadable(lazy(() => import('../pages/auth/ChangePassword')));
-
+const ForgotPassword = Loadable(lazy(() => import('../pages/auth/ForgotPassword')));
+const NewPassword = Loadable(lazy(() => import('../pages/auth/NewPassword')));
 /***** CASL Access Control ****/
 
 // Report
@@ -324,6 +324,16 @@ const ThemeRoutes = [
         name: 'Login',
         element: <Login />,
       },
+      {
+        path: 'forgot-password',
+        name: 'Forgot Password',
+        element: <ForgotPassword />,
+      },
+      {
+        path: 'new-password',
+        name: 'New Password',
+        element: <NewPassword />,
+      },
     ],
   },
   // LOGIN ROUTE
@@ -373,7 +383,7 @@ const ThemeRoutes = [
     path: '/verification/:idDoc',
     name: 'Verification',
     element: <Verification />,
-  }
+  },
   // Unauthorized
 ];
 
