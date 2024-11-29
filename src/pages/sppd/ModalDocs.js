@@ -451,11 +451,11 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
           detailSppd?.realisasi_biaya[i]?.detail_tujuan
         }</strong><br> ${dayjs(detailSppd?.realisasi_biaya[i]?.rill_wb)
           .locale('id')
-          .format('dddd, DD MMMM YYYY hh:mm')} (${
+          .format('dddd, DD MMMM YYYY HH:mm')} (${
           detailSppd?.realisasi_biaya[i].rate_wb * 100
         }%*) -  ${dayjs(detailSppd?.realisasi_biaya[i]?.rill_wt)
           .locale('id')
-          .format('dddd, DD MMMM YYYY hh:mm')} (${
+          .format('dddd, DD MMMM YYYY HH:mm')} (${
           detailSppd?.realisasi_biaya[i].rate_wt * 100
         }%*) </span>
       <table cellspacing="0" width="100%" style="margin-top:-10">
@@ -770,7 +770,7 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
               detailSppd?.tujuan_sppd[i]?.waktu_berangkat,
             )
               .locale('id')
-              .format('dddd, DD MMMM YYYY hh:mm')} (${
+              .format('dddd, DD MMMM YYYY HH:mm')} (${
         detailSppd?.tujuan_sppd[i].rate_wb * 100
       }%*)</td>
           </tr>         
@@ -780,7 +780,7 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
               detailSppd?.tujuan_sppd[i]?.waktu_kembali,
             )
               .locale('id')
-              .format('dddd, DD MMMM YYYY hh:mm')} (${
+              .format('dddd, DD MMMM YYYY HH:mm')} (${
         detailSppd?.tujuan_sppd[i].rate_wt * 100
       }%*)</td>
           </tr>         
@@ -892,7 +892,7 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
               detailSppd?.created_at,
             )
               .locale('id')
-              .format('dddd, DD MMMM YYYY hh:mm')}</td>
+              .format('dddd, DD MMMM YYYY HH:mm')}</td>
           </tr>
         </tbody>
       </table>

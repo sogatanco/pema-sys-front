@@ -30,6 +30,7 @@ const EditSppd = ({
   setEditForm,
   refetchSubmitted,
 }) => {
+  const [loading, setLoading]=useState(false);
   const [modal, setModal] = useState(false);
   const [nama, setNama] = React.useState('');
   const [isDisabled, setIsDisabled] = useState(false);
@@ -295,6 +296,7 @@ const EditSppd = ({
         {
           label: 'Yes',
           onClick: () => {
+            setLoading(true);
             console.log(tujuans);
             api
               .post(`dapi/sppd/pengajuan/update/${id}`, {
@@ -305,6 +307,7 @@ const EditSppd = ({
                 tujuan_sppd: tujuans,
               })
               .then((res) => {
+                setLoading(false)
                 if (res.status === 200) {
                   alert('success', 'SPPD Berhasil diupdate !');
                   setEditForm(false);
@@ -404,8 +407,9 @@ const EditSppd = ({
                   style={{ width: '100%' }}
                   className="float-end"
                   onClick={updatePengajuan}
+                  disabled={loading}
                 >
-                  Update Pengajuan
+                  {loading?'Loading . . .':'Update Pengajuan'}
                 </Button>
               </Box>
             </>
