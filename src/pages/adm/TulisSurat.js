@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Box from '@mui/material/Box';
-import PropTypes from 'prop-types';
+import PropTypes  from 'prop-types';
 import TextField from '@mui/material/TextField';
 import { Editor } from '@tinymce/tinymce-react';
 import { MenuItem } from '@mui/material';
 import { Button, InputGroup, Badge, ButtonGroup } from 'reactstrap';
 import { QRCode } from 'react-qrcode-logo';
+// import { Navigate } from 'react-router-dom';
 import useAxios from '../../hooks/useAxios';
 import FMerge from './Fungsi/FMerge';
 import GenerateSurat from './Fungsi/Generate';
@@ -16,7 +17,7 @@ import { alert } from '../../components/atoms/Toast';
 import logo from '../../assets/images/qrcode/qr-code-logo.png';
 import toRoman from './Fungsi/toRoman';
 
-const TulisSurat = ({ divisis, mydivisi }) => {
+const TulisSurat = ({ divisis, mydivisi, refresh, func1 }) => {
   const baseURL1 = process.env.REACT_APP_FRONTEND;
   const api = useAxios();
   const qrCodeRef = useRef();
@@ -41,6 +42,8 @@ const TulisSurat = ({ divisis, mydivisi }) => {
   const [isiSurat, setIsiSurat] = useState(dataSurat?.isiSurat || 'Dengan Hormat');
   const [mergedSurat, setMergedSurat] = useState('');
 
+  const [loading, setLoading] = useState(false);
+
   const saveDataLocal = () => {
     localStorage.setItem(
       'dataSurat',
@@ -58,7 +61,7 @@ const TulisSurat = ({ divisis, mydivisi }) => {
         signer: ttdBys?.find((s) => s.employe_id === ttdBy),
         tglSurat: new Date().toISOString(),
         nomorSurat: `. . . /PEMA/${toRoman(new Date().getMonth() + 1)}/${new Date().getFullYear()}`,
-        draft:true
+        draft: true
       }),
     );
   };
@@ -78,7 +81,7 @@ const TulisSurat = ({ divisis, mydivisi }) => {
     isiSurat,
   ]);
 
-  const addBrderless=(editor)=>{
+  const addBrderless = (editor) => {
     editor.insertContent(
       `<table style="border-collapse: collapse; width: 100%; border: 0px;">
           <tbody>
@@ -142,35 +145,53 @@ const TulisSurat = ({ divisis, mydivisi }) => {
     }
 
     if (berang === 'form3') {
-     
-   
-        if (lampiran !== '' && fileLampiran === '' && Number(lampiran) > 0) {
-          alert('error', 'Lampiran harus 0 jika tidak ada File');
-          setBerang('form1');
-        } else {
-          setTimeout(fetchData, 1000);
-        }
-      
+
+
+      if (lampiran !== '' && fileLampiran === '' && Number(lampiran) > 0) {
+        alert('error', 'Lampiran harus 0 jika tidak ada File');
+        setBerang('form1');
+      } else {
+        setTimeout(fetchData, 1000);
+      }
+
     }
 
-    if(berang==='form2'){
-      if(divisi==='' || kepada==='' || perihal==='' || ttdBy===''){
+    if (berang === 'form2') {
+      if (divisi === '' || kepada === '' || perihal === '' || ttdBy === '') {
         setBerang('form1');
         alert('error', 'Silakan Lengkapi Data !!!')
       }
     }
   }, [berang]);
 
-  const submit = () => {
-   
 
-    const allData={
-      ...dataSurat, fileLampiran, type:'main'
+  const afterSubmit = () => {
+    refresh();
+    func1(false)
+    localStorage.removeItem('dataSurat');
+
+  }
+
+  const submit = () => {
+
+    setLoading(true);
+    const allData = {
+      ...dataSurat, fileLampiran, type: 'main'
     }
 
-    api.post(`dapi/adm/insert`, allData).then((res)=>{
+    api.post(`dapi/adm/insert`, allData).then((res) => {
       console.log(res?.data);
-    })
+      if (res.status === 200) {
+        alert('success', 'Dokumen Berhasil submit !');
+        afterSubmit();
+      } else {
+        alert('error', 'SPPD Gagal diajukan, Hubungi Tim IT untuk problem selanjutnya !');
+      }
+      setLoading(false);
+    }).catch((err) => {
+      alert('error', `${err.message}`);
+      setLoading(false);
+    });
   };
 
   return (
@@ -392,19 +413,19 @@ const TulisSurat = ({ divisis, mydivisi }) => {
                   'undo redo | bold italic underline strikethrough | tableCustom | table mergetags |superscript subscript | alignleft aligncenter alignright alignjustify | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | code',
                 setup: (editor) => {
                   editor.ui.registry.addButton('tableCustom', {
-                    icon:'fa fa-plus', 
+                    icon: 'fa fa-plus',
                     tooltip: 'Borderles Table',
                     onAction: () => {
-                     addBrderless(editor)
+                      addBrderless(editor)
                     },
                   });
-                  
+
                 },
               }}
               value={isiSurat}
-              onEditorChange={(content) => 
+              onEditorChange={(content) =>
                 content === '' ? setIsiSurat(' ') : setIsiSurat(content.replace(/(<br\s*\/?>\s*)+<table/gi, '<table'))
-               
+
               }
             />
           )}
@@ -443,8 +464,8 @@ const TulisSurat = ({ divisis, mydivisi }) => {
               <Button color="warning" onClick={() => setBerang('form2')}>
                 Sebelumnya
               </Button>
-              <Button color="success" onClick={() => submit()}>
-                Submit
+              <Button color="success" onClick={() => submit()} disabled={loading}>
+                {loading?'Loading...': 'Submit'}
               </Button>
             </ButtonGroup>
           </Box>
@@ -459,6 +480,8 @@ const TulisSurat = ({ divisis, mydivisi }) => {
 TulisSurat.propTypes = {
   divisis: PropTypes.array,
   mydivisi: PropTypes.string,
+  refresh: PropTypes.func,
+  func1: PropTypes.func,
 };
 
 export default TulisSurat;

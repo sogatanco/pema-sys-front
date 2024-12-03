@@ -7,21 +7,23 @@ import MaterialIcon from '@material/react-material-icon';
 import Badge from '@mui/material/Badge';
 import useAxios from '../../hooks/useAxios';
 import TulisSurat from './TulisSurat';
+import ListSurat from './ListSurat';
 
 const Adm = () => {
   const api = useAxios();
 
-  const formData=JSON.parse(localStorage.getItem('formData'))
+  const formData = JSON.parse(localStorage.getItem('formData'))
   const [value, setValue] = useState('1');
-  const [tulisForm, setTulisForm] = useState(formData?.tulisForm||false);
+  const [tulisForm, setTulisForm] = useState(formData?.tulisForm || false);
   const [divisis, setDivisis] = useState([]);
   const [mydivisi, setMyDivisi] = useState('');
+  const [listSurat, setListSurat] = useState([]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  useEffect(()=>{
-    localStorage.setItem('formData', JSON.stringify({tulisForm}));
+  useEffect(() => {
+    localStorage.setItem('formData', JSON.stringify({ tulisForm }));
   }, [tulisForm])
 
   const dataStatic = useQueries({
@@ -32,14 +34,34 @@ const Adm = () => {
           api.get(`dapi/adm/divisi`).then((res) => {
             return res.data.data;
           }),
-      },
+      }
     ],
   });
+
+  const getData = (val) => {
+    if (val === '1') {
+      api.get(`dapi/adm/surat/all`).then((res) => {
+        setListSurat(res.data.data);
+      });
+    }
+  };
+
+  const refreshData=() => {
+    getData(value);
+  }
+
+  useEffect(() => {
+    getData(value);
+  }, [value]);
 
   useEffect(() => {
     setDivisis(dataStatic[0].data?.other_divisis);
     setMyDivisi(dataStatic[0].data?.my_divisi?.organization_id?.toString());
-  },[dataStatic])
+  }, [dataStatic]);
+
+  useEffect(() => {
+    console.log(listSurat);
+  }, [listSurat]);
 
   return (
     <>
@@ -145,7 +167,7 @@ const Adm = () => {
                     style={{ cursor: 'pointer' }}
                     onClick={() => setTulisForm(!tulisForm)}
                   />
-                  <TulisSurat divisis={divisis} mydivisi={mydivisi} />
+                  <TulisSurat divisis={divisis} mydivisi={mydivisi} refresh={refreshData} func1={setTulisForm}/>
                 </>
               ) : (
                 <Button
@@ -159,6 +181,14 @@ const Adm = () => {
               )}
             </CardBody>
           </Card>
+
+          {tulisForm===false && listSurat?.length >0 && (
+            <Card>
+              <CardBody>
+                <ListSurat listSurat={listSurat} />
+              </CardBody>
+            </Card>
+          )}
         </TabPanel>
       </TabContext>
     </>
