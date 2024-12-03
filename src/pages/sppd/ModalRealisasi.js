@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Box } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
+import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -23,14 +24,15 @@ import useAxios from '../../hooks/useAxios';
 const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
   const [detailSppd, setDetailSppd] = useState();
   const [idSppd, setIdSppd] = useState();
+  const [loading, setLoading] = useState(false);
 
-//   const [wb, setWb] = useState();
-//   const [ws, setWs] = useState();
+  //   const [wb, setWb] = useState();
+  //   const [ws, setWs] = useState();
 
   const [doc, setDoc] = useState('');
   const [docName, setDocName] = useState();
 
-  const [tujuan, setTujuan]=useState([]);
+  const [tujuan, setTujuan] = useState([]);
 
   dayjs.locale('id');
   const api = useAxios();
@@ -56,10 +58,10 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
       setIdSppd(sppdDetail.id);
       api.get(`dapi/sppd/pengajuan/${sppdDetail?.id}`).then((res) => {
         setDetailSppd(res.data.data);
-        
-        const tj=res.data.data?.tujuan_sppd;
-        for(let i=0; i<tj?.length; i++){
-         
+
+        const tj = res.data.data?.tujuan_sppd;
+        for (let i = 0; i < tj?.length; i++) {
+
           tj[i].rill_wb = dayjs(tj[i].waktu_berangkat);
           tj[i].rill_wt = dayjs(tj[i].waktu_kembali);
         }
@@ -73,26 +75,33 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
 
 
 
-  const submit = async() => {
+  const submit = async () => {
+    setLoading(true);
 
-    if( doc!==''){
+    if (doc !== '') {
       console.log()
-      await api.post(`dapi/sppd/pengajuan/realisasi`, {doc_file:doc, tujuan_realisasi:tujuan, id_sppd:idSppd }).then((res) => {
-        if(res.data.success){
+      await api.post(`dapi/sppd/pengajuan/realisasi`, { doc_file: doc, tujuan_realisasi: tujuan, id_sppd: idSppd }).then((res) => {
+        if (res.data.success) {
           alert('success', 'Realisasi SPPD Berhasil');
           toggleRe();
           setDoc('');
           setDocName('');
         }
+        setLoading(false);
       }).catch((err) => {
         alert('error', `${err.message}`);
+        setLoading(false);
       });
-    }else{
+    } else {
       alert('error', 'Lengkapi data terlebih dahulu !');
     }
-    
-    
+
   }
+
+  useEffect(() => {
+    console.log(tujuan);
+  }, [tujuan]);
+
   return (
     <>
       <Modal isOpen={modalRe} toggle={toggleRe} size="lg" className="modal1" centered>
@@ -112,7 +121,7 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
                             ampm={false}
                             // defaultValue={dayjs(tujuan[i].waktu_berangkat)}
                             value={tujuan[i].rill_wb}
-                            onChange={(e)=>{tujuan[i].rill_wb=e}}
+                            onChange={(e) => { tujuan[i].rill_wb = e }}
                             viewRenderers={{
                               hours: renderTimeViewClock,
                               minutes: renderTimeViewClock,
@@ -122,7 +131,7 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
                             ampm={false}
                             // defaultValue={dayjs(tujuan[i].waktu_kembali)}
                             value={tujuan[i].rill_wt}
-                            onChange={(e)=>{tujuan[i].rill_wt=e}}
+                            onChange={(e) => { tujuan[i].rill_wt = e }}
                             label="Waktu Tiba Kembali"
                             viewRenderers={{
                               hours: renderTimeViewClock,
@@ -132,49 +141,137 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
                         </DemoContainer>
                       </LocalizationProvider>
                     </Box>
+
                     <Box className="mb-4">
-                      <FormControl fullWidth>
-                        <InputLabel htmlFor="outlined-adornment-amount">Tiket</InputLabel>
-                        <OutlinedInput
-                          id="outlined-adornment-amount"
-                          type="number"
-                          startAdornment={<InputAdornment position="start">Rp</InputAdornment>}
-                          label="Amount"
-                          value={tujuan[i].rill_tiket}
-                          onChange={(e)=>{tujuan[i].rill_tiket=e.target.value}}
-                          placeholder="Sesuai dengan Tiket (isi 0 jika tidak ada)"
-                        />
-                      </FormControl>
-                    </Box>
-                    <Box className="mb-4">
-                      <FormControl fullWidth>
-                        <InputLabel htmlFor="outlined-adornment-amount">Hotel</InputLabel>
-                        <OutlinedInput
-                          id="outlined-adornment-amount"
-                          type="number"
-                          value={tujuan[i].rill_hotel}
-                          onChange={(e)=>{tujuan[i].rill_hotel=e.target.value;}}
-                          startAdornment={<InputAdornment position="start">Rp</InputAdornment>}
-                          label="Amount"
-                          placeholder="Sesuai dengan bill hotel  (isi 0 jika tidak ada)"
-                        />
-                      </FormControl>
+                      <TextField
+                        id="outlined-basic"
+                        style={{ width: '100%' }}
+                        value={tujuan[i].rill_tiket}
+                        type="number"
+                        onChange={(e) => { 
+                          const tTiket = tujuan.map((item, index) =>
+                            index === i
+                              ? { ...item, rill_tiket: e.target.value }
+                              : item  
+                          );
+                          setTujuan(tTiket);
+                        }}
+                        label="Tiket Pesawat"
+                        variant="outlined"
+                        placeholder="Sesuai dengan Total Tiket PP (isi 0 jika tidak ada)"
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start">Rp</InputAdornment>, // Menambahkan "Rp" di belakang
+                        }}
+                      />
                     </Box>
 
                     <Box className="mb-4">
+                      <TextField
+                        id="outlined-basic"
+                        style={{ width: '100%' }}
+                        value={tujuan[i].rill_hotel}
+                        type="number"
+                        onChange={(e) => { 
+                          const tHotel = tujuan.map((item, index) =>
+                            index === i
+                              ? { ...item, rill_hotel: e.target.value }
+                              : item  
+                          );
+                          setTujuan(tHotel);
+                        }}
+                        label="Bill Hotel"
+                        variant="outlined"
+                        placeholder="Sesuai dengan Total Hotel yang digunakan (isi 0 jika tidak ada)"
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start">Rp</InputAdornment>, // Menambahkan "Rp" di belakang
+                        }}
+                      />
+                    </Box>
+
+                    <Box className="mb-4">
+                      <TextField
+                        id="outlined-basic"
+                        style={{ width: '100%' }}
+                        type="number"
+                        value={tujuan[i].rill_t_lokal}
+                        onChange={(e) => { 
+                          const tLokal = tujuan.map((item, index) =>
+                            index === i
+                              ? { ...item, rill_t_lokal: e.target.value }
+                              : item  
+                          );
+                          setTujuan(tLokal);
+                        }}
+                        label="Transport Lokal"
+                        variant="outlined"
+                        placeholder="Sesuai dengan Total Nota Transport Lokal Yang digunakan (isi 0 jika tidak ada)"
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start">Rp</InputAdornment>, // Menambahkan "Rp" di belakang
+                        }}
+                      />
+                    </Box>
+
+                    <Box className="mb-4">
+                      <TextField
+                        id="outlined-basic"
+                        type='number'
+                        style={{ width: '100%' }}
+                        value={tujuan[i].rill_t_umum}
+                        onChange={(e) => { 
+                          const tUmum = tujuan.map((item, index) =>
+                            index === i
+                              ? { ...item, rill_t_umum: e.target.value }
+                              : item  
+                          );
+                          setTujuan(tUmum);
+                        }}
+                        label="Transport Umum"
+                        variant="outlined"
+                        placeholder="Sesuai dengan Total Nota Transport Umum Yang digunakan (isi 0 jika tidak ada)"
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start">Rp</InputAdornment>, // Menambahkan "Rp" di belakang
+                        }}
+                      />
+                    </Box>
+
+                    <Box className="mb-4">
+                      <TextField
+                        id="outlined-basic"
+                        type='number'
+                        style={{ width: '100%' }}
+                        value={tujuan[i].rill_bbm}
+                        onChange={(e) => { 
+                          const tBbm = tujuan.map((item, index) =>
+                            index === i
+                              ? { ...item, rill_bbm: e.target.value }
+                              : item  
+                          );
+                          setTujuan(tBbm);
+                        }}
+                        label="BBM"
+                        variant="outlined"
+                        placeholder="Sesuai dengan bill bbm (isi 0 jika tidak ada)"
+                        InputProps={{
+                          startAdornment: <InputAdornment position="start">Rp</InputAdornment>, // Menambahkan "Rp" di belakang
+                        }}
+                      />
+                    </Box>
+
+
+                    {/* <Box className="mb-4">
                       <FormControl fullWidth>
                         <InputLabel htmlFor="outlined-adornment-amount">BBM</InputLabel>
                         <OutlinedInput
                           id="outlined-adornment-amount"
                           type="number"
                           value={tujuan[i].rill_bbm}
-                          onChange={(e)=>{tujuan[i].rill_bbm=e.target.value;}}
+                          onChange={(e) => { tujuan[i].rill_bbm = e.target.value; console.log(tujuan)}}
                           startAdornment={<InputAdornment position="start">Rp</InputAdornment>}
                           label="Amount"
                           placeholder="Sesuai dengan bill bbm (isi 0 jika tidak ada)"
                         />
                       </FormControl>
-                    </Box>
+                    </Box> */}
                   </Box>
                 </li>
               ))}
@@ -221,7 +318,7 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
           <Loader />
         )}
         <ModalFooter>
-            <Button color="primary" style={{ width: '100%' }} onClick={submit}>SUBMIT REALISASI</Button>
+          <Button color="primary" style={{ width: '100%' }} onClick={submit} disabled={loading}>{loading ? 'Loading...' : 'SUBMIT REALISASI'}</Button>
         </ModalFooter>
       </Modal>
     </>

@@ -523,6 +523,14 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
               detailSppd?.realisasi_biaya[i]?.rill_bbm,
             )}</td>
           </tr> 
+
+           <tr>
+            <td style="margin-bottom:5px; margin-top:4px; border-right:none;border-left:none">Tranportasi Umum</td>
+            <td style="margin-bottom:5px; margin-top:4px; border-right:none;border-left:none">100% PEMA </td>
+            <td style="margin-bottom:5px; margin-top:4px;border-left:none;border-right:none" >${rupiah(
+              detailSppd?.realisasi_biaya[i]?.rill_t_umum,
+            )}</td>
+          </tr> 
          
           <tr>
             <td style="margin-bottom:5px; margin-top:4px; border-right:none;border-left:none"><strong>Total Biaya</strong></td </td>
@@ -579,13 +587,13 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
         <ol style="margin-top:-15;margin-bottom:-19">
     ${tets}
           </ol>
-          <span><strong>TOTAL AKTUAL BIAYA _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _${rupiah(detailSppd?.rill_biaya)}
+          <span><strong>Total Aktual Biaya _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _${rupiah(detailSppd?.rill_biaya)}
           <br/>
-          BAYAR VENDOR TIKET _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ${rupiah(detailSppd?.rill_tiket)}
+          Bayar Vendor Tiket _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ${rupiah(detailSppd?.rill_tiket)}
           <br/>
-          TOTAL UANG MUKA _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _  <u>${rupiah(detailSppd?.uang_muka)}  </u>
+          Total Uang Muka _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _<u>${rupiah(detailSppd?.uang_muka)}  </u>
           <br/>
-          TOTAL SELISIH BIAYA _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _   <i style="color:${(detailSppd?.rill_biaya-detailSppd?.uang_muka-detailSppd?.rill_tiket)<0?'red':'green'}">${rupiah((detailSppd?.rill_biaya)-(detailSppd?.uang_muka)-(detailSppd?.rill_tiket))}</i>
+          Total Selisih Biaya _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _   <i style="color:${(detailSppd?.rill_biaya-detailSppd?.uang_muka-detailSppd?.rill_tiket)<0?'red':'green'}">${rupiah((detailSppd?.rill_biaya)-(detailSppd?.uang_muka)-(detailSppd?.rill_tiket))}</i>
           </strong>   
           </span>
       </td>
