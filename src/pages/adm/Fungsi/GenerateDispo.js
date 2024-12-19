@@ -138,7 +138,7 @@ const GenerateDispo = (dataSurat) => {
                  
                 </tbody>
                 </table>
-                 <p style="margin-left:20;margin-top:-2;">agssagag</p>
+                 <p style="margin-left:20;margin-top:-2;">${dataSurat?.catatan}</p>
              </td>
             </tr>
             <tr>

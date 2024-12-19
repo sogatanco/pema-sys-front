@@ -43,7 +43,12 @@ const Adm = () => {
   console.log(hash.replace(/#/g, ''));
 
   useEffect(() => {
-    setValue(`${hash.replace(/#/g, '').toString()}`);
+    if(hash !== ''){
+      setValue(`${hash.replace(/#/g, '').toString()}`);
+    }else{
+      setValue('99');
+    }
+   
   }, [hash]);
 
   const handleChange = (event, newValue) => {
