@@ -36,7 +36,7 @@ const ModalLogs = ({ modalLog, toggleLog, sppdDetail }) => {
                   <li key={item.id}>
                     <h5
                       style={{ marginBottom: '-1px' }}
-                      className='fw-bold text-uppercase'
+                      className='fw-bold'
                     >
                       {item.first_name}
                     </h5>

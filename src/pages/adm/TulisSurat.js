@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Box from '@mui/material/Box';
-import PropTypes  from 'prop-types';
+import PropTypes from 'prop-types';
 import TextField from '@mui/material/TextField';
 import { Editor } from '@tinymce/tinymce-react';
 import { MenuItem } from '@mui/material';
@@ -17,12 +17,15 @@ import { alert } from '../../components/atoms/Toast';
 import logo from '../../assets/images/qrcode/qr-code-logo.png';
 import toRoman from './Fungsi/toRoman';
 
-const TulisSurat = ({ divisis, mydivisi, refresh, func1 }) => {
+const TulisSurat = ({ divisis, mydivisi, refresh, func1, detailSurat, updateForm }) => {
   const baseURL1 = process.env.REACT_APP_FRONTEND;
   const api = useAxios();
   const qrCodeRef = useRef();
 
   const dataSurat = JSON.parse(localStorage.getItem('dataSurat'));
+  const id = dataSurat?.id ? dataSurat?.id : '';
+  const tglSurat = dataSurat?.tglSurat ? dataSurat?.tglSurat : new Date().toISOString();
+  const nomorSurat = dataSurat?.nomorSurat ? dataSurat?.nomorSurat : `. . . /PEMA/${toRoman(new Date().getMonth() + 1)}/${new Date().getFullYear()}`;
   const [ttdBys, setTtdBys] = useState(dataSurat?.ttdBys || []);
 
   const [kepada, setKepada] = useState(dataSurat?.kepada || '');
@@ -31,9 +34,10 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1 }) => {
   const [tembusan, setTembusan] = useState(dataSurat?.tembusan || '');
   const [tembusans, setTembusans] = useState(dataSurat?.tembusans || []);
 
-  const [lampiran, setLampiran] = useState(dataSurat?.lampiran || '');
+  const [lampiran, setLampiran] = useState(dataSurat?.lampiran || '0');
   const [jenislampiran, setJenisLampiran] = useState(dataSurat?.jenislampiran || 'Eks');
-  const [fileLampiran, setFileLampiran] = useState('');
+  const [fileLampiran, setFileLampiran] = useState(detailSurat?.fileLampiran
+     || '');
 
   const [divisi, setDivisi] = useState(dataSurat?.divisi || mydivisi);
 
@@ -48,6 +52,7 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1 }) => {
     localStorage.setItem(
       'dataSurat',
       JSON.stringify({
+        id,
         kepada,
         perihal,
         ttdBy,
@@ -59,8 +64,8 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1 }) => {
         ttdBys,
         isiSurat,
         signer: ttdBys?.find((s) => s.employe_id === ttdBy),
-        tglSurat: new Date().toISOString(),
-        nomorSurat: `. . . /PEMA/${toRoman(new Date().getMonth() + 1)}/${new Date().getFullYear()}`,
+        tglSurat,
+        nomorSurat,
         draft: true
       }),
     );
@@ -125,7 +130,15 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1 }) => {
   useEffect(() => {
     api.get(`dapi/adm/signers/${divisi}`).then((res) => {
       setTtdBys(res.data.data);
-      setTtdBy(dataSurat?.ttdBy || '');
+      // const ttd=res.data.data.find(s => s.employe_id === ttdBy);
+      // setTtdBy(dataSurat?.ttdBy||'');
+      // console.log(res.data.data.find(s => s.employe_id === ttdBy)?.length);
+      if (res.data.data.find(s => s.employe_id === ttdBy)) {
+        setTtdBy(dataSurat?.ttdBy)
+      } else {
+        setTtdBy('')
+      }
+
     });
   }, [divisi]);
 
@@ -172,20 +185,40 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1 }) => {
 
   }
 
-  const submit = () => {
+  const submit = async () => {
 
     setLoading(true);
     const allData = {
       ...dataSurat, fileLampiran, type: 'main'
     }
 
-    api.post(`dapi/adm/insert`, allData).then((res) => {
+    await api.post(`dapi/adm/insert`, allData).then((res) => {
       console.log(res?.data);
       if (res.status === 200) {
         alert('success', 'Dokumen Berhasil submit !');
         afterSubmit();
       } else {
-        alert('error', 'SPPD Gagal diajukan, Hubungi Tim IT untuk problem selanjutnya !');
+        alert('error', 'Dokumen Gagal submit, Hubungi Tim IT untuk problem selanjutnya !');
+      }
+      setLoading(false);
+    }).catch((err) => {
+      alert('error', `${err.message}`);
+      setLoading(false);
+    });
+  };
+
+  const update = async () => {
+    setLoading(true);
+    const allData = {
+      ...dataSurat, fileLampiran, type: 'main'
+    }
+    await api.post(`dapi/adm/update`, allData).then((res) => {
+      console.log(res?.data);
+      if (res.status === 200) {
+        alert('success', 'Dokumen Berhasil diupdate !');
+        afterSubmit();
+      } else {
+        alert('error', 'Dokumen Gagal diupdate, Hubungi Tim IT untuk problem selanjutnya !');
       }
       setLoading(false);
     }).catch((err) => {
@@ -250,22 +283,26 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1 }) => {
             />
           </Box>
 
-          <Box className="mb-3">
-            <TextField
-              select
-              style={{ width: '100%' }}
-              variant="outlined"
-              value={ttdBy}
-              onChange={(e) => setTtdBy(e.target.value)}
-              label="Ditandatangani Oleh"
-            >
-              {ttdBys?.map((item) => (
-                <MenuItem key={item?.employe_id} value={item?.employe_id}>
-                  {item?.first_name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
+          {
+            ttdBys?.length > 0 && (
+              <Box className="mb-3">
+                <TextField
+                  select
+                  style={{ width: '100%' }}
+                  variant="outlined"
+                  value={ttdBy}
+                  onChange={(e) => setTtdBy(e.target.value)}
+                  label="Ditandatangani Oleh"
+                >
+                  {ttdBys?.map((item) => (
+                    <MenuItem key={item?.employe_id} value={item?.employe_id}>
+                      {item?.first_name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Box>
+            )
+          }
 
           <Box className="mb-3">
             <TextField
@@ -275,6 +312,7 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1 }) => {
               label="Jumlah Lampiran"
               value={lampiran}
               placeholder="3"
+              inputProps={{ min: 0 }}
               onChange={(e) => setLampiran(e.target.value)}
               variant="outlined"
             />
@@ -464,9 +502,14 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1 }) => {
               <Button color="warning" onClick={() => setBerang('form2')}>
                 Sebelumnya
               </Button>
-              <Button color="success" onClick={() => submit()} disabled={loading}>
-                {loading?'Loading...': 'Submit'}
-              </Button>
+              {updateForm ?
+                <Button color="success" onClick={() => update()} disabled={loading}> 
+                {loading ? 'Loading...' : 'Update'}
+                </Button>
+                :
+                <Button color="success" onClick={() => submit()} disabled={loading}>
+                  {loading ? 'Loading...' : 'Submit'}
+                </Button>}
             </ButtonGroup>
           </Box>
         </Box>
@@ -482,6 +525,8 @@ TulisSurat.propTypes = {
   mydivisi: PropTypes.string,
   refresh: PropTypes.func,
   func1: PropTypes.func,
+  detailSurat: PropTypes.object,
+  updateForm: PropTypes.bool
 };
 
 export default TulisSurat;
