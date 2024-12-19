@@ -39,6 +39,7 @@ const BandwidthUsage = ({title, sub, count, tipe, color}) => {
       show: false,
     },
     tooltip: {
+      enabled:false,
       theme: 'dark',
     },
   };

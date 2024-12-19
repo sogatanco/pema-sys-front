@@ -148,11 +148,11 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
                         style={{ width: '100%' }}
                         value={tujuan[i].rill_tiket}
                         type="number"
-                        onChange={(e) => { 
+                        onChange={(e) => {
                           const tTiket = tujuan.map((item, index) =>
                             index === i
                               ? { ...item, rill_tiket: e.target.value }
-                              : item  
+                              : item
                           );
                           setTujuan(tTiket);
                         }}
@@ -171,11 +171,11 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
                         style={{ width: '100%' }}
                         value={tujuan[i].rill_hotel}
                         type="number"
-                        onChange={(e) => { 
+                        onChange={(e) => {
                           const tHotel = tujuan.map((item, index) =>
                             index === i
                               ? { ...item, rill_hotel: e.target.value }
-                              : item  
+                              : item
                           );
                           setTujuan(tHotel);
                         }}
@@ -194,11 +194,11 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
                         style={{ width: '100%' }}
                         type="number"
                         value={tujuan[i].rill_t_lokal}
-                        onChange={(e) => { 
+                        onChange={(e) => {
                           const tLokal = tujuan.map((item, index) =>
                             index === i
                               ? { ...item, rill_t_lokal: e.target.value }
-                              : item  
+                              : item
                           );
                           setTujuan(tLokal);
                         }}
@@ -217,11 +217,11 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
                         type='number'
                         style={{ width: '100%' }}
                         value={tujuan[i].rill_t_umum}
-                        onChange={(e) => { 
+                        onChange={(e) => {
                           const tUmum = tujuan.map((item, index) =>
                             index === i
                               ? { ...item, rill_t_umum: e.target.value }
-                              : item  
+                              : item
                           );
                           setTujuan(tUmum);
                         }}
@@ -240,11 +240,11 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
                         type='number'
                         style={{ width: '100%' }}
                         value={tujuan[i].rill_bbm}
-                        onChange={(e) => { 
+                        onChange={(e) => {
                           const tBbm = tujuan.map((item, index) =>
                             index === i
                               ? { ...item, rill_bbm: e.target.value }
-                              : item  
+                              : item
                           );
                           setTujuan(tBbm);
                         }}
@@ -256,6 +256,32 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
                         }}
                       />
                     </Box>
+
+                    <TextField
+                      id="outlined-basic"
+                      type="number"
+                      style={{ width: '100%' }}
+                      value={tujuan[i].rill_bbm}
+                      onChange={(e) => {
+                        const tBbm = tujuan.map((item, index) =>
+                          index === i
+                            ? { ...item, rill_bbm: e.target.value }
+                            : item
+                        );
+                        setTujuan(tBbm);
+                      }}
+                      label="BBM"
+                      variant="outlined"
+                      placeholder="Sesuai dengan bill bbm (isi 0 jika tidak ada)"
+                      
+                      InputProps={{
+                        startAdornment: <InputAdornment position="start">Rp</InputAdornment>,
+                        inputProps:{
+                          min: 0,    // Batas minimum
+                          max: 100,  // Batas maksimum
+                        } // Menambahkan "Rp" di depan
+                      }}
+                    />
 
 
                     {/* <Box className="mb-4">
