@@ -23,3 +23,79 @@
 .account-view {
   width: 350px;
 }
+
+.apps-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  position: relative;
+
+  .click {
+    display: flex;
+    justify-content: center;
+    height: fit-content;
+    cursor: pointer;
+  }
+
+  i {
+    color: white;
+  }
+
+  &:hover {
+    background-color: #62a9e6;
+  }
+
+  .app-lay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    // background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .app-container {
+    position: absolute;
+    right: 0px;
+    top: 30px;
+    padding: 20px;
+    // width: 335px;
+    background-color: white;
+    border-radius: 20px;
+    border: 6px solid #c6d3df;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+
+    .app-body {
+      display: flex;
+      // flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 3px;
+
+      .item {
+        padding: 10px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        border-radius: 20px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 200ms ease;
+        margin-top: 0;
+
+        span {
+          font-size: 14px;
+          font-weight: 500;
+          color: #8a8a8a;
+        }
+
+        &:hover {
+          background-color: rgb(237, 236, 236);
+          // margin-top: -1px;
+          box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+        }
+      }
+    }
+  }
+}
