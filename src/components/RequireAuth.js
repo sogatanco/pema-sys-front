@@ -2,14 +2,16 @@ import React, { useContext } from 'react';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { AuthContext } from '../context/AuthContext';
+// import LoginSso from './LoginSso';
 
 const RequireAuth = ({ allowedRoles }) => {
   const { auth } = useContext(AuthContext);
   const location = useLocation();
 
-  // console.log(auth.user.roles);
+  // const params = new URLSearchParams(location.search);
 
-  // return auth ? <Outlet /> : <Navigate to="/auth/login" state={{ from: location }} replace />;
+  // const source = params.get('source') || '';
+  // console.log(source);
 
   return auth?.user?.roles?.find((role) => allowedRoles?.includes(role)) ? (
     <Outlet />
