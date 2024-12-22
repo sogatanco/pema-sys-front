@@ -15,7 +15,7 @@ const DashboardAdm = () => {
 
     const api = useAxios();
     const { data, isLoading } = useQuery({
-        queryKey: ['dataDash'],
+        queryKey: ['dataDash2'],
         queryFn: () =>
             api.get(`/dapi/adm/dashboard`).then((res) => {
                 return res.data.data;
