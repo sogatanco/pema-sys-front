@@ -181,9 +181,12 @@ const HorizontalHeader = () => {
                     <div className="app-body">
                       <Link to={`${SYS_URL}`} target="blank" className="item">
                         <span className="circle-box md-box text-dark-white bg-success">
-                          <i className="fs-2 bi bi-globe" />
+                          <i className="fs-2 bi bi-building" />
                         </span>
                         <span>Sys</span>
+                        <div className="desc">
+                          <span>Daily, Project Management, Asset, Administrasi, SPPD</span>
+                        </div>
                       </Link>
                       <Link
                         to={`${HR_URL}?source=sys&token=${auth?.token}`}
@@ -194,18 +197,36 @@ const HorizontalHeader = () => {
                           <i className="fs-2 bi bi-person-lines-fill" />
                         </span>
                         <span>HR</span>
+                        <div className="desc">
+                          <span>Profil Karyawan, Penggajian, Pengajuan Cuti & Absensi</span>
+                        </div>
                       </Link>
                       <Link to="https://ivds.ptpema.co.id" target="blank" className="item">
                         <span className="circle-box md-box text-dark-white bg-success">
                           <i className="fs-2 bi bi-wallet2" />
                         </span>
                         <span>Vendor</span>
+                        <div className="desc">
+                          <span>Sistem Terintregasi Vendor</span>
+                        </div>
                       </Link>
                       <Link to="https://ptpema.co.id" target="blank" className="item">
                         <span className="circle-box md-box text-dark-white bg-success">
-                          <i className="fs-2 bi bi-building" />
+                          <i className="fs-2 bi bi-globe" />
                         </span>
                         <span>Website</span>
+                        <div className="desc">
+                          <span>Website Resmi PT Pema</span>
+                        </div>
+                      </Link>
+                      <Link to="https://ptpema.co.id" target="blank" className="item">
+                        <span className="circle-box md-box text-dark-white bg-success">
+                          <i className="fs-2 bi bi-phone" />
+                        </span>
+                        <span>Mobile</span>
+                        <div className="desc">
+                          <span>Installer aplikasi presensi Android & IOS</span>
+                        </div>
                       </Link>
                     </div>
                   </div>
