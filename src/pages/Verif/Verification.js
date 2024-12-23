@@ -51,15 +51,46 @@ const Verification = () => {
     fetchData();
   }, []);
 
-  const viewSurat = async () => {
+  const viewSurat = () => {
+    console.log(data?.detail)
     setLoading(true);
 
-    const pdf = await GenerateSurat(data?.detail, qrCodeRef);
+    async function fetch(deta) {
+      try {
+        const pdf = await GenerateSurat(deta, qrCodeRef);
 
-    FMerge(pdf, data?.detail?.fileLampiran).then((res) => {
-      window.open(res);
+        FMerge(pdf, data?.detail?.fileLampiran).then((res) => {
+
+          const newWindow = window.open(res);
+
+          if (!newWindow || newWindow.closed || typeof newWindow.closed === "undefined") {
+            // Fallback untuk Safari atau jika popup diblokir
+            // alert("Tidak dapat membuka tab baru. File akan diunduh.");
+            const link = document.createElement("a");
+            link.href = res;
+            link.download = "file.txt"; // Nama file
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+
+          // Bersihkan URL Blob setelah selesai
+          URL.revokeObjectURL(res);
+
+
+        });
+
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    setTimeout(() => {
       setLoading(false);
-    });
+      fetch(data?.detail);
+    }, 300)
+
+
 
 
   }
@@ -137,7 +168,7 @@ const Verification = () => {
               </div>
               {
                 data?.jenis_doc === 2 && (
-                  <Badge color="info" style={{ zIndex: 3, cursor: 'pointer' }} onClick={() => viewSurat()}> {loading?'Loading...': 'Lihat Surat'} </Badge>
+                  <Badge color="info" style={{ zIndex: 3, cursor: 'pointer' }} onClick={() => viewSurat()}> {loading ? 'Loading...' : 'Lihat surat'} </Badge>
 
                 )
               }
@@ -154,7 +185,7 @@ const Verification = () => {
 
       <div ref={qrCodeRef} style={{ display: 'none' }}>
         <QRCode
-          value={`${baseURL1}verification/${data?.no_document}?type=sign`}
+          value={`${baseURL1}verification/${data?.id_doc}?type=sign`}
           size={400}
           qrStyle="dots"
           logoImage={logo} // Ganti dengan URL logo kamu
