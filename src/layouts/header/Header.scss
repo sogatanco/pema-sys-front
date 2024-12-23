@@ -65,12 +65,16 @@
     border-radius: 20px;
     border: 6px solid #c6d3df;
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    height: 150px;
+    transition: all 200ms ease;
 
     .app-body {
+      position: relative;
       display: flex;
       // flex-wrap: wrap;
       justify-content: flex-start;
       gap: 3px;
+      height: max-content;
 
       .item {
         padding: 10px 20px;
@@ -84,6 +88,10 @@
         transition: all 200ms ease;
         margin-top: 0;
 
+        .desc {
+          display: none;
+        }
+
         span {
           font-size: 14px;
           font-weight: 500;
@@ -94,8 +102,35 @@
           background-color: rgb(237, 236, 236);
           // margin-top: -1px;
           box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+
+          .desc {
+            display: block;
+            position: absolute;
+            width: max-content;
+            border: 1px 0px 0px 0px solid #c6d3df;
+            bottom: -50px;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background-color: whitesmoke;
+            border-radius: 8px;
+            width: 100%;
+            flex-wrap: wrap;
+
+            span {
+              color: #62a9e6;
+              font-size: 12px;
+              font-weight: 500;
+            }
+          }
         }
       }
+    }
+
+    &:hover {
+      height: 200px;
     }
   }
 }
