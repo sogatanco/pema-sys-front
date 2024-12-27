@@ -16,7 +16,7 @@ const onDismiss = () => setVisible(false);
   return (
     <>
      <Alert color="info" isOpen={visible} toggle={onDismiss}>
-      Baca Dokumentasi sistem ADM <a href='https://gofile.me/7mNIn/PBFC3xKHr' target='_blank' rel='noreferrer' style={{textDecoration:'none'}}>disini !!!</a> 
+      Baca Dokumentasi Aplikasi <a href='https://api.ptpema.co.id/adm/dokumentasi/adm.pdf' target='_blank' rel='noreferrer' style={{textDecoration:'none'}}>disini !!!</a> 
     </Alert>
       <BreadCrumbs />
       <Adm />
