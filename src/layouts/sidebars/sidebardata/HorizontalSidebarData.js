@@ -122,15 +122,59 @@ const SidebarData = [
     // ddType: '-column',
     allowedRoles: ['Employee'],
   },
+
   { caption: 'Manual Book' },
   {
     title: 'Manual Book',
-    href: 'https://drive.google.com/drive/folders/13u1UBwpLfVDsF0WoOMoNfU1_O1d3GTou?usp=sharing',
+    href: '',
     id: 8,
-    icon: <MaterialIcon icon="menu_book" />,
-    ddType: 'two-column',
+    icon:<MaterialIcon icon="menu_book" />,
+    // ddType: 'two-column',
+    collapisble: true,
     allowedRoles: ['Employee'],
+    children: [
+      {
+        title: 'Daily Activity',
+        href: 'https://drive.google.com/file/d/1U3tmrNP-jWxmt5O4RSvM5Z6kcAqeXQJU/view',
+        allowedRoles: ['Employee'],
+        icon: <MaterialIcon icon="event" />,
+      },
+      {
+        title: 'Project Management',
+        href: 'https://drive.google.com/file/d/16IiswEaaw28YpnOZVrWOCO9pm9V7xZxx/view',
+        allowedRoles: ['Employee'],
+        icon: <MaterialIcon icon="work_history" />,
+      },
+      {
+        title: 'Aplikasi Asset',
+        href: 'https://drive.google.com/file/d/1jVj5zDuPVM4IWSAh04AF38ZkkUh4j1e3/view',
+        allowedRoles: ['Employee'],
+        icon: <MaterialIcon icon="grid_view" />,
+      },
+      {
+        title: 'Aplikasi SPPD',
+        href: 'https://api.ptpema.co.id/sppd/dokumentasi/SPPD.pdf',
+        allowedRoles: ['Employee'],
+        icon: <MaterialIcon icon="flight_takeoff" />,
+      },
+      {
+        title: 'Aplikasi ADM',
+        href: 'https://api.ptpema.co.id/adm/dokumentasi/adm.pdf',
+        allowedRoles: ['Employee'],
+        icon: <MaterialIcon icon="history_edu" />,
+      },
+    ],
   },
+
+  // { caption: 'Manual Book' },
+  // {
+  //   title: 'Manual Book',
+  //   href: 'https://drive.google.com/drive/folders/13u1UBwpLfVDsF0WoOMoNfU1_O1d3GTou?usp=sharing',
+  //   id: 8,
+  //   icon: <MaterialIcon icon="menu_book" />,
+  //   ddType: 'two-column',
+  //   allowedRoles: ['Employee'],
+  // },
 
   // { caption: 'Form' },
   // {
