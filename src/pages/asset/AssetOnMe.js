@@ -8,14 +8,12 @@ import user1 from '../../assets/images/users/user1.jpg';
 import useAxios from '../../hooks/useAxios';
 import { alert } from '../../components/atoms/Toast';
 
-const baseURL = process.env.REACT_APP_BASEURL;
 
 const AssetOnMe = ({ onMe, handleChange, refetch1, refetch2 }) => {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState([]);
-  const [sesImg, setSesImg] = useState(new Date());
   const [modal, setModal] = useState(false);
-  const [complaint, setComplaint] = useState();
+  const [complaint, setComplaint] = useState('');
   const [assetId, setAssetId] = useState();
   const navigate = useNavigate();
 
@@ -32,13 +30,26 @@ const AssetOnMe = ({ onMe, handleChange, refetch1, refetch2 }) => {
   };
   const columns = [
     {
-      name: 'Photo',
+      name: 'Action',
+      width: '250px',
       selector: (row) => (
-        <img
-          className="img-thumbnail img-list mt-1 mb-1"
-          alt={row.id}
-          src={`${baseURL}inven${row?.file}?s=${sesImg}`}
-        />
+        <>
+          <Button
+            color="info"
+            outline
+            size="sm"
+            className='me-2'
+            style={{ width: '130px' }}
+            onClick={() => toggle(row.id)}
+            disabled={row.request_service}
+          >
+            {row.request_service ? 'Requested' : 'Request Service'}
+          </Button>
+          <Button color="primary" outline onClick={() => go(row)} size="sm">
+            {' '}
+            Detail
+          </Button></>
+
       ),
     },
     {
@@ -76,52 +87,37 @@ const AssetOnMe = ({ onMe, handleChange, refetch1, refetch2 }) => {
         </div>
       ),
     },
-    {
-      name: 'Action',
-      selector: (row) => (
-        <>
-         <Button
-          color="primary"
-          outline
-          size="sm"
-          onClick={() => toggle(row.id)}
-          disabled={row.request_service}
-        >
-          {row.request_service ? 'Service Requested' : 'Request Service'}
-        </Button>
-         <Button color="primary" outline onClick={() => go(row)} size="sm">
-         {' '}
-         Check Detail
-       </Button></>
-       
-      ),
-    },
+
   ];
 
   const submit = async () => {
     const vadd = { complaint, asset_child: assetId };
-
-    await api
-      .post(`dapi/inv/rservice`, vadd)
-      .then((res) => {
-        if (res?.data?.success) {
+    if (complaint === '') {
+      alert('error', 'Complaint is required !');
+    } else {
+      await api
+        .post(`dapi/inv/rservice`, vadd)
+        .then((res) => {
+          if (res?.data?.success) {
+            toggle();
+            handleChange('', '3');
+            alert('success', `Request Submitted succesfully !`);
+            refetch2();
+            refetch1();
+          }
+        })
+        .catch((err) => {
           toggle();
-          handleChange('', '3');
-          alert('success', `Request Submitted succesfully !`);
-          refetch2();
-          refetch1();
-        }
-      })
-      .catch((err) => {
-        toggle();
 
-        alert('error', err);
-      });
+          alert('error', err);
+        });
+    }
+
   };
 
   useEffect(() => {
     setFilter(onMe);
-    setSesImg(new Date());
+    // setSesImg(new Date());
   }, [onMe]);
 
   useEffect(() => {
@@ -181,7 +177,7 @@ AssetOnMe.propTypes = {
   onMe: PropTypes.array,
   handleChange: PropTypes.func,
   refetch1: PropTypes.func,
-  refetch2:PropTypes.func
+  refetch2: PropTypes.func
 };
 
 export default AssetOnMe;

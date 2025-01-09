@@ -1,15 +1,76 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import './Asset.scss';
 import DataTable from 'react-data-table-component';
-import { Button } from 'reactstrap';
+import { Button, Input, ButtonGroup } from 'reactstrap';
+import MaterialIcon from '@material/react-material-icon';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { alert } from '../../components/atoms/Toast';
 import user1 from '../../assets/images/users/user1.jpg';
+import PrintNumber from './PrintNumber';
+import useAxios from '../../hooks/useAxios';
 
-// const baseURL = process.env.REACT_APP_BASEURL;
-// gsdgsdgsta
+
 const ListAsset = ({ listAsset, refetch }) => {
-  console.log(listAsset);
+
+  const [selectedAsset, setSelectedAsset] = useState([]);
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState([]);
+  const api = useAxios();
+
+  const navigate = useNavigate();
+  const [acet, setAcet] = useState([]);
+
+  useEffect(() => {
+    setFilter(listAsset);
+  }, [listAsset]);
+
+  useEffect(() => {
+    setFilter(listAsset?.filter((p) =>
+      p.name.toLocaleLowerCase().match(search.toLocaleLowerCase()),
+    ));
+  }, [search])
+
+  const handleChange = ({ selectedRows }) => {
+    setSelectedAsset(selectedRows);
+    const asetprint = [];
+    for (let i = 0; i < selectedRows?.length; i++) {
+      for (let j = 0; j < selectedRows[i].child?.length; j++) {
+        asetprint.push({
+          name: selectedRows[i].name,
+          number: selectedRows[i].child[j].asset_number,
+          id: selectedRows[i].child[j].id,
+        });
+      }
+    }
+    setAcet(asetprint);
+  };
+
+
+
+  const deleteAsset = async () => {
+    await api
+      .post(`dapi/inven/delete`, { data: selectedAsset })
+      .then((res) => {
+        if (res?.data?.success) {
+          alert('success', `${res?.data?.message}`);
+          refetch();
+          setSelectedAsset([]);
+          // console.log(res.data)
+        } else {
+          alert('error', `${res?.data?.message}`);
+        }
+      })
+      .catch((err) => {
+        setSelectedAsset([]);
+        alert('error', err);
+      });
+  };
+
+  const go = (r) => {
+    navigate(`${r.id}`);
+  };
 
   setTimeout(() => {
     refetch();
@@ -57,8 +118,8 @@ const ListAsset = ({ listAsset, refetch }) => {
     },
     {
       name: 'Action',
-      selector: () => (
-        <Button color="primary" outline  size="sm">
+      selector: (row) => (
+        <Button color="primary" outline onClick={() => go(row)} size="sm">
           {' '}
           Check Detail
         </Button>
@@ -69,12 +130,40 @@ const ListAsset = ({ listAsset, refetch }) => {
 
   return (
     <>
-    <DataTable
-      columns={columns}
-      data={listAsset}
-      pagination
-    />
-      
+      <DataTable
+        columns={columns}
+        data={filter}
+        selectableRows
+        onSelectedRowsChange={handleChange}
+        onChangePage={(page) => localStorage.setItem('pageTable', page)}
+        pagination
+        paginationDefaultPage={localStorage.getItem('pageTable') || 1}
+        subHeader
+        subHeaderComponent={
+
+          <div className="d-flex justify-content-end w-100">
+            <ButtonGroup className="me-3">
+              <Button color="danger" outline className="pb-0" onClick={deleteAsset}>
+                <MaterialIcon icon="delete_forever" />
+              </Button>
+              <Button color="warning" outline>
+                <PDFDownloadLink document={<PrintNumber {...{ acet }} />} fileName={`SysPEMA-${new Date()}`}>
+                  <MaterialIcon icon="print" />
+                </PDFDownloadLink>
+              </Button>
+            </ButtonGroup>
+            <Input
+              type="text"
+              value={search}
+              placeholder="search . . . . "
+              className="w-25"
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+        }
+      />
+
     </>
   );
 };

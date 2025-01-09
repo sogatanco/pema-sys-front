@@ -18,7 +18,7 @@ import Request from './Request';
 const Asset = () => {
   const { auth } = useAuth();
   const { hash } = useLocation();
-  const [value, setValue] = useState(`${auth?.user.roles.includes('PicAsset') ? '1' : '2'}`);
+  const [value, setValue] = useState(`${localStorage.getItem('page')? localStorage.getItem('page'):auth?.user.roles.includes('PicAsset') ? '1' : '2' }`);
   const [onMe, setOnMe] = useState();
 
   const api = useAxios();
@@ -29,6 +29,7 @@ const Asset = () => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    localStorage.setItem('page', newValue);
   };
 
   useEffect(() => {
@@ -53,11 +54,11 @@ const Asset = () => {
       api.get(`dapi/inv/onme`).then((res) => {
         setOnMe(res.data.data);
       })
-    }else if(value === '3'){
+    }
       api.get(`dapi/inv/getrservice`).then((res) => {
         setReqser(res.data.data);
       })
-    }
+    
   }
 
   useEffect(() => {
@@ -112,7 +113,7 @@ const Asset = () => {
             <Tab
               label={
                 <Badge
-                  badgeContent={0}
+                  badgeContent={reqser?.filter((item) => item.status === 'submit')?.length}
                   anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
@@ -145,14 +146,14 @@ const Asset = () => {
         <TabPanel value="2" className="ps-0 pe-0">
           <Card>
             <CardBody>
-              <AssetOnMe {...{ onMe, handleChange, getData }} />
+              <AssetOnMe onMe={onMe} handleChange={handleChange} refetch1={getData} refetch2={getData}/>
             </CardBody>
           </Card>
         </TabPanel>
         <TabPanel value="3" className="ps-0 pe-0">
           <Card>
             <CardBody>
-              <Request {...{ reqser, getData }} />
+              <Request reqser={reqser} refetch2={getData} />
             </CardBody>
           </Card>
         </TabPanel>

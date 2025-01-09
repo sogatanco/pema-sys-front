@@ -32,7 +32,7 @@ const DetailAsset = () => {
   const { auth } = useAuth();
 
   const inputRef = useRef(null);
-  const baseURL = process.env.REACT_APP_BASEURL;
+  // const baseURL = process.env.REACT_APP_BASEURL;
   const { assetId } = useParams();
   const [modal, setModal] = useState(false);
   const [modal1, setModal1] = useState(false);
@@ -47,7 +47,7 @@ const DetailAsset = () => {
   const [inVendor, setInVendor] = useState('');
   const [inAcquisition, setInAcquisition] = useState('');
   const [inLocation, setInLocation] = useState('');
-  const [sesImg, setSesImg] = useState(new Date());
+  const [ setSesImg] = useState(new Date());
 
   const api = useAxios();
 
@@ -57,6 +57,7 @@ const DetailAsset = () => {
         queryKey: ['assetDetail', 0],
         queryFn: () =>
           api.get(`dapi/inven/${assetId}`).then((res) => {
+            console.log(res.data.data);
             return res.data.data;
           }),
       },
@@ -150,6 +151,7 @@ const DetailAsset = () => {
   ];
   useEffect(() => {
     refetch();
+    console.log(result[0]?.data);
   }, [assetId]);
 
   const valueChild = {
@@ -288,7 +290,7 @@ const DetailAsset = () => {
       <Card>
         <CardBody>
           <Row className="content">
-            {result[0]?.data?.file !== undefined ? (
+           
               <Col
                 sm="12"
                 lg="5"
@@ -297,7 +299,7 @@ const DetailAsset = () => {
                   backgroundPosition: `center`,
                   backgroundSize: `cover`,
                   backgroundRepeat: `no-repeat`,
-                  backgroundImage: `url('${baseURL}inven${result[0].data?.file}?s=${sesImg}')`,
+                  backgroundImage: `url(${result[0]?.data?.file_image})`,
                 }}
               >
                 {auth.user.roles.includes('PicAsset') ? (
@@ -314,9 +316,7 @@ const DetailAsset = () => {
                   </div>
                 ) : ''}
               </Col>
-            ) : (
-              ''
-            )}
+          
             <Col sm="12" lg="7" className="py-4 text">
               <div className="d-flex justify-content-between">
                 <h2 className="text-bold mb-0">{result[0].data?.name}</h2>
