@@ -138,12 +138,27 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
 
 
             FMerge(res.data.data.file_surat, '').then((t) => {
-                window.open(t);
+                const newWindow = window.open(t);
+
+                if (!newWindow || newWindow.closed || typeof newWindow.closed === "undefined") {
+                    // Fallback untuk Safari atau jika popup diblokir
+                    // alert("Tidak dapat membuka tab baru. File akan diunduh.");
+                    const link = document.createElement("a");
+                    link.href = t;
+                    link.download = "file.txt"; // Nama file
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+                URL.revokeObjectURL(t);
+
+                // window.open(t);
                 setLoadingViewSM('');
             });
 
         })
     }
+
 
     const dispoSurat = (id) => {
         const dt = listP.find((p) => p.id === id);
@@ -225,7 +240,7 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
     const columsMasuk = [
         {
             name: 'Action',
-            width: `${status==='progress'?'350px':'230px'}`,
+            width: `${status === 'progress' ? '350px' : '230px'}`,
             selector: (row) =>
                 <>
                     <Button
@@ -534,8 +549,8 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
 
     ];
 
-    const openLembarDispo=(item)=>{
-       GenerateDispo(item)
+    const openLembarDispo = (item) => {
+        GenerateDispo(item)
     }
 
 
