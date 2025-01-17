@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
+import "dayjs/locale/id";
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
@@ -35,8 +36,8 @@ import { confirmAlert } from 'react-confirm-alert';
 import MaterialIcon from '@material/react-material-icon';
 import Button from '@mui/material/Button';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import DataTable from 'react-data-table-component';
@@ -44,6 +45,8 @@ import { alert } from '../../components/atoms/Toast';
 import useAxios from '../../hooks/useAxios';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import './style.scss';
+
+dayjs.locale("id");
 
 // import { alert } from '../../components/atoms/Toast';
 
@@ -913,7 +916,7 @@ Jakarta Pusat 10110"
               </Box>
 
               <Box>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="id">
                   <DemoContainer components={['DateTimePicker', 'DateTimePicker']}>
                     <DateTimePicker
                       label="Waktu Keberangkatan"

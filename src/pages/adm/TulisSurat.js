@@ -37,7 +37,7 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1, detailSurat, updateForm
   const [lampiran, setLampiran] = useState(dataSurat?.lampiran || '0');
   const [jenislampiran, setJenisLampiran] = useState(dataSurat?.jenislampiran || 'Eks');
   const [fileLampiran, setFileLampiran] = useState(detailSurat?.fileLampiran
-     || '');
+    || '');
 
   const [divisi, setDivisi] = useState(dataSurat?.divisi || mydivisi);
 
@@ -47,6 +47,8 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1, detailSurat, updateForm
   const [mergedSurat, setMergedSurat] = useState('');
 
   const [loading, setLoading] = useState(false);
+
+  const [bhs, setBhs]=useState(dataSurat?.bhs || 'id');
 
   const saveDataLocal = () => {
     localStorage.setItem(
@@ -66,7 +68,8 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1, detailSurat, updateForm
         signer: ttdBys?.find((s) => s.employe_id === ttdBy),
         tglSurat,
         nomorSurat,
-        draft: true
+        draft: true,
+        bhs,
       }),
     );
   };
@@ -84,6 +87,7 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1, detailSurat, updateForm
     berang,
     ttdBys,
     isiSurat,
+    bhs,
   ]);
 
   const addBrderless = (editor) => {
@@ -406,6 +410,28 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1, detailSurat, updateForm
           ) : (
             ''
           )}
+
+          <Box className="mb-3">
+            <TextField
+              select
+              style={{ width: '100%' }}
+              variant="outlined"
+              value={bhs}
+              onChange={(e) => setBhs(e.target.value)}
+              label="Bahasa Surat"
+            >
+
+              <MenuItem key="id" value="id">
+                Bahasa Indonesia
+              </MenuItem>
+              <MenuItem key="en" value="en">
+                Bahasa Inggris
+              </MenuItem>
+
+            </TextField>
+          </Box>
+
+
           <Box className="mb-3 mt-5" style={{ display: 'flex' }}>
             <Button
               style={{ marginLeft: 'auto' }}
@@ -503,8 +529,8 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1, detailSurat, updateForm
                 Sebelumnya
               </Button>
               {updateForm ?
-                <Button color="success" onClick={() => update()} disabled={loading}> 
-                {loading ? 'Loading...' : 'Update'}
+                <Button color="success" onClick={() => update()} disabled={loading}>
+                  {loading ? 'Loading...' : 'Update'}
                 </Button>
                 :
                 <Button color="success" onClick={() => submit()} disabled={loading}>
