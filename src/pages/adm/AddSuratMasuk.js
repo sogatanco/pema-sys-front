@@ -7,13 +7,14 @@ import MaterialIcon from '@material/react-material-icon';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from "dayjs";
+import "dayjs/locale/id";
 import { confirmAlert } from "react-confirm-alert";
 import { useQuery } from "@tanstack/react-query";
 import useAxios from "../../hooks/useAxios";
 import { alert } from "../../components/atoms/Toast";
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-
+dayjs.locale("id");
 
 /**
  * Komponen untuk menambah surat masuk
@@ -134,7 +135,7 @@ const AddSuratMasuk = ({ refresh, func1 }) => {
             </Box>
 
             <Box className="mb-3">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="id">
                     <DemoContainer components={['DatePicker']} >
                         <DatePicker
                             label="Tgl Surat"
