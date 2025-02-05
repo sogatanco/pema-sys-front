@@ -100,7 +100,7 @@ const GenerateSurat = (dataSurat, htmlRef) => {
         </tbody>
       </table>
 
-        <div style="line-height: 1.2; margin-top:3; margin-bottom:-12">${dataSurat?.bhs === 'id' ? 'Kepada Yth' : 'Dear'}<br>
+        <div style="line-height: 1.2; margin-top:3; margin-bottom:-12">${dataSurat?.bhs === 'id' ? 'Kepada Yth' : 'Dear,'}<br>
             <strong style="line-height: 0.9!important;">${dataSurat?.kepada}</strong>
             ${dataSurat?.bhs === 'id' ? `<br>di - <br>
             <span>          Tempat</span>` : ''}

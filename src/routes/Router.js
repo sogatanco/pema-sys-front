@@ -3,6 +3,7 @@ import Loadable from '../layouts/loader/Loadable';
 import RequireAuth from '../components/RequireAuth';
 import Login from '../pages/auth/Login';
 import PemaReport from '../pages/PemaReport';
+import Lalin from '../pages/Lalin';
 /****Layouts*****/
 
 const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
@@ -373,6 +374,10 @@ const ThemeRoutes = [
   {
     path: '/pema-report',
     element: <PemaReport />,
+  },
+  {
+    path: '/lalin',
+    element: <Lalin />,
   },
   {
     path: '/asset/v/:assetId',

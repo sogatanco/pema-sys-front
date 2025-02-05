@@ -1,7 +1,7 @@
 import React from 'react';
 import './PemaReport11.css';
 
-const PemaReport = () => {
+const Lalin = () => {
   return (
     <div>
       {/* Title Section */}
@@ -14,35 +14,35 @@ const PemaReport = () => {
       <div className="video-grid">  
         <iframe
           className="video-1"
-          src="https://g3.ipcamlive.com/player/player.php?alias=6790a304d52e8&autoplay=1&mute=1"
+          src="https://cctv-stream.bandaacehkota.info/f42b9a56-5593-407d-af6e-f9396bc12ed0.html"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           title="Video 1"
           allowFullScreen
         />
         <iframe
           className="video-2"
-          src="https://g3.ipcamlive.com/player/player.php?alias=6790a3be62c6f&autoplay=1&mute=1"
+          src="https://g3.ipcamlive.com/player/player.php?alias=6788752a96725&autoplay=1&mute=1"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           title="Video 2"
           allowFullScreen
         />
         <iframe
           className="video-3"
-          src="https://g3.ipcamlive.com/player/player.php?alias=6790a3dad6f2a&autoplay=1&mute=1"
+          src="https://g3.ipcamlive.com/player/player.php?alias=67877fc369f22&autoplay=1&mute=1"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           title="Video 3"
           allowFullScreen
         />
         <iframe
           className="video-4"
-          src="https://g3.ipcamlive.com/player/player.php?alias=6790a424456e7&autoplay=1&mute=1"
+          src="https://g3.ipcamlive.com/player/player.php?alias=67887614ae668&autoplay=1&mute=1"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           title="Video 4"
           allowFullScreen
         />
         <iframe
           className="video-5"
-          src="https://g3.ipcamlive.com/player/player.php?alias=6790a43731ac9&autoplay=1&mute=1"
+          src="https://g3.ipcamlive.com/player/player.php?alias=67887676b5f85&autoplay=1&mute=1"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           title="Video 5"
           allowFullScreen
@@ -52,4 +52,4 @@ const PemaReport = () => {
   );
 };
 
-export default PemaReport;
+export default Lalin;

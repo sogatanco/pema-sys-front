@@ -115,13 +115,13 @@ const GenerateDispo = (dataSurat) => {
             <td style="margin:4">
               Didisposisikan Kepada <br>
               <span>      <strong>${dataSurat?.to}</strong></span><br>
-              ${dataSurat?.cc?.length > 0 && vcc}
+              ${dataSurat?.cc?.length > 0 ? vcc :''}
 
             </td>
             
            <td style="margin:4">
               Dengan Hormat harap 
-               ${t?.length > 0 && tickler}
+               ${t?.length > 0 ? tickler:''}
             </td>
             </tr>
 
@@ -138,7 +138,7 @@ const GenerateDispo = (dataSurat) => {
                  
                 </tbody>
                 </table>
-                 <p style="margin-left:20;margin-top:-2;">${dataSurat?.catatan}</p>
+                 <p style="margin-left:20;margin-top:-2;">${dataSurat?.catatan || ''}</p>
              </td>
             </tr>
             <tr>
