@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import useAxios from '../../hooks/useAxios';
 import BandwidthUsage from './components/BandwidthUsage';
 import user1 from '../../assets/images/users/user1.jpg';
+import rupiah from '../../utils/rupiah';
 import './Dasboard.scss';
 // import { set } from 'react-hook-form';
 
@@ -176,7 +177,7 @@ const DashboardDirek = () => {
                           </div>
                         </td>
                         <td width="10%">{tdata.qty}</td>
-                        <td width="30%">{tdata.budget}</td>
+                        <td width="30%">{rupiah(tdata.budget)}</td>
                       </tr>
                     ))}
                   </tbody>
