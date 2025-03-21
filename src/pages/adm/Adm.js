@@ -33,6 +33,7 @@ const Adm = () => {
   const [cReview, setCReview] = useState(0);
   const [cMasuk, setCMasuk] = useState(0);
   const [cCc, setCCc] = useState(0);
+  const [cSk, setCSk]=useState(0);
 
   const [listMasuk, setListMasuk] = useState([]);
   const [listMDone, setListMDone] = useState([]);
@@ -82,7 +83,10 @@ const Adm = () => {
     api.get(`dapi/adm/suratmasuk/cc`).then((res) => {
       setCCc(res.data.data.filter((p) => p.read_by=== null).length);
 
-    })
+    });
+    api.get(`dapi/adm/surat/signed`).then((res) => {
+      setCSk(res.data.data.length);
+    });
 
     if (val === '1') {
       api.get(`dapi/adm/surat/all`).then((res) => {
@@ -215,12 +219,13 @@ const Adm = () => {
             {auth?.user.roles.includes('SuperAdminAdm') || auth?.user.roles.includes('Director') ? <Tab
               label={
                 <Badge
-                  badgeContent={0}
+                  badgeContent={cSk}
                   anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
                   }}
-                  color="primary"
+                  color="warning"
+                  max={9999}
                 >
                   <strong>SURAT KELUAR</strong> &nbsp;&nbsp;
                 </Badge>

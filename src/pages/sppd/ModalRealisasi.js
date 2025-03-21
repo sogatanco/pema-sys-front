@@ -256,7 +256,7 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
                         }}
                       />
                     </Box>
-
+{/* 
                     <TextField
                       id="outlined-basic"
                       type="number"
@@ -281,7 +281,7 @@ const ModalRealisasi = ({ modalRe, toggleRe, sppdDetail }) => {
                           max: 100,  // Batas maksimum
                         } // Menambahkan "Rp" di depan
                       }}
-                    />
+                    /> */}
 
 
                     {/* <Box className="mb-4">

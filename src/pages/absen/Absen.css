@@ -1,0 +1,26 @@
+.absen-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f9;
+}
+
+.profile-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.head{
+    max-width: 641px;
+}
+
+.bawah {
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    border-radius: 40px 40px 0 0;
+    padding: 30px;
+    max-width: 641px;
+}

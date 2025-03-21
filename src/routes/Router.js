@@ -38,6 +38,10 @@ const SppdPage = Loadable(lazy(() => import('../pages/sppd')));
 
 /***** Adm****/
 const AdmPage = Loadable(lazy(() => import('../pages/adm')));
+/***** Mobilo****/
+const MobilPage = Loadable(lazy(() => import('../pages/mobil')));
+/***** abse****/
+const AbsenPage = Loadable(lazy(() => import('../pages/absen')));
 
 /***** Asset ****/
 
@@ -134,6 +138,11 @@ const ThemeRoutes = [
     element: <RequireAuth allowedRoles={[ROLES.Employee]} />,
     children: [
       {
+        path: 'absen',
+        name: 'Absensi',
+        element: <AbsenPage />,
+      },
+      {
         path: '/',
         element: <FullLayout />,
         children: [
@@ -202,6 +211,11 @@ const ThemeRoutes = [
             path: 'adm',
             name: 'Surat Menyurat',
             element: <AdmPage />,
+          },
+          {
+            path: 'mobil-operational',
+            name: 'Mobil Operasional',
+            element: <MobilPage />,
           },
           {
             path: 'projects/details/:projectId',

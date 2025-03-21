@@ -1,0 +1,112 @@
+.available-cars {
+    padding: 20px;
+    text-align: center;
+    position: relative; /* Add position relative for arrow buttons */
+}
+
+.car-list {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping */
+    justify-content: flex-start; /* Align cards to the start */
+    gap: 20px; /* Reduced gap between cards */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    padding-bottom: 20px; /* Add padding for scrollbar */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.car-list::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+}
+
+.car-card {
+    margin-top: 40px; /* Reduced margin */
+    background-color: #1096e427;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(226, 223, 223, 0.1);
+    width: 250px; /* Reduced width */
+    min-width: 250px; /* Ensure minimum width */
+    overflow: visible; /* Allow overflow for the car image */
+    transition: transform 0.2s;
+    position: relative; /* Position relative for child elements */
+    padding: 10px; /* Add padding for text */
+}
+
+.car-card:hover {
+    transform: translateY(-5px);
+}
+
+.car-card h4 {
+    color: black;
+    margin-top: 50px;
+    margin-bottom: -2px; /* Reduced margin */
+}
+
+.car-image {
+    top: -40px; /* Adjust top position */
+    width: 80%; /* Make the image fit the card width */
+     /* Reduced height */
+    object-fit: cover;
+    position: absolute; /* Change position to relative */
+    left: 10%; /* Reset left position */
+}
+
+.car-card p {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Arrow Buttons */
+.arrow-button {
+    position: absolute;
+    top: 60%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+.arrow-button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.left-arrow {
+    left: 10px;
+}
+
+.right-arrow {
+    right: 10px;
+}
+
+.garis-putus {
+    border-bottom: 1px dashed rgb(46, 46, 46); /* Mengatur ketebalan dan warna garis */
+    display: inline-block; /* Agar garis hanya muncul di bawah teks */
+    padding-bottom: 1px; /* Jarak antara teks dan garis */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .car-list {
+        gap: 10px; /* Reduce gap on smaller screens */
+    }
+
+    .car-image {
+        height: 100px; /* Adjust height for smaller screens */
+    }
+
+    .arrow-button {
+        padding: 8px;
+    }
+    .arrow-button{
+        display: none;
+    }
+    .add-title{
+        display: none;
+    }
+}

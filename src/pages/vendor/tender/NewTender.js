@@ -58,6 +58,9 @@ const NewTender = () => {
     dok_struktur_organisasi_pekerjaan: false,
     dok_surat_penyampaian_penawaran: false,
     dok_wajib_lainnya: false,
+    dok_pengalaman_perusahaan:false,
+    dok_proposal_teknis:false,
+    dok_kualifikasi_tenaga_ahli:false,
   });
 
   const api = useAxios();
@@ -594,6 +597,48 @@ const NewTender = () => {
                           className="form-label"
                         >
                           Struktur Organisasi Pekerjaan
+                        </Label>
+                      </FormGroup>
+                      <FormGroup check>
+                        <Input
+                          type="checkbox"
+                          id="dok_pengalaman_perusahaan"
+                          onChange={handleChecked}
+                        />
+                        <Label
+                          check
+                          htmlFor="dok_pengalaman_perusahaan"
+                          className="form-label"
+                        >
+                          Pengalaman Perusahaan
+                        </Label>
+                      </FormGroup>
+                      <FormGroup check>
+                        <Input
+                          type="checkbox"
+                          id="dok_proposal_teknis"
+                          onChange={handleChecked}
+                        />
+                        <Label
+                          check
+                          htmlFor="dok_proposal_teknis"
+                          className="form-label"
+                        >
+                          Proposal Teknis
+                        </Label>
+                      </FormGroup>
+                      <FormGroup check>
+                        <Input
+                          type="checkbox"
+                          id="dok_kualifikasi_tenaga_ahli"
+                          onChange={handleChecked}
+                        />
+                        <Label
+                          check
+                          htmlFor="dok_kualifikasi_tenaga_ahli"
+                          className="form-label"
+                        >
+                          Kualifikasi Tenaga Ahli
                         </Label>
                       </FormGroup>
                       <FormGroup check>
