@@ -1,8 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { RadioGroup, FormControlLabel, Radio, Box, TextField, Button } from '@mui/material';
+
+// import crypto from "crypto-browserify";
 import { alert } from "../../../components/atoms/Toast";
 import useAxios from "../../../hooks/useAxios";
+
 
 
 const Review = ({ data, refresh , closeModal}) => {
@@ -17,10 +20,12 @@ const Review = ({ data, refresh , closeModal}) => {
             alert('error', 'Catatan harus diisi !');
             setLoading(false);
         }else{
+            
             api.post(`dapi/adm/surat/review/${data?.no_document}`, {
                 status:stat,
                 catatan_persetujuan:catatan
             }).then((res) => {
+                console.log(res?.data);
                 if (res.status === 200) {
                     alert('success', `Berhasil ${data?.current_type} dokumen`);
                     refresh();
@@ -33,10 +38,13 @@ const Review = ({ data, refresh , closeModal}) => {
                 alert('error', `${err.message}`);
                 setLoading(false);
             })
+            refresh();
+            closeModal();
         }
     }
 
-    console.log(data)
+
+    
     return (
         <>
             <h5 className="text-capitalize">{data?.current_type} Dokumen</h5>

@@ -71,7 +71,7 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
         setLoadingView(id);
 
         setDetail(listSurat?.find((p) => p.id === id));
-        console.log(listSurat?.find((p) => p.id === id));
+        // console.log(listSurat?.find((p) => p.id === id));
         async function fetchData(deta) {
             try {
                 const pdf = await GenerateSurat(deta, qrCodeRef);
@@ -87,6 +87,7 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
         api
             .get(`dapi/adm/surat/detail/${id}`).then((res) => {
                 fetchData(res.data.data);
+                console.log(res.data.data)
                 setLoadingView('');
             });
     }

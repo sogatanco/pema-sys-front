@@ -122,12 +122,20 @@ const SidebarData = [
     // ddType: '-column',
     allowedRoles: ['Employee'],
   },
+  // {
+  //   title: 'Mobil',
+  //   href: '/mobil-operational',
+  //   id: 8,
+  //   icon: <MaterialIcon icon="directions_car" />,
+  //   // ddType: '-column',
+  //   allowedRoles: ['Employee'],
+  // },
 
   { caption: 'Manual Book' },
   {
     title: 'Manual Book',
     href: '',
-    id: 8,
+    id: 9,
     icon:<MaterialIcon icon="menu_book" />,
     // ddType: 'two-column',
     collapisble: true,
@@ -166,71 +174,6 @@ const SidebarData = [
     ],
   },
 
-  // { caption: 'Manual Book' },
-  // {
-  //   title: 'Manual Book',
-  //   href: 'https://drive.google.com/drive/folders/13u1UBwpLfVDsF0WoOMoNfU1_O1d3GTou?usp=sharing',
-  //   id: 8,
-  //   icon: <MaterialIcon icon="menu_book" />,
-  //   ddType: 'two-column',
-  //   allowedRoles: ['Employee'],
-  // },
-
-  // { caption: 'Form' },
-  // {
-  //   title: 'Form',
-  //   id: 4,
-  //   icon: <MaterialIcon icon="list_alt" />,
-  //   ddType: 'two-column',
-  //   collapisble: true,
-  //   allowedRoles: ['Picpentry', 'Picatk'],
-  //   children: [
-  //     {
-  //       title: 'Pentry',
-  //       href: 'forms/pentry',
-  //       allowedRoles: ['Picpentry', 'Picatk'],
-  //       icon: <MaterialIcon icon="restaurant_menu" />,
-  //     },
-  //     {
-  //       title: 'ATK',
-  //       href: 'forms/atk',
-  //       allowedRoles: ['Picpentry', 'Picatk'],
-  //       icon: <MaterialIcon icon="home_repair_service" />,
-  //     },
-  //   ],
-  // },
-  // { caption: 'Reports' },
-  // {
-  //   title: 'Report',
-  //   id: 5,
-  //   icon: <MaterialIcon icon="list_alt" />,
-  //   ddType: 'two-column',
-  //   collapisble: true,
-  //   allowedRoles: ['Picpentry', 'Picatk'],
-  //   children: [
-  //     {
-  //       title: 'Pentry Report',
-  //       href: 'reports/pentry',
-  //       allowedRoles: ['Picpentry', 'Picatk'],
-  //       icon: <MaterialIcon icon="restaurant_menu" />,
-  //     },
-  //     {
-  //       title: 'ATK Report',
-  //       href: 'reports/atk',
-  //       allowedRoles: ['Picpentry', 'Picatk'],
-  //       icon: <MaterialIcon icon="home_repair_service" />,
-  //     },
-  //   ],
-  // },
-  // { caption: 'Starter Kit' },
-  // {
-  //   title: 'Starter Kit',
-  //   href: '/starterkit',
-  //   id: 3,
-  //   icon: <MaterialIcon icon="grid_view" />,
-  //   ddType: 'two-column',
-  //   collapisble: true,
-  // },
 ];
 
 export default SidebarData;

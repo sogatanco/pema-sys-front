@@ -204,7 +204,6 @@ const AddSuratMasuk = ({ refresh, func1 }) => {
                         value={dir}
                         onChange={(e) => setDir(e.target.value)}
                         label="Ditujukan Kepada"
-                        disabled
                     >
                         {data?.map((item) => (
                             <MenuItem key={item?.position_id} value={item?.position_id}>

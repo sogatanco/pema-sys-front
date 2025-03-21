@@ -61,6 +61,7 @@ const Scan = () => {
                             <Col
                                 xs='12'
                                 sm="12"
+                                md="12"
                                 lg="5"
                                 className=" py-4 image"
                                 style={{
@@ -70,7 +71,10 @@ const Scan = () => {
                                     backgroundImage: `url('${baseURL}inven${data.data?.file}?s=${sesImg}')`,
                                 }}>
                             </Col>
-                            <Col xs="12" sm="12" lg="7" className="py-4 text">
+                            <Col  xs='12'
+                                sm="12"
+                                md="12"
+                                lg="5" className="py-4 text">
                                 <div className="d-flex justify-content-between">
                                     <h2 className="text-bold mb-0">{data.data?.name}</h2>
                                 </div>
