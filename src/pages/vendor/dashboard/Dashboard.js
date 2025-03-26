@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { Card, CardBody, Button } from 'reactstrap';
 import MaterialIcon from '@material/react-material-icon';
 import useAxios from '../../../hooks/useAxios';
 import TenderCollapse from './TenderCollapse';
+import { AuthContext } from '../../../context/AuthContext';
 
 const Dashboard = () => {
   const api = useAxios();
+  const { auth } = useContext(AuthContext);
 
   const { data, refetch } = useQuery({
     queryKey: ['cat'],
@@ -57,16 +59,18 @@ const Dashboard = () => {
                     </small>
                   </div>
                 </div>
-                <div>
-                  <Button
-                    href={`vendor/update-tender/${d.id_tender}`}
-                    color="primary"
-                    size="sm"
-                    disabled
-                  >
-                    Edit Tender
-                  </Button>
-                </div>
+                {!auth.user.roles.includes('VendorViewer') && (
+                  <div>
+                    <Button
+                      href={`vendor/update-tender/${d.id_tender}`}
+                      color="primary"
+                      size="sm"
+                      disabled
+                    >
+                      Edit Tender
+                    </Button>
+                  </div>
+                )}
               </div>
               <TenderCollapse tender={d} action={refetch} />
             </CardBody>
