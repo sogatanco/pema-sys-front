@@ -69,19 +69,19 @@ const SidebarData = [
     id: 5,
     icon: <MaterialIcon icon="diversity_3" />,
     ddType: 'four-column',
-    allowedRoles: ['AdminVendorUmum', 'AdminVendorScm'],
+    allowedRoles: ['AdminVendorUmum', 'AdminVendorScm', 'VendorViewer'],
     collapisble: true,
     children: [
       {
         title: 'Dashboard',
         href: '/vendor',
-        allowedRoles: ['AdminVendorUmum', 'AdminVendorScm'],
+        allowedRoles: ['AdminVendorUmum', 'AdminVendorScm', 'VendorViewer'],
         icon: <MaterialIcon icon="dashboard" />,
       },
       {
         title: 'Company List',
         href: '/vendor/company',
-        allowedRoles: ['AdminVendorUmum', 'AdminVendorScm'],
+        allowedRoles: ['AdminVendorUmum', 'AdminVendorScm', 'VendorViewer'],
         icon: <MaterialIcon icon="business" />,
       },
       // {
@@ -136,7 +136,7 @@ const SidebarData = [
     title: 'Manual Book',
     href: '',
     id: 9,
-    icon:<MaterialIcon icon="menu_book" />,
+    icon: <MaterialIcon icon="menu_book" />,
     // ddType: 'two-column',
     collapisble: true,
     allowedRoles: ['Employee'],
@@ -173,7 +173,6 @@ const SidebarData = [
       },
     ],
   },
-
 ];
 
 export default SidebarData;

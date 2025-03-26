@@ -124,7 +124,7 @@ const ROLES = {
 };
 
 const formAllowedRoles = ['Picpentry', 'Picatk'];
-const vendorAllowedRoles = ['AdminVendorUmum', 'AdminVendorScm'];
+const vendorAllowedRoles = ['AdminVendorUmum', 'AdminVendorScm', 'VendorViewer'];
 const reportAllowedRoles = ['Picpentry', 'Picatk'];
 const assetAllowedRoles = ['Employee'];
 const inProgressTaskAllowedRoles = ['Director'];
