@@ -8,7 +8,7 @@ import user1 from '../../assets/images/users/user1.jpg';
 import useAuth from '../../hooks/useAuth';
 import IndoDate from '../../utils/IndoDate';
 import isExpired from '../../utils/isExpired';
-// import FilterData from '../../components/filterData/FilterData';
+import FilterYear from '../../components/filterYear/FilterYear';
 
 const ProjectList = () => {
   const { auth } = useAuth();
@@ -16,17 +16,18 @@ const ProjectList = () => {
   const [list, setList] = useState([]);
   const [selectedDivision, setSelectedDivision] = useState();
   const [progressList, setProgressList] = useState([]);
+  const [year, setYear] = useState(new Date().getFullYear());
   const api = useAxios();
 
   const { isLoading, error, data } = useQuery({
-    queryKey: ['projectsdash'],
+    queryKey: ['projectsdash', year],
     queryFn: () =>
       api
         .get(
           `${
             auth?.user?.roles.includes('Director')
-              ? 'api/project'
-              : `api/project/${auth?.user.employe_id}/list?for=dashboard`
+              ? `api/project?year=${year}`
+              : `api/project/${auth?.user.employe_id}/list?for=dashboard&year=${year}`
           }`,
         )
         .then((res) => {
@@ -143,10 +144,10 @@ const ProjectList = () => {
                     </Input>
                   </div>
                 ) : (
-                  ''
-                  // <FilterData />
+                  //   <FilterData />
+                  <FilterYear {...{ year, setYear }} />
                 )}
-                <div className="d-flex w-50">
+                <div className="d-flex">
                   <Link to="projects" style={{ textDecoration: 'none' }}>
                     <Button
                       type="button"
@@ -156,7 +157,6 @@ const ProjectList = () => {
                       className="rounded-2"
                       block
                     >
-                      {' '}
                       See all
                     </Button>
                   </Link>
