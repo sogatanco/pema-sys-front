@@ -16,23 +16,32 @@ const FilterYear = ({ year, setYear }) => {
   };
 
   return (
-    <div className="filter-year">
-      <div className="label">
-        <span>{year}</span>
-      </div>
-      <div className="button" onClick={() => setIsOpen(!isOpen)}>
-        <MaterialIcon icon="keyboard_arrow_down" className="icon"></MaterialIcon>
-      </div>
-
+    <div className="filter-year-container">
       {isOpen && (
-        <div className="content">
-          {years.map((val) => (
-            <div className="item" key={val} onClick={() => handleSelectYear(val)}>
-              {val}
-            </div>
-          ))}
+        <div className="year-overlay" onClick={() => setIsOpen(false)}>
+          hello
         </div>
       )}
+      <div className="filter-year">
+        <div className="label">
+          <span>{year}</span>
+        </div>
+        <div className="button" onClick={() => setIsOpen(!isOpen)}>
+          <MaterialIcon icon="keyboard_arrow_down" className="icon"></MaterialIcon>
+        </div>
+
+        {isOpen && (
+          <>
+            <div className="content">
+              {years.map((val) => (
+                <div className="item" key={val} onClick={() => handleSelectYear(val)}>
+                  {val}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

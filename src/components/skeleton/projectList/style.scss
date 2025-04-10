@@ -1,0 +1,44 @@
+/* Animasi shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+.skeleton-project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  /* Container skeleton card */
+  .skeleton-card {
+    width: 100%;
+    height: max-content;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Skeleton block */
+  .skeleton-image {
+    background: linear-gradient(90deg, #e0e0e0 25%, #f8f8f8 50%, #e0e0e0 75%);
+    background-size: 800px 104px;
+    animation: shimmer 1.5s infinite linear;
+    border-radius: 6px;
+  }
+
+  .skeleton-image {
+    width: 100%;
+  }
+
+  .sm {
+    height: 55px;
+  }
+
+  .md {
+    height: 78px;
+  }
+}
