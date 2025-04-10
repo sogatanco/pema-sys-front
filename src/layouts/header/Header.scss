@@ -71,7 +71,8 @@
     .app-body {
       position: relative;
       display: flex;
-      // flex-wrap: wrap;
+      flex-direction: row;
+      //   flex-wrap: wrap;
       justify-content: flex-start;
       gap: 3px;
       height: max-content;
@@ -129,8 +130,22 @@
       }
     }
 
-    &:hover {
-      height: 200px;
+    @media (max-width: 767px) {
+      .app-body {
+        flex-direction: column;
+      }
+    }
+
+    @media (min-width: 768px) {
+      &:hover {
+        height: 200px;
+      }
+    }
+  }
+
+  @media (max-width: 767px) {
+    .app-container {
+      height: auto;
     }
   }
 }
