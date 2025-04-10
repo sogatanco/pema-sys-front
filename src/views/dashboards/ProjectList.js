@@ -9,6 +9,9 @@ import useAuth from '../../hooks/useAuth';
 import IndoDate from '../../utils/IndoDate';
 import isExpired from '../../utils/isExpired';
 import FilterYear from '../../components/filterYear/FilterYear';
+import SkeletonProjectList from '../../components/skeleton/projectList/SkeletonProjectList';
+import NoDataYet from '../../components/noDataYet/NoDataYet';
+import FailedInformation from '../../components/failedInformation/FailedInformation';
 
 const ProjectList = () => {
   const { auth } = useAuth();
@@ -164,9 +167,9 @@ const ProjectList = () => {
               </Col>
             </Row>
             {isLoading ? (
-              'Loading...'
+              <SkeletonProjectList listLength={4} height="md" />
             ) : error ? (
-              'Something went wrong.'
+              <FailedInformation />
             ) : (
               <>
                 {list?.length > 0 ? (
@@ -269,9 +272,7 @@ const ProjectList = () => {
                     </Link>
                   ))
                 ) : (
-                  <div className="d-flex justify-content-center">
-                    <p className="text-muted">No data yet.</p>
-                  </div>
+                  <NoDataYet />
                 )}
               </>
             )}
