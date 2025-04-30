@@ -131,11 +131,20 @@ const SidebarData = [
   //   allowedRoles: ['Employee'],
   // },
 
+  { caption: 'Pengajuan' },
+  {
+    title: 'Pengajuan',
+    href: '/pengajuan',
+    id: 9,
+    icon: <MaterialIcon icon="assignment" />,
+    allowedRoles: ['Employee'],
+  },
+
   { caption: 'Manual Book' },
   {
     title: 'Manual Book',
     href: '',
-    id: 9,
+    id: 10,
     icon: <MaterialIcon icon="menu_book" />,
     // ddType: 'two-column',
     collapisble: true,
