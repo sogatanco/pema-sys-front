@@ -1,0 +1,24 @@
+.failed-information {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 95px;
+  background-color: #efefef;
+  border-radius: 12px;
+
+  i,
+  span {
+    color: #b3b3b3;
+  }
+
+  .reload-btn {
+    cursor: pointer;
+    transition: all 300ms ease;
+
+    &:hover {
+      color: blue;
+    }
+  }
+}
