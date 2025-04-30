@@ -43,6 +43,9 @@ const MobilPage = Loadable(lazy(() => import('../pages/mobil')));
 /***** abse****/
 const AbsenPage = Loadable(lazy(() => import('../pages/absen')));
 
+/***** Pengajuan ****/
+const Pengajuan = Loadable(lazy(() => import('../pages/pengajuan/Pengajuan')));
+
 /***** Asset ****/
 
 /***** Projects ****/
@@ -121,6 +124,9 @@ const ROLES = {
   Supervisor: 'Supervisor',
   Staff: 'Staff',
   Employee: 'Employee',
+  AdminPengajuan: 'AdminPengajuan',
+  ManagerUmum: 'ManagerUmum',
+  DirekturUmumKeuangan: 'DirekturUmumKeuangan',
 };
 
 const formAllowedRoles = ['Picpentry', 'Picatk'];
@@ -129,6 +135,7 @@ const reportAllowedRoles = ['Picpentry', 'Picatk'];
 const assetAllowedRoles = ['Employee'];
 const inProgressTaskAllowedRoles = ['Director'];
 const ApprovalTenderAllowedRoles = ['Manager'];
+const PengajuanAllowedRoles = ['AdminPengajuan', 'ManagerUmum', 'DirekturUmumKeuangan', 'Presdir'];
 
 /*****Routes******/
 const ThemeRoutes = [
@@ -317,6 +324,11 @@ const ThemeRoutes = [
             path: 'auth/change-password',
             name: 'Change Password',
             element: <ChangePassword />,
+          },
+          {
+            path: 'pengajuan',
+            name: 'Pengajuan',
+            element: <Pengajuan allowedRoles={PengajuanAllowedRoles} />,
           },
         ],
       },
