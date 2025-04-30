@@ -219,7 +219,7 @@ const HorizontalHeader = () => {
                           <span>Website Resmi PT Pema</span>
                         </div>
                       </Link>
-                      <Link to="https://ptpema.co.id" target="blank" className="item">
+                      {/* <Link to="https://ptpema.co.id" target="blank" className="item">
                         <span className="circle-box md-box text-dark-white bg-success">
                           <i className="fs-2 bi bi-phone" />
                         </span>
@@ -227,7 +227,7 @@ const HorizontalHeader = () => {
                         <div className="desc">
                           <span>Installer aplikasi presensi Android & IOS</span>
                         </div>
-                      </Link>
+                      </Link> */}
                     </div>
                   </div>
                 </>

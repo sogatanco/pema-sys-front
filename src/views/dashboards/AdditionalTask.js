@@ -4,6 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import useAxios from '../../hooks/useAxios';
 import CircularPercentage from '../../components/atoms/circularPercentage/CircularPercentage';
+import SkeletonProjectList from '../../components/skeleton/projectList/SkeletonProjectList';
+import NoDataYet from '../../components/noDataYet/NoDataYet';
+import FailedInformation from '../../components/failedInformation/FailedInformation';
 
 const AdditionalTask = () => {
   const api = useAxios();
@@ -29,9 +32,9 @@ const AdditionalTask = () => {
           </div>
           <div className="d-flex flex-column gap-2 justify-content-center">
             {isLoading ? (
-              'Loading...'
+              <SkeletonProjectList listLength={2} height="sm" />
             ) : error ? (
-              'Something went wrong.'
+              <FailedInformation />
             ) : data?.length > 0 ? (
               data.map((t, i) => (
                 <div key={t.task_id} className="d-flex justify-content-between gap-1">
@@ -89,9 +92,7 @@ const AdditionalTask = () => {
                 </div>
               ))
             ) : (
-              <div className="d-flex justify-content-center">
-                <p className="text-muted">No data yet.</p>
-              </div>
+              <NoDataYet />
             )}
           </div>
         </CardBody>
