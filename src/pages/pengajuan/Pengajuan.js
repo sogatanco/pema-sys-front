@@ -91,7 +91,9 @@ const Pengajuan = () => {
                 value="2"
               />
             )}
-            {(auth?.user.roles.includes('Manager') || auth?.user.roles.includes('Director')) && (
+            {(auth?.user.roles.includes('ManagerUmum') ||
+              auth?.user.roles.includes('DirekturUmumKeuangan') ||
+              auth?.user.roles.includes('Presdir')) && (
               <Tab
                 label={
                   <Badge
