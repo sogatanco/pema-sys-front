@@ -82,7 +82,7 @@ const GeneratePengajuan = (row) => {
               (item, index) => `
               <tr>
                 <td style="text-align:center;">${index + 1}</td>
-                <td>${item.nama_item}</td>
+                <td  style="whiteSpace:pre-wrap;">${item.nama_item}</td>
                 <td>${item.jumlah}</td>
                 <td>${item.satuan}</td>
                 <td>Rp ${item.biaya_satuan.toLocaleString('id-ID')}</td>
