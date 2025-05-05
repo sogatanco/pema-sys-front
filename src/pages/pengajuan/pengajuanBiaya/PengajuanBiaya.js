@@ -124,6 +124,10 @@ const PengajuanBiaya = () => {
       setValue('documentNumber', 'FPR-UM-PEMA-01-04');
     } else if (value === 'Reimbursement') {
       setValue('documentNumber', 'FPR-UM-PEMA-01-02');
+    } else if (value === 'Tagihan Biaya') {
+      setValue('documentNumber', 'FPR-UM-PEMA-01-03');
+    } else if (value === 'Aktual Biaya') {
+      setValue('documentNumber', 'FPR-UM-PEMA-04-02');
     } else {
       setValue('documentNumber', '');
     }
@@ -315,7 +319,9 @@ const PengajuanBiaya = () => {
             onClick={() => handleUpdateClick(row)}
             disabled={
               !row?.approvals?.every(
-                (approval) => approval.status === null || approval.status === '0',
+                (approval) =>
+                  approval.status === null ||
+                  row?.approvals?.some((approval2) => approval2.status === '0'),
               )
             }
           >
@@ -338,6 +344,21 @@ const PengajuanBiaya = () => {
       ),
       width: '300px',
     },
+    {
+      name: 'Status',
+      selector: (row) => (
+        <>
+          {row?.approvals?.every((approval) => approval.status === '1') ? (
+            <span className="badge bg-success rounded-pill">Approved</span>
+          ) : row?.approvals?.some((approval) => approval.status === '0') ? (
+            <span className="badge bg-danger rounded-pill">Rejected</span>
+          ) : (
+            <span className="badge bg-secondary rounded-pill">Pending</span>
+          )}
+        </>
+      ),
+    },
+
     {
       name: 'Tanggal Pengajuan',
       selector: (row) =>
@@ -416,6 +437,8 @@ const PengajuanBiaya = () => {
                         <option value="">Pilih Permohonan</option>
                         <option value="Permohonan Biaya">Permohonan Biaya</option>
                         <option value="Reimbursement">Reimbursement</option>
+                        <option value="Tagihan Biaya">Tagihan Biaya</option>
+                        <option value="Aktual Biaya">Aktual Biaya</option>
                       </select>
                       {errors.jenis_permohonan && (
                         <div className="invalid-feedback">{errors.jenis_permohonan.message}</div>
@@ -474,8 +497,7 @@ const PengajuanBiaya = () => {
                           {fields.map((field, index) => (
                             <tr key={field.id}>
                               <td>
-                                <input
-                                  type="text"
+                                <textarea
                                   className={`form-control ${
                                     errors.items?.[index]?.itemName ? 'is-invalid' : ''
                                   }`}
@@ -483,7 +505,7 @@ const PengajuanBiaya = () => {
                                   {...register(`items.${index}.itemName`, {
                                     required: 'Nama Barang/Jasa wajib diisi',
                                   })}
-                                />
+                                ></textarea>
                                 {errors.items?.[index]?.itemName && (
                                   <div className="invalid-feedback">
                                     {errors.items[index].itemName.message}
@@ -649,7 +671,7 @@ const PengajuanBiaya = () => {
                       <small className="text-muted">{item.position_name}</small>
                     </div>
                     {item?.status === '1' ? (
-                      <div className="d-flex flex-column">
+                      <div className="d-flex flex-column align-items-end">
                         <span className="badge bg-success rounded-pill">Approved</span>
                         <small className="text-muted">
                           {new Date(item?.updated_at).toLocaleString('id-ID', {
@@ -662,7 +684,7 @@ const PengajuanBiaya = () => {
                         </small>
                       </div>
                     ) : item?.status === '0' ? (
-                      <div className="d-flex flex-column">
+                      <div className="d-flex flex-column align-items-end">
                         <span className="badge bg-danger rounded-pill">Rejected</span>
                         <small className="text-muted">
                           {new Date(item?.updated_at).toLocaleString('id-ID', {
@@ -675,7 +697,7 @@ const PengajuanBiaya = () => {
                         </small>
                       </div>
                     ) : (
-                      <div className="d-flex flex-column">
+                      <div className="d-flex flex-column align-items-end">
                         <span className="badge bg-secondary rounded-pill">Pending</span>
                       </div>
                     )}

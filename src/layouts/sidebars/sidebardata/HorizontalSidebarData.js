@@ -137,7 +137,7 @@ const SidebarData = [
     href: '/pengajuan',
     id: 9,
     icon: <MaterialIcon icon="assignment" />,
-    allowedRoles: ['Employee'],
+    allowedRoles: ['AdminPengajuan', 'ManagerUmum', 'DirekturUmumKeuangan', 'Presdir'],
   },
 
   { caption: 'Manual Book' },
