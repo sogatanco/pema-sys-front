@@ -137,7 +137,7 @@ const PengajuanSelesai = () => {
                     <thead>
                       <tr style="text-align: center;">
                         <th>No</th>
-                        <th>Nama Barang/Jasa</th>
+                        <th style="white-space:pre-wrap; word-wrap:break-word;">Nama Barang/Jasa</th>
                         <th>Jumlah</th>
                         <th>Satuan</th>
                         <th>Biaya Satuan</th>
@@ -151,9 +151,11 @@ const PengajuanSelesai = () => {
                           (item, index) => `
                         <tr>
                           <td>${index + 1}</td>
-                          <td>${item.nama_item}</td>
-                          <td>${item.jumlah}</td>
-                          <td>${item.satuan}</td>
+                          <td style="white-space:pre-wrap; word-wrap:break-word;">${
+                            item.nama_item
+                          }</td>
+                          <td style="text-align: center;">${item.jumlah}</td>
+                          <td style="text-align: center;">${item.satuan}</td>
                           <td>${new Intl.NumberFormat('id-ID', {
                             style: 'currency',
                             currency: 'IDR',
