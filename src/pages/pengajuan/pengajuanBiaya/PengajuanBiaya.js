@@ -40,6 +40,7 @@ const PengajuanBiaya = () => {
     reset,
     control,
     setValue,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -92,15 +93,37 @@ const PengajuanBiaya = () => {
     setIsAddForm(false);
   };
 
+  function formatRupiah(angka) {
+    if (!angka) return 'Rp 0';
+    const numberString = angka.toString().replace(/[^,\d]/g, '');
+    const split = numberString.split(',');
+    const sisa = split[0].length % 3;
+    let rupiah = split[0].substr(0, sisa);
+    const ribuan = split[0].substr(sisa).match(/\d{3}/g);
+
+    if (ribuan) {
+      const separator = sisa ? '.' : '';
+      rupiah += `${separator}${ribuan.join('.')}`;
+    }
+
+    return `Rp ${rupiah}`;
+  }
+
   const onSubmit = async (dataSubmit) => {
     console.log('Data Submit', dataSubmit);
     setLoading(true);
+
+    const cleanedItems = dataSubmit.items.map((item) => ({
+      ...item,
+      price: Number(item.price.replace(/[^\d]/g, '')), // hilangkan Rp, titik, dll
+    }));
+
     const formData = new FormData();
 
     formData.append('jenis_permohonan', dataSubmit.jenis_permohonan);
     formData.append('no_dokumen', dataSubmit.documentNumber);
     formData.append('lampiran', dataSubmit.file[0]);
-    formData.append('items', JSON.stringify(dataSubmit.items));
+    formData.append('items', JSON.stringify(cleanedItems));
 
     await api
       .post('api/pengajuan', formData)
@@ -162,7 +185,7 @@ const PengajuanBiaya = () => {
           itemName: item.nama_item,
           quantity: item.jumlah,
           unit: item.satuan,
-          price: item.biaya_satuan,
+          price: formatRupiah(item.biaya_satuan),
           description: item.keterangan,
         });
       });
@@ -172,6 +195,12 @@ const PengajuanBiaya = () => {
   const onUpdate = async (dataSubmit) => {
     console.log('Data Submit', dataSubmit);
     setLoading(true);
+
+    const cleanedItems = dataSubmit.items.map((item) => ({
+      ...item,
+      price: Number(item.price.replace(/[^\d]/g, '')), // hilangkan Rp, titik, dll
+    }));
+
     const formData = new FormData();
 
     formData.append('id', dataSubmit.id);
@@ -180,7 +209,7 @@ const PengajuanBiaya = () => {
     if (dataSubmit.file && dataSubmit.file[0]) {
       formData.append('lampiran', dataSubmit.file[0]);
     }
-    formData.append('items', JSON.stringify(dataSubmit.items));
+    formData.append('items', JSON.stringify(cleanedItems));
 
     await api
       .post(`api/pengajuan/${dataSubmit.id}/update`, formData)
@@ -548,15 +577,28 @@ const PengajuanBiaya = () => {
                               </td>
                               <td>
                                 <input
-                                  type="number"
+                                  type="text"
                                   className={`form-control ${
                                     errors.items?.[index]?.price ? 'is-invalid' : ''
                                   }`}
                                   placeholder="Harga Satuan"
+                                  value={formatRupiah(watch(`items.${index}.price`) || '')}
                                   {...register(`items.${index}.price`, {
                                     required: 'Harga Satuan wajib diisi',
+                                    validate: (value) => {
+                                      const numeric = value.replace(/[^\d]/g, '');
+                                      if (!numeric) return 'Harga Satuan wajib berupa angka';
+                                      if (numeric <= 0)
+                                        return 'Harga Satuan tidak boleh kurang dari atau sama dengan 0';
+                                      return true;
+                                    },
+                                    onChange: (e) => {
+                                      const rawValue = e.target.value.replace(/[^\d]/g, ''); // hanya angka
+                                      e.target.value = rawValue; // simpan angka mentah di react-hook-form
+                                    },
                                   })}
                                 />
+
                                 {errors.items?.[index]?.price && (
                                   <div className="invalid-feedback">
                                     {errors.items[index].price.message}
