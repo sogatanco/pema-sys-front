@@ -264,7 +264,7 @@ const PengajuanBiaya = () => {
                     {row.sub_pengajuan.map((item, index) => (
                       <tr key={item.id}>
                         <td className="text-center">{index + 1}</td>
-                        <td>{item.nama_item}</td>
+                        <td style={{ whiteSpace: 'pre-wrap' }}>{item.nama_item}</td>
                         <td>{item.jumlah}</td>
                         <td>{item.satuan}</td>
                         <td>
@@ -485,12 +485,12 @@ const PengajuanBiaya = () => {
                       <table className="table table-bordered">
                         <thead>
                           <tr>
-                            <th>Nama Barang/Jasa</th>
-                            <th>Jumlah</th>
-                            <th>Satuan</th>
-                            <th>Harga Satuan</th>
+                            <th style={{ width: '300px' }}>Nama Barang/Jasa</th>
+                            <th style={{ width: '150px' }}>Jumlah</th>
+                            <th style={{ width: '200px' }}>Satuan</th>
+                            <th style={{ width: '200px' }}>Harga Satuan</th>
                             <th>Keterangan</th>
-                            <th>Aksi</th>
+                            <th style={{ width: '50px' }}>Aksi</th>
                           </tr>
                         </thead>
                         <tbody>

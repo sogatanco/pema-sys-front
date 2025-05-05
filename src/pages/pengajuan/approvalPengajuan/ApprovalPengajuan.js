@@ -115,25 +115,6 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
     }
   };
 
-  // const handleDownloadFile = (row) => {
-  //   api
-  //     .get(`api/pengajuan/lihat/${row.id}/file`, { responseType: 'arraybuffer' })
-  //     .then((res) => {
-  //       previewPdf(res.data, row.no_dokumen);
-  //     })
-  //     .catch((err) => {
-  //       if (
-  //         err.response &&
-  //         err.response.status === 404 &&
-  //         err.response.data.message === 'File Tidak Ditemukan'
-  //       ) {
-  //         alert('error', 'File tidak ditemukan di server.');
-  //       } else {
-  //         alert('error', 'Terjadi kesalahan saat mengunduh file.');
-  //       }
-  //     });
-  // };
-
   const handlePendingApprovalClick = (row) => {
     setModalContent({
       row,
@@ -203,7 +184,7 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
                     {row.sub_pengajuan.map((item, index) => (
                       <tr key={item.id}>
                         <td className="text-center">{index + 1}</td>
-                        <td>{item.nama_item}</td>
+                        <td style={{ whiteSpace: 'pre-wrap' }}>{item.nama_item}</td>
                         <td>{item.jumlah}</td>
                         <td>{item.satuan}</td>
                         <td>
