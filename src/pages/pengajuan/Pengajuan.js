@@ -25,6 +25,13 @@ const Pengajuan = () => {
     }),
   );
 
+  const { data: dataChart } = useQuery(['chart-pengajuan'], () =>
+    api.get('/api/pengajuan-dashboard/chart').then((res) => {
+      console.log('Data Chart', res.data.data);
+      return res.data.data;
+    }),
+  );
+
   useEffect(() => {
     if (data) {
       setDataPengajuan(data);
@@ -139,6 +146,7 @@ const Pengajuan = () => {
             diproses={dataPengajuan?.total_pengajuan_belum_selesai}
             selesai={dataPengajuan?.total_pengajuan_selesai}
             totalPengajuan={dataPengajuan?.total_pengajuan}
+            dataChart={dataChart}
           />
         </TabPanel>
         <TabPanel value="2" className="ps-0 pe-0">
