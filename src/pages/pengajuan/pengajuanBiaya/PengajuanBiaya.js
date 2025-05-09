@@ -597,6 +597,7 @@ const PengajuanBiaya = () => {
                                       e.target.value = rawValue; // simpan angka mentah di react-hook-form
                                     },
                                   })}
+                                  autoComplete="off"
                                 />
 
                                 {errors.items?.[index]?.price && (
