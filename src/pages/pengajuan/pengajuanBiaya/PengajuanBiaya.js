@@ -33,6 +33,11 @@ const PengajuanBiaya = () => {
   const [modalContent2, setModalContent2] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [updateClick, setUpdateClick] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState('');
+
+  // Pajak toggle function
+  const [taxVisibility, setTaxVisibility] = useState({});
+  const [taxesPerItem, setTaxesPerItem] = useState({});
 
   const {
     register,
@@ -41,6 +46,7 @@ const PengajuanBiaya = () => {
     control,
     setValue,
     watch,
+    unregister, // tambahkan ini
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -71,16 +77,25 @@ const PengajuanBiaya = () => {
   }, [data]);
 
   useEffect(() => {
+    let filtered = data;
     if (searchText) {
-      setDataPengajuan(
-        data?.filter((item) =>
-          item.sub_pengajuan[0].nama_item.toLowerCase().includes(searchText.toLowerCase()),
-        ),
+      filtered = filtered?.filter((item) =>
+        item.sub_pengajuan[0].nama_item.toLowerCase().includes(searchText.toLowerCase()),
       );
-    } else {
-      setDataPengajuan(data);
     }
-  }, [searchText]);
+    if (selectedMonth) {
+      // selectedMonth format: "YYYY-MM"
+      filtered = filtered?.filter((item) => {
+        const created = new Date(item.created_at);
+        const yearMonth = `${created.getFullYear()}-${String(created.getMonth() + 1).padStart(
+          2,
+          '0',
+        )}`;
+        return yearMonth === selectedMonth;
+      });
+    }
+    setDataPengajuan(filtered);
+  }, [searchText, selectedMonth, data]);
 
   const addForm = async (e) => {
     e.preventDefault();
@@ -113,10 +128,22 @@ const PengajuanBiaya = () => {
     console.log('Data Submit', dataSubmit);
     setLoading(true);
 
-    const cleanedItems = dataSubmit.items.map((item) => ({
-      ...item,
-      price: Number(item.price.replace(/[^\d]/g, '')), // hilangkan Rp, titik, dll
-    }));
+    // Map items dan sertakan data pajak jika ada
+    const cleanedItems = dataSubmit.items.map((item) => {
+      let taxes = [];
+      if (item.taxes && Array.isArray(item.taxes)) {
+        taxes = item.taxes.map((tax) => ({
+          name: tax.name,
+          percentage: Number(tax.percentage),
+          type: tax.type,
+        }));
+      }
+      return {
+        ...item,
+        price: Number(item.price.replace(/[^\d]/g, '')), // hilangkan Rp, titik, dll
+        taxes, // array pajak, bisa kosong
+      };
+    });
 
     const formData = new FormData();
 
@@ -179,15 +206,44 @@ const PengajuanBiaya = () => {
 
     remove();
 
+    // Reset pajak visibility dan value
+    setTaxVisibility({});
+    setTaxesPerItem({});
+
     if (row.sub_pengajuan && row.sub_pengajuan.length > 0) {
-      row.sub_pengajuan.forEach((item) => {
+      row.sub_pengajuan.forEach((item, idx) => {
         append({
           itemName: item.nama_item,
           quantity: item.jumlah,
           unit: item.satuan,
           price: formatRupiah(item.biaya_satuan),
           description: item.keterangan,
+          taxes:
+            item.taxes && Array.isArray(item.taxes)
+              ? item.taxes.map((tax) => ({
+                  name: tax.nama_pajak,
+                  percentage: tax.persentase,
+                  type: tax.calculation === 'increase' ? 'increment' : 'decrement',
+                }))
+              : [],
         });
+
+        // Jika ada pajak, tampilkan form pajak dan set valuenya
+        if (item.taxes && Array.isArray(item.taxes) && item.taxes.length > 0) {
+          setTaxVisibility((prev) => ({
+            ...prev,
+            [idx]: true,
+          }));
+          setTaxesPerItem((prev) => ({
+            ...prev,
+            [idx]: item.taxes.map((tax) => ({
+              id: `${Date.now()}-${Math.random()}`,
+              name: tax.nama_pajak,
+              percentage: tax.persentase,
+              type: tax.calculation === 'increase' ? 'increment' : 'decrement',
+            })),
+          }));
+        }
       });
     }
   };
@@ -196,10 +252,22 @@ const PengajuanBiaya = () => {
     console.log('Data Submit', dataSubmit);
     setLoading(true);
 
-    const cleanedItems = dataSubmit.items.map((item) => ({
-      ...item,
-      price: Number(item.price.replace(/[^\d]/g, '')), // hilangkan Rp, titik, dll
-    }));
+    // Map items dan sertakan data pajak jika ada
+    const cleanedItems = dataSubmit.items.map((item) => {
+      let taxes = [];
+      if (item.taxes && Array.isArray(item.taxes)) {
+        taxes = item.taxes.map((tax) => ({
+          name: tax.name,
+          percentage: Number(tax.percentage),
+          type: tax.type,
+        }));
+      }
+      return {
+        ...item,
+        price: Number(item.price.replace(/[^\d]/g, '')),
+        taxes,
+      };
+    });
 
     const formData = new FormData();
 
@@ -226,6 +294,19 @@ const PengajuanBiaya = () => {
         setLoading(false);
         alert('error', 'Terjadi Kesalahan');
       });
+  };
+
+  // Helper untuk format rupiah tanpa koma
+  const formatRupiahNoComma = (value) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true,
+    })
+      .format(value)
+      .replace(/,/g, '');
   };
 
   const handleDetailClick = (row) => {
@@ -285,42 +366,116 @@ const PengajuanBiaya = () => {
                       <th>Jumlah</th>
                       <th>Satuan</th>
                       <th>Biaya Satuan</th>
+                      <th>Pajak</th>
                       <th>Total Biaya</th>
                       <th>Keterangan</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {row.sub_pengajuan.map((item, index) => (
-                      <tr key={item.id}>
-                        <td className="text-center">{index + 1}</td>
-                        <td style={{ whiteSpace: 'pre-wrap' }}>{item.nama_item}</td>
-                        <td>{item.jumlah}</td>
-                        <td>{item.satuan}</td>
-                        <td>
-                          {new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                          }).format(item.biaya_satuan)}
-                        </td>
-                        <td>
-                          {new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                          }).format(item.total_biaya)}
-                        </td>
-                        <td>{item.keterangan || '-'}</td>
-                      </tr>
-                    ))}
+                    {row.sub_pengajuan.map((item, index) => {
+                      // Pajak array, support pajak di field pajak atau taxes
+                      const pajakArr = item.pajak || item.taxes || [];
+                      const hargaSatuan = item.biaya_satuan;
+                      const pajakDetail = [];
+                      let hargaSetelahPajak = hargaSatuan;
+
+                      pajakArr.forEach((pajak) => {
+                        const persentase = Number(pajak.persentase || pajak.percentage || 0);
+                        const tipe = pajak.calculation || pajak.type;
+                        const nama = pajak.nama_pajak || pajak.name || '';
+                        if (persentase > 0) {
+                          // Pajak dihitung dari harga satuan * persentase * jumlah
+                          const nilaiPajak = ((hargaSatuan * persentase) / 100) * item.jumlah;
+                          const nilaiPajakStr = formatRupiahNoComma(nilaiPajak);
+                          if (tipe === 'increase' || tipe === 'increment') {
+                            hargaSetelahPajak += (hargaSatuan * persentase) / 100;
+                            pajakDetail.push(
+                              <div key={`${nama}_inc`}>
+                                {`+ ${nama} (${persentase}%) : `}
+                                {nilaiPajakStr}
+                              </div>,
+                            );
+                          } else if (tipe === 'decrease' || tipe === 'decrement') {
+                            hargaSetelahPajak -= (hargaSatuan * persentase) / 100;
+                            pajakDetail.push(
+                              <div key={`${nama}_dec`}>
+                                {`- ${nama} (${persentase}%) : `}
+                                {nilaiPajakStr}
+                              </div>,
+                            );
+                          }
+                        }
+                      });
+
+                      // Total biaya = harga satuan setelah pajak * jumlah
+                      const totalBiaya = hargaSetelahPajak * item.jumlah;
+
+                      return (
+                        <tr key={item.id}>
+                          <td className="text-center">{index + 1}</td>
+                          <td style={{ whiteSpace: 'pre-wrap' }}>{item.nama_item}</td>
+                          <td>{item.jumlah}</td>
+                          <td>{item.satuan}</td>
+                          <td>{formatRupiahNoComma(item.biaya_satuan)}</td>
+                          <td>
+                            {pajakArr.length > 0 ? (
+                              <div>
+                                {pajakArr.map((pajak) => {
+                                  const persentase = Number(
+                                    pajak.persentase || pajak.percentage || 0,
+                                  );
+                                  const tipe = pajak.calculation || pajak.type;
+                                  const nama = pajak.nama_pajak || pajak.name || '';
+                                  const nilaiPajak =
+                                    ((hargaSatuan * persentase) / 100) * item.jumlah;
+                                  const nilaiPajakStr = formatRupiahNoComma(nilaiPajak);
+                                  // Gunakan kombinasi nama, tipe, dan persentase sebagai key
+                                  const key = `${nama}-${tipe}-${persentase}`;
+                                  return (
+                                    <div key={key} style={{ marginBottom: 4 }}>
+                                      <span>
+                                        {tipe === 'increase' || tipe === 'increment' ? '+' : '-'}{' '}
+                                        {nama} ({persentase}%) :
+                                      </span>
+                                      <br />
+                                      <span style={{ paddingLeft: 16 }}>{nilaiPajakStr}</span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <span>-</span>
+                            )}
+                          </td>
+                          <td>{formatRupiahNoComma(totalBiaya)}</td>
+                          <td>{item.keterangan || '-'}</td>
+                        </tr>
+                      );
+                    })}
                     <tr>
-                      <td colSpan={5} className="text-end fw-bold">
+                      <td colSpan={6} className="text-end fw-bold">
                         Total Biaya Keseluruhan
                       </td>
                       <td colSpan={2}>
-                        {new Intl.NumberFormat('id-ID', {
-                          style: 'currency',
-                          currency: 'IDR',
-                        }).format(
-                          row.sub_pengajuan.reduce((total, item) => total + item.total_biaya, 0),
+                        {formatRupiahNoComma(
+                          row.sub_pengajuan.reduce((total, item) => {
+                            const pajakArr = item.pajak || item.taxes || [];
+                            const hargaSatuan = item.biaya_satuan;
+                            let hargaSetelahPajak = hargaSatuan;
+                            pajakArr.forEach((pajak) => {
+                              const persentase = Number(pajak.persentase || pajak.percentage || 0);
+                              const tipe = pajak.calculation || pajak.type;
+                              if (persentase > 0) {
+                                const nilaiPajak = (hargaSatuan * persentase) / 100;
+                                if (tipe === 'increase' || tipe === 'increment') {
+                                  hargaSetelahPajak += nilaiPajak;
+                                } else if (tipe === 'decrease' || tipe === 'decrement') {
+                                  hargaSetelahPajak -= nilaiPajak;
+                                }
+                              }
+                            });
+                            return total + hargaSetelahPajak * item.jumlah;
+                          }, 0),
                         )}
                       </td>
                     </tr>
@@ -433,6 +588,93 @@ const PengajuanBiaya = () => {
     },
   ];
 
+  const toggleTax = (index) => {
+    setTaxVisibility((prev) => {
+      const isVisible = !prev[index];
+      if (!isVisible) {
+        // Unregister semua field pajak pada item ini
+        if (taxesPerItem[index] && Array.isArray(taxesPerItem[index])) {
+          taxesPerItem[index].forEach((_, taxIdx) => {
+            unregister(`items.${index}.taxes.${taxIdx}.name`);
+            unregister(`items.${index}.taxes.${taxIdx}.percentage`);
+            unregister(`items.${index}.taxes.${taxIdx}.type`);
+          });
+        }
+        setTaxesPerItem((prevTaxes) => {
+          const updated = { ...prevTaxes };
+          delete updated[index];
+          return updated;
+        });
+      } else if (!taxesPerItem[index] || taxesPerItem[index].length === 0) {
+        setTaxesPerItem((prevTaxes) => ({
+          ...prevTaxes,
+          [index]: [
+            {
+              id: `${Date.now()}-${Math.random()}`,
+              name: '',
+              percentage: '',
+              type: 'increment',
+            },
+          ],
+        }));
+      }
+      return {
+        ...prev,
+        [index]: isVisible,
+      };
+    });
+  };
+
+  const addTax = (itemIndex) => {
+    setTaxesPerItem((prev) => {
+      const itemTaxes = prev[itemIndex] || [];
+      return {
+        ...prev,
+        [itemIndex]: [
+          ...itemTaxes,
+          {
+            id: `${Date.now()}-${Math.random()}`,
+            name: '',
+            percentage: '',
+            type: 'increment',
+          },
+        ],
+      };
+    });
+  };
+
+  const updateTax = (itemIndex, taxIndex, field, value) => {
+    setTaxesPerItem((prev) => {
+      const itemTaxes = [...(prev[itemIndex] || [])];
+      itemTaxes[taxIndex][field] = value;
+      return { ...prev, [itemIndex]: itemTaxes };
+    });
+  };
+
+  const removeTax = (itemIndex, taxIndex) => {
+    setTaxesPerItem((prev) => {
+      const updatedTaxes = [...(prev[itemIndex] || [])];
+      updatedTaxes.splice(taxIndex, 1);
+
+      // Unregister react-hook-form field untuk pajak yang dihapus
+      unregister(`items.${itemIndex}.taxes.${taxIndex}.name`);
+      unregister(`items.${itemIndex}.taxes.${taxIndex}.percentage`);
+      unregister(`items.${itemIndex}.taxes.${taxIndex}.type`);
+
+      // Jika setelah dihapus tidak ada pajak lagi, sembunyikan form pajak
+      if (updatedTaxes.length === 0) {
+        setTaxVisibility((prevVis) => ({
+          ...prevVis,
+          [itemIndex]: false,
+        }));
+        return Object.fromEntries(
+          Object.entries(prev).filter(([key]) => Number(key) !== itemIndex),
+        );
+      }
+      return { ...prev, [itemIndex]: updatedTaxes };
+    });
+  };
+
   return (
     <>
       <Card>
@@ -519,112 +761,237 @@ const PengajuanBiaya = () => {
                             <th style={{ width: '200px' }}>Satuan</th>
                             <th style={{ width: '200px' }}>Harga Satuan</th>
                             <th>Keterangan</th>
-                            <th style={{ width: '50px' }}>Aksi</th>
+                            <th style={{ width: '150px' }}>Aksi</th>
                           </tr>
                         </thead>
                         <tbody>
                           {fields.map((field, index) => (
-                            <tr key={field.id}>
-                              <td>
-                                <textarea
-                                  className={`form-control ${
-                                    errors.items?.[index]?.itemName ? 'is-invalid' : ''
-                                  }`}
-                                  placeholder="Nama Barang/Jasa"
-                                  {...register(`items.${index}.itemName`, {
-                                    required: 'Nama Barang/Jasa wajib diisi',
-                                  })}
-                                ></textarea>
-                                {errors.items?.[index]?.itemName && (
-                                  <div className="invalid-feedback">
-                                    {errors.items[index].itemName.message}
-                                  </div>
-                                )}
-                              </td>
-                              <td>
-                                <input
-                                  type="number"
-                                  className={`form-control ${
-                                    errors.items?.[index]?.quantity ? 'is-invalid' : ''
-                                  }`}
-                                  placeholder="Jumlah"
-                                  {...register(`items.${index}.quantity`, {
-                                    required: 'Jumlah wajib diisi',
-                                  })}
-                                />
-                                {errors.items?.[index]?.quantity && (
-                                  <div className="invalid-feedback">
-                                    {errors.items[index].quantity.message}
-                                  </div>
-                                )}
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  className={`form-control ${
-                                    errors.items?.[index]?.unit ? 'is-invalid' : ''
-                                  }`}
-                                  placeholder="Paket/Bulan/Kg/Unit, dll"
-                                  {...register(`items.${index}.unit`, {
-                                    required: 'Satuan wajib diisi',
-                                  })}
-                                />
-                                {errors.items?.[index]?.unit && (
-                                  <div className="invalid-feedback">
-                                    {errors.items[index].unit.message}
-                                  </div>
-                                )}
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  className={`form-control ${
-                                    errors.items?.[index]?.price ? 'is-invalid' : ''
-                                  }`}
-                                  placeholder="Harga Satuan"
-                                  value={formatRupiah(watch(`items.${index}.price`) || '')}
-                                  {...register(`items.${index}.price`, {
-                                    required: 'Harga Satuan wajib diisi',
-                                    validate: (value) => {
-                                      const numeric = value.replace(/[^\d]/g, '');
-                                      if (!numeric) return 'Harga Satuan wajib berupa angka';
-                                      if (numeric <= 0)
-                                        return 'Harga Satuan tidak boleh kurang dari atau sama dengan 0';
-                                      return true;
-                                    },
-                                    onChange: (e) => {
-                                      const rawValue = e.target.value.replace(/[^\d]/g, ''); // hanya angka
-                                      e.target.value = rawValue; // simpan angka mentah di react-hook-form
-                                    },
-                                  })}
-                                  autoComplete="off"
-                                />
+                            <>
+                              <tr key={field.id}>
+                                <td>
+                                  <textarea
+                                    className={`form-control ${
+                                      errors.items?.[index]?.itemName ? 'is-invalid' : ''
+                                    }`}
+                                    placeholder="Nama Barang/Jasa"
+                                    {...register(`items.${index}.itemName`, {
+                                      required: 'Nama Barang/Jasa wajib diisi',
+                                    })}
+                                  ></textarea>
+                                  {errors.items?.[index]?.itemName && (
+                                    <div className="invalid-feedback">
+                                      {errors.items[index].itemName.message}
+                                    </div>
+                                  )}
+                                </td>
+                                <td>
+                                  <input
+                                    type="number"
+                                    className={`form-control ${
+                                      errors.items?.[index]?.quantity ? 'is-invalid' : ''
+                                    }`}
+                                    placeholder="Jumlah"
+                                    {...register(`items.${index}.quantity`, {
+                                      required: 'Jumlah wajib diisi',
+                                    })}
+                                  />
+                                  {errors.items?.[index]?.quantity && (
+                                    <div className="invalid-feedback">
+                                      {errors.items[index].quantity.message}
+                                    </div>
+                                  )}
+                                </td>
+                                <td>
+                                  <input
+                                    type="text"
+                                    className={`form-control ${
+                                      errors.items?.[index]?.unit ? 'is-invalid' : ''
+                                    }`}
+                                    placeholder="Paket/Bulan/Kg/Unit, dll"
+                                    {...register(`items.${index}.unit`, {
+                                      required: 'Satuan wajib diisi',
+                                    })}
+                                  />
+                                  {errors.items?.[index]?.unit && (
+                                    <div className="invalid-feedback">
+                                      {errors.items[index].unit.message}
+                                    </div>
+                                  )}
+                                </td>
+                                <td>
+                                  <input
+                                    type="text"
+                                    className={`form-control ${
+                                      errors.items?.[index]?.price ? 'is-invalid' : ''
+                                    }`}
+                                    placeholder="Harga Satuan"
+                                    value={formatRupiah(watch(`items.${index}.price`) || '')}
+                                    {...register(`items.${index}.price`, {
+                                      required: 'Harga Satuan wajib diisi',
+                                      validate: (value) => {
+                                        const numeric = value.replace(/[^\d]/g, '');
+                                        if (!numeric) return 'Harga Satuan wajib berupa angka';
+                                        if (numeric <= 0)
+                                          return 'Harga Satuan tidak boleh kurang dari atau sama dengan 0';
+                                        return true;
+                                      },
+                                      onChange: (e) => {
+                                        const rawValue = e.target.value.replace(/[^\d]/g, ''); // hanya angka
+                                        e.target.value = rawValue; // simpan angka mentah di react-hook-form
+                                      },
+                                    })}
+                                    autoComplete="off"
+                                  />
 
-                                {errors.items?.[index]?.price && (
-                                  <div className="invalid-feedback">
-                                    {errors.items[index].price.message}
-                                  </div>
-                                )}
-                              </td>
-                              <td>
-                                <textarea
-                                  className="form-control"
-                                  placeholder="Keterangan"
-                                  {...register(`items.${index}.description`)}
-                                ></textarea>
-                              </td>
-                              <td>
-                                {index > 0 && (
+                                  {errors.items?.[index]?.price && (
+                                    <div className="invalid-feedback">
+                                      {errors.items[index].price.message}
+                                    </div>
+                                  )}
+                                </td>
+                                <td>
+                                  <textarea
+                                    className="form-control"
+                                    placeholder="Keterangan"
+                                    {...register(`items.${index}.description`)}
+                                  ></textarea>
+                                </td>
+                                <td className="text-center">
+                                  {index > 0 && (
+                                    <button
+                                      type="button"
+                                      className="btn btn-outline-danger btn-sm"
+                                      onClick={() => remove(index)}
+                                    >
+                                      Hapus
+                                    </button>
+                                  )}
                                   <button
                                     type="button"
-                                    className="btn btn-danger"
-                                    onClick={() => remove(index)}
+                                    className="btn btn-outline-secondary btn-sm ms-2"
+                                    onClick={() => toggleTax(index)}
                                   >
-                                    <MaterialIcon icon="delete" fontSize="17" />
+                                    Pajak
                                   </button>
-                                )}
-                              </td>
-                            </tr>
+                                </td>
+                              </tr>
+                              {taxVisibility[index] && (
+                                <tr>
+                                  <td colSpan={6}>
+                                    {(taxesPerItem[index] || []).map((tax, taxIndex) => (
+                                      <div className="row mb-2" key={tax.id}>
+                                        <div className="col-md-4">
+                                          <input
+                                            className={`form-control ${
+                                              errors?.items?.[index]?.taxes?.[taxIndex]?.name
+                                                ? 'is-invalid'
+                                                : ''
+                                            }`}
+                                            placeholder="Jenis Pajak"
+                                            // register pajak
+                                            {...register(`items.${index}.taxes.${taxIndex}.name`, {
+                                              required: 'Jenis Pajak wajib diisi',
+                                              onChange: (e) =>
+                                                updateTax(index, taxIndex, 'name', e.target.value),
+                                            })}
+                                            value={tax.name}
+                                          />
+                                          {errors?.items?.[index]?.taxes?.[taxIndex]?.name && (
+                                            <div className="invalid-feedback">
+                                              {errors.items[index].taxes[taxIndex].name.message}
+                                            </div>
+                                          )}
+                                        </div>
+                                        <div className="col-md-3">
+                                          <input
+                                            type="number"
+                                            className={`form-control ${
+                                              errors?.items?.[index]?.taxes?.[taxIndex]?.percentage
+                                                ? 'is-invalid'
+                                                : ''
+                                            }`}
+                                            placeholder="Persentase (%)"
+                                            {...register(
+                                              `items.${index}.taxes.${taxIndex}.percentage`,
+                                              {
+                                                required: 'Persentase wajib diisi',
+                                                validate: (value) => {
+                                                  // Ganti isNaN dengan Number.isNaN sesuai aturan eslint
+                                                  if (!value || Number.isNaN(Number(value)))
+                                                    return 'Persentase wajib berupa angka';
+                                                  if (Number(value) <= 0)
+                                                    return 'Persentase tidak boleh kurang dari atau sama dengan 0';
+                                                  return true;
+                                                },
+                                                onChange: (e) =>
+                                                  updateTax(
+                                                    index,
+                                                    taxIndex,
+                                                    'percentage',
+                                                    e.target.value,
+                                                  ),
+                                              },
+                                            )}
+                                            value={tax.percentage}
+                                          />
+                                          {errors?.items?.[index]?.taxes?.[taxIndex]
+                                            ?.percentage && (
+                                            <div className="invalid-feedback">
+                                              {
+                                                errors.items[index].taxes[taxIndex].percentage
+                                                  .message
+                                              }
+                                            </div>
+                                          )}
+                                        </div>
+                                        <div className="col-md-3">
+                                          <select
+                                            className={`form-control ${
+                                              errors?.items?.[index]?.taxes?.[taxIndex]?.type
+                                                ? 'is-invalid'
+                                                : ''
+                                            }`}
+                                            {...register(`items.${index}.taxes.${taxIndex}.type`, {
+                                              required: 'Tipe wajib diisi',
+                                              onChange: (e) =>
+                                                updateTax(index, taxIndex, 'type', e.target.value),
+                                            })}
+                                            value={tax.type}
+                                          >
+                                            <option value="increment">Increment</option>
+                                            <option value="decrement">Decrement</option>
+                                          </select>
+                                          {errors?.items?.[index]?.taxes?.[taxIndex]?.type && (
+                                            <div className="invalid-feedback">
+                                              {errors.items[index].taxes[taxIndex].type.message}
+                                            </div>
+                                          )}
+                                        </div>
+                                        <div className="col-md-2">
+                                          <button
+                                            type="button"
+                                            className="btn btn-outline-danger btn-sm"
+                                            onClick={() => removeTax(index, taxIndex)}
+                                          >
+                                            Hapus
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ))}
+                                    {/* Tampilkan tombol tambah pajak hanya jika masih ada pajak */}
+                                    {taxesPerItem[index] && taxesPerItem[index].length > 0 && (
+                                      <button
+                                        type="button"
+                                        className="btn btn-outline-primary btn-sm"
+                                        onClick={() => addTax(index)}
+                                      >
+                                        Tambah Pajak
+                                      </button>
+                                    )}
+                                  </td>
+                                </tr>
+                              )}
+                            </>
                           ))}
                         </tbody>
                       </table>
@@ -670,10 +1037,17 @@ const PengajuanBiaya = () => {
             <div className="mb-3 d-flex align-items-center justify-content-end">
               <input
                 type="text"
-                className="form-control w-25"
+                className="form-control w-25  me-2"
                 placeholder="Cari..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
+              />
+              <input
+                type="month"
+                className="form-control w-auto"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                style={{ minWidth: 180 }}
               />
             </div>
 

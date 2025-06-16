@@ -115,6 +115,19 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
     }
   };
 
+  // Helper untuk format rupiah tanpa koma
+  const formatRupiahNoComma = (value) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true,
+    })
+      .format(value)
+      .replace(/,/g, '');
+  };
+
   const handlePendingApprovalClick = (row) => {
     setModalContent({
       row,
@@ -131,7 +144,6 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
               <p>{row.no_dokumen}</p>
             </Col>
           </Row>
-          {/* <Row></Row> */}
           <Row>
             <Col md={6}>
               <p className="fw-bold">Tanggal Pengajuan : </p>
@@ -148,9 +160,6 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
             <Col md={6}>
               <p className="fw-bold">Lampiran : </p>
               <p>
-                {/* <Button color="info" size="sm" onClick={() => handleDownloadFile(row)}>
-                  Lihat Lampiran
-                </Button> */}
                 <a
                   href={`${api.defaults.baseURL}/pengajuan/${row.lampiran}`}
                   target="_blank"
@@ -162,7 +171,6 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
               </p>
             </Col>
           </Row>
-
           <Row>
             <Col>
               <div className="table-responsive">
@@ -176,42 +184,87 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
                       <th>Jumlah</th>
                       <th>Satuan</th>
                       <th>Biaya Satuan</th>
+                      <th>Pajak</th>
                       <th>Total Biaya</th>
                       <th>Keterangan</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {row.sub_pengajuan.map((item, index) => (
-                      <tr key={item.id}>
-                        <td className="text-center">{index + 1}</td>
-                        <td style={{ whiteSpace: 'pre-wrap' }}>{item.nama_item}</td>
-                        <td>{item.jumlah}</td>
-                        <td>{item.satuan}</td>
-                        <td>
-                          {new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                          }).format(item.biaya_satuan)}
-                        </td>
-                        <td>
-                          {new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                          }).format(item.total_biaya)}
-                        </td>
-                        <td>{item.keterangan || '-'}</td>
-                      </tr>
-                    ))}
+                    {row.sub_pengajuan.map((item, index) => {
+                      // Pajak array, support pajak di field pajak atau taxes
+                      const pajakArr = item.pajak || item.taxes || [];
+                      const hargaSatuan = item.biaya_satuan;
+                      const pajakDetail = [];
+                      let hargaSetelahPajak = hargaSatuan;
+
+                      pajakArr.forEach((pajak) => {
+                        const persentase = Number(pajak.persentase || pajak.percentage || 0);
+                        const tipe = pajak.calculation || pajak.type;
+                        const nama = pajak.nama_pajak || pajak.name || '';
+                        if (persentase > 0) {
+                          // Pajak dihitung dari harga satuan * persentase * jumlah
+                          const nilaiPajak = ((hargaSatuan * persentase) / 100) * item.jumlah;
+                          const nilaiPajakStr = formatRupiahNoComma(nilaiPajak);
+                          if (tipe === 'increase' || tipe === 'increment') {
+                            hargaSetelahPajak += (hargaSatuan * persentase) / 100;
+                            pajakDetail.push(
+                              <div key={`${nama}_inc`}>
+                                {`+ ${nama} (${persentase}%) : `}
+                                {nilaiPajakStr}
+                              </div>,
+                            );
+                          } else if (tipe === 'decrease' || tipe === 'decrement') {
+                            hargaSetelahPajak -= (hargaSatuan * persentase) / 100;
+                            pajakDetail.push(
+                              <div key={`${nama}_dec`}>
+                                {`- ${nama} (${persentase}%) : `}
+                                {nilaiPajakStr}
+                              </div>,
+                            );
+                          }
+                        }
+                      });
+
+                      // Total biaya = harga satuan setelah pajak * jumlah
+                      const totalBiaya = hargaSetelahPajak * item.jumlah;
+
+                      return (
+                        <tr key={item.id}>
+                          <td className="text-center">{index + 1}</td>
+                          <td style={{ whiteSpace: 'pre-wrap' }}>{item.nama_item}</td>
+                          <td>{item.jumlah}</td>
+                          <td>{item.satuan}</td>
+                          <td>{formatRupiahNoComma(item.biaya_satuan)}</td>
+                          <td>{pajakArr.length > 0 ? pajakDetail : <span>-</span>}</td>
+                          <td>{formatRupiahNoComma(totalBiaya)}</td>
+                          <td>{item.keterangan || '-'}</td>
+                        </tr>
+                      );
+                    })}
                     <tr>
-                      <td colSpan={5} className="text-end fw-bold">
+                      <td colSpan={6} className="text-end fw-bold">
                         Total Biaya Keseluruhan
                       </td>
                       <td colSpan={2}>
-                        {new Intl.NumberFormat('id-ID', {
-                          style: 'currency',
-                          currency: 'IDR',
-                        }).format(
-                          row.sub_pengajuan.reduce((total, item) => total + item.total_biaya, 0),
+                        {formatRupiahNoComma(
+                          row.sub_pengajuan.reduce((total, item) => {
+                            const pajakArr = item.pajak || item.taxes || [];
+                            const hargaSatuan = item.biaya_satuan;
+                            let hargaSetelahPajak = hargaSatuan;
+                            pajakArr.forEach((pajak) => {
+                              const persentase = Number(pajak.persentase || pajak.percentage || 0);
+                              const tipe = pajak.calculation || pajak.type;
+                              if (persentase > 0) {
+                                const nilaiPajak = (hargaSatuan * persentase) / 100;
+                                if (tipe === 'increase' || tipe === 'increment') {
+                                  hargaSetelahPajak += nilaiPajak;
+                                } else if (tipe === 'decrease' || tipe === 'decrement') {
+                                  hargaSetelahPajak -= nilaiPajak;
+                                }
+                              }
+                            });
+                            return total + hargaSetelahPajak * item.jumlah;
+                          }, 0),
                         )}
                       </td>
                     </tr>
