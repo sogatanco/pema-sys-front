@@ -15,32 +15,21 @@ import {
 import DataTable from 'react-data-table-component';
 import { useQuery } from '@tanstack/react-query';
 import pdfMake from 'pdfmake/build/pdfmake';
-import htmlToPdfmake from 'html-to-pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 import useAxios from '../../../hooks/useAxios';
-
-const pdfFonts = require('../../../assets/vfs_fonts');
 
 // Explicitly set the virtual file system for pdfMake
 if (pdfFonts && pdfFonts.pdfMake) {
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
 } else {
-  console.error('Failed to load pdfmake fonts. Using default font as fallback.');
-  pdfMake.vfs = {}; // Set an empty virtual file system to avoid crashes
+  console.error('Failed to load pdfmake fonts. Ensure pdfmake is properly installed.');
 }
-
-const fonts = {
-  Archivo: {
-    normal: 'Archivo-Regular.ttf',
-    bold: 'Archivo-SemiBold.ttf',
-    italics: 'Archivo-Italic.ttf',
-    bolditalics: 'Archivo-SemiBoldItalic.ttf',
-  },
-};
 
 const PengajuanSelesai = () => {
   const api = useAxios();
   const [dataPengajuan, setDataPengajuan] = useState([]);
   const [searchText, setSearchText] = useState('');
+  const [filterMonth, setFilterMonth] = useState(''); // Tambah state filter bulan
   const [modalContent, setModalContent] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -58,146 +47,108 @@ const PengajuanSelesai = () => {
   }, [data]);
 
   useEffect(() => {
+    let filtered = data;
     if (searchText) {
-      setDataPengajuan(
-        data?.filter((item) =>
-          item.sub_pengajuan[0].nama_item.toLowerCase().includes(searchText.toLowerCase()),
-        ),
+      filtered = filtered?.filter((item) =>
+        item.sub_pengajuan[0].nama_item.toLowerCase().includes(searchText.toLowerCase()),
       );
-    } else {
-      setDataPengajuan(data);
     }
-  }, [searchText]);
+    if (filterMonth) {
+      filtered = filtered?.filter((item) => {
+        const date = new Date(item.created_at);
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return filterMonth === `${year}-${month}`;
+      });
+    }
+    setDataPengajuan(filtered);
+  }, [searchText, filterMonth, data]);
 
   const generatePDF = (row) => {
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
-    pdfMake.fonts = fonts;
-
-    const html = `
-    <div>
-      <h3 style="text-align: center;">Detail Pengajuan</h3>
-      <div style="text-align: left;">
-      <table style="border: none; border-collapse: collapse; width: 100%;">
-        <tr>
-          <td style="border: none; padding: 4px;"><strong>Jenis Permohonan</strong></td>
-          <td style="border: none; padding: 4px;">: ${row.pengajuan}</td>
-        </tr>
-        <tr>
-          <td style="border: none; padding: 4px;"><strong>No Dokumen</strong></td>
-          <td style="border: none; padding: 4px;">: ${row.no_dokumen}</td>
-        </tr>
-        <tr>
-          <td style="border: none; padding: 4px;"><strong>Tanggal Pengajuan</strong></td>
-          <td style="border: none; padding: 4px;">
-            : ${new Date(row.created_at).toLocaleDateString('id-ID', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </td>
-        </tr>
-        <tr>
-          <td style="border: none; padding: 4px;"><strong>Lampiran</strong></td>
-          <td style="border: none; padding: 4px;">
-            : <a href="${api.defaults.baseURL}/pengajuan/${row.lampiran}" target="_blank">${
-      api.defaults.baseURL
-    }/pengajuan/${row.lampiran}</a>
-          </td>
-        </tr>
-        <tr>
-          <td style="border: none; padding: 4px;"><strong>Diapprove oleh</strong></td>
-          <td style="border: none; padding: 4px;">:
-            <ol style="margin-left: 20px;">
-              ${row.approvals
-                .map(
-                  (item) =>
-                    `<li style="margin-bottom: 10px;">${item.full_name} (${
-                      item.position_name
-                    }) <br/>Approved At: ${new Date(item.updated_at).toLocaleDateString('id-ID', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}</li>`,
-                )
-                .join('')}
-            </ol>
-          </td>
-        </tr>
-        <tr>
-          <td style="border: none; padding: 4px;"><strong>Detail Pengajuan</strong></td>
-          <td style="border: none; padding: 4px;">:</td>
-        </tr>
-        <tr>
-          <td colspan="2" style="border: none; padding: 4px;">
-                  <table style="width: 100%; border-collapse: collapse;" border="1">
-                    <thead>
-                      <tr style="text-align: center;">
-                        <th>No</th>
-                        <th style="white-space:pre-wrap; word-wrap:break-word;">Nama Barang/Jasa</th>
-                        <th>Jumlah</th>
-                        <th>Satuan</th>
-                        <th>Biaya Satuan</th>
-                        <th>Total Biaya</th>
-                        <th>Keterangan</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      ${row.sub_pengajuan
-                        .map(
-                          (item, index) => `
-                        <tr>
-                          <td>${index + 1}</td>
-                          <td style="white-space:pre-wrap; word-wrap:break-word;">${
-                            item.nama_item
-                          }</td>
-                          <td style="text-align: center;">${item.jumlah}</td>
-                          <td style="text-align: center;">${item.satuan}</td>
-                          <td>${new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                          }).format(item.biaya_satuan)}</td>
-                          <td>${new Intl.NumberFormat('id-ID', {
-                            style: 'currency',
-                            currency: 'IDR',
-                          }).format(item.total_biaya)}</td>
-                          <td>${item.keterangan || '-'}</td>
-                        </tr>`,
-                        )
-                        .join('')}
-                      <tr>
-                        <td colspan="5" style="text-align: right;"><strong>Total Biaya Keseluruhan</strong></td>
-                        <td colspan="2">${new Intl.NumberFormat('id-ID', {
-                          style: 'currency',
-                          currency: 'IDR',
-                        }).format(
-                          row.sub_pengajuan.reduce((total, item) => total + item.total_biaya, 0),
-                        )}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-          </td>
-        </tr>
-      </table>
-      </div>
-
-      </div>
-    `;
-
-    const pdfContent = htmlToPdfmake(html, {
-      defaultStyles: {
-        table: { margin: [0, 5, 0, 15] },
-        th: { bold: true, fillColor: '#eeeeee' },
-      },
-    });
-
     const docDefinition = {
-      content: [pdfContent],
+      content: [
+        { text: 'Detail Pengajuan', style: 'header' },
+        { text: `Jenis Permohonan: ${row.pengajuan}`, margin: [0, 10, 0, 5] },
+        { text: `No Dokumen: ${row.no_dokumen}`, margin: [0, 0, 0, 5] },
+        {
+          text: `Tanggal Pengajuan: ${new Date(row.created_at).toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}`,
+          margin: [0, 0, 0, 10],
+        },
+        { text: 'Lampiran:', margin: [0, 0, 0, 5] },
+        {
+          text: `${api.defaults.baseURL}/pengajuan/${row.lampiran}`,
+          link: `${api.defaults.baseURL}/pengajuan/${row.lampiran}`,
+          color: 'blue',
+          margin: [0, 0, 0, 10],
+        },
+        { text: 'Diapprove oleh:', style: 'subheader', margin: [0, 10, 0, 5] },
+        ...row.approvals.map((item) => ({
+          text: `${item.full_name} (${item.position_name}) - Approved At: ${new Date(
+            item.updated_at,
+          ).toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}`,
+          margin: [0, 0, 0, 5],
+        })),
+        { text: 'Detail Barang/Jasa:', style: 'subheader', margin: [0, 10, 0, 5] },
+        {
+          table: {
+            headerRows: 1,
+            widths: ['auto', '*', 'auto', 'auto', 'auto', 'auto', '*'],
+            body: [
+              [
+                { text: 'No', bold: true },
+                { text: 'Nama Barang/Jasa', bold: true },
+                { text: 'Jumlah', bold: true },
+                { text: 'Satuan', bold: true },
+                { text: 'Biaya Satuan', bold: true },
+                { text: 'Total Biaya', bold: true },
+                { text: 'Keterangan', bold: true },
+              ],
+              ...row.sub_pengajuan.map((item, index) => [
+                index + 1,
+                item.nama_item,
+                item.jumlah,
+                item.satuan,
+                new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(
+                  item.biaya_satuan,
+                ),
+                new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(
+                  item.total_biaya,
+                ),
+                item.keterangan || '-',
+              ]),
+              [
+                { text: 'Total Biaya Keseluruhan', colSpan: 5, alignment: 'right' },
+                {},
+                {},
+                {},
+                {},
+                new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(
+                  row.sub_pengajuan.reduce((total, item) => total + item.total_biaya, 0),
+                ),
+                {},
+              ],
+            ],
+          },
+        },
+      ],
+      styles: {
+        header: { fontSize: 18, bold: true },
+        subheader: { fontSize: 14, bold: true },
+      },
       defaultStyle: {
-        font: 'Archivo',
+        font: 'Helvetica',
       },
     };
 
@@ -216,55 +167,47 @@ const PengajuanSelesai = () => {
             </Button>
           </div>
           <Row className="mb-4">
-            <table style={{ border: 'none', borderCollapse: 'collapse', marginLeft: '10px' }}>
-              <tbody>
-                <tr style={{ border: 'none' }}>
-                  <td style={{ border: 'none', width: '200px' }}>
-                    <strong>Jenis Permohonan</strong>
-                  </td>
-                  <td style={{ border: 'none' }}>
-                    <td style={{ border: 'none' }}>: {row.pengajuan}</td>
-                  </td>
-                </tr>
-                <tr style={{ border: 'none' }}>
-                  <td style={{ border: 'none', width: '200px' }}>
-                    <strong>No Dokumen</strong>
-                  </td>
-                  <td style={{ border: 'none' }}>
-                    <td style={{ border: 'none' }}>: {row.no_dokumen}</td>
-                  </td>
-                </tr>
-                <tr style={{ border: 'none' }}>
-                  <td style={{ border: 'none', width: '200px' }}>
-                    <strong>Tanggal Pengajuan</strong>
-                  </td>
-                  <td style={{ border: 'none' }}>
-                    <td style={{ border: 'none' }}>
-                      :{' '}
-                      {new Date(row.created_at).toLocaleDateString('id-ID', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </td>
-                  </td>
-                </tr>
-                <tr style={{ border: 'none' }}>
-                  <td style={{ border: 'none', width: '200px' }}>
-                    <strong>Diapprove oleh</strong>
-                  </td>
-                  <td style={{ border: 'none' }}>
-                    <td style={{ border: 'none' }}>:</td>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <Col md={6}>
+              <p className="fw-bold">Jenis Permohonan:</p>
+              <p>{row.pengajuan}</p>
+            </Col>
+            <Col md={6}>
+              <p className="fw-bold">No Dokumen:</p>
+              <p>{row.no_dokumen}</p>
+            </Col>
+          </Row>
+
+          <Row className="mb-4">
+            <Col md={6}>
+              <p className="fw-bold">Tanggal Pengajuan:</p>
+              <p>
+                {new Date(row.created_at).toLocaleDateString('id-ID', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </p>
+            </Col>
+            <Col md={6}>
+              <p className="fw-bold">Lampiran:</p>
+              <p>
+                <a
+                  href={`${api.defaults.baseURL}/pengajuan/${row.lampiran}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-info btn-sm"
+                >
+                  Lihat Lampiran
+                </a>
+              </p>
+            </Col>
           </Row>
 
           {/* Diapprove oleh dalam 1 baris 3 kolom */}
           <Row className="mb-4">
+            <p className="fw-bold">Diapprove oleh:</p>
             {row?.approvals?.map((item) => (
               <Col key={item.id} md={4} className="mb-3">
                 <div className="shadow-sm p-3 bg-light rounded">
@@ -306,7 +249,7 @@ const PengajuanSelesai = () => {
                     {row.sub_pengajuan.map((item, index) => (
                       <tr key={item.id}>
                         <td className="text-center">{index + 1}</td>
-                        <td style={{ whiteSpace: 'pre-wrap' }}>{item.nama_item}</td>
+                        <td>{item.nama_item}</td>
                         <td>{item.jumlah}</td>
                         <td>{item.satuan}</td>
                         <td>
@@ -414,13 +357,20 @@ const PengajuanSelesai = () => {
     <>
       <Card>
         <CardBody>
-          <div className="mb-3 d-flex align-items-center justify-content-end">
+          <div className="mb-3 d-flex align-items-center justify-content-end gap-2">
             <input
               type="text"
               className="form-control w-25"
               placeholder="Cari..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
+            />
+            <input
+              type="month"
+              className="form-control w-auto"
+              value={filterMonth}
+              onChange={(e) => setFilterMonth(e.target.value)}
+              style={{ minWidth: 180 }}
             />
           </div>
 
