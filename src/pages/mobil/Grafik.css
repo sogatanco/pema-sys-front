@@ -1,6 +1,6 @@
 .chart-container {
-    background: linear-gradient(rgba(19, 18, 18, 0.678), rgba(255, 255, 255, 0.452)),
-    url('https://i.pinimg.com/1200x/47/17/45/4717459bedcaed11efb0112c236b58a1.jpg') no-repeat center center/cover;
+    /* background: linear-gradient(rgba(19, 18, 18, 0.678), rgba(255, 255, 255, 0.452)),
+    url('https://i.pinimg.com/1200x/47/17/45/4717459bedcaed11efb0112c236b58a1.jpg') no-repeat center center/cover; */
 
     border-radius: 15px; /* Add border radius */
     padding: 20px; /* Optional: Add some padding inside the container */

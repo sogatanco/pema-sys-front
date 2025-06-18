@@ -134,10 +134,11 @@ const TulisSurat = ({ divisis, mydivisi, refresh, func1, detailSurat, updateForm
   useEffect(() => {
     api.get(`dapi/adm/signers/${divisi}`).then((res) => {
       setTtdBys(res.data.data);
+      console.log(res.data.data);
       // const ttd=res.data.data.find(s => s.employe_id === ttdBy);
       // setTtdBy(dataSurat?.ttdBy||'');
       // console.log(res.data.data.find(s => s.employe_id === ttdBy)?.length);
-      if (res.data.data.find(s => s.employe_id === ttdBy)) {
+      if (res.data.data?.find(s => s?.employe_id === ttdBy)) {
         setTtdBy(dataSurat?.ttdBy)
       } else {
         setTtdBy('')

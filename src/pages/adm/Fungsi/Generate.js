@@ -160,7 +160,7 @@ const GenerateSurat = (dataSurat, htmlRef) => {
                   style: 'normal',
                 },
                 {
-                  text: 'PT PEMBANGUNAN ACEH',
+                  text: 'PT PEMBANGUNAN ACEH (Perseroda)',
                   style: 'boldText',
                 },
                 {

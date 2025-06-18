@@ -25,6 +25,7 @@ const ModalReview = ({ modalR, toggleR, sppdDetail, refetchNumber, refetchSubmit
     if (sppdDetail) {
       api.get(`dapi/sppd/pengajuan/${sppdDetail?.id}`).then((res) => {
         setDetailSppd(res.data.data);
+        console.log(res.data.data);
         setChekList(res.data.data?.check_doc);
       });
     } else {
@@ -68,7 +69,7 @@ const ModalReview = ({ modalR, toggleR, sppdDetail, refetchNumber, refetchSubmit
     <>
       <Modal isOpen={modalR} toggle={toggleR} size="lg">
         <ModalHeader toggle={toggleR}>
-          Lembar Persetujuan <small className="fst-italic">({detailSppd?.current_type})</small>
+          Lembar Persetujuan <small className="fst-italic">({detailSppd?.current_type==='extend'?'Pengajuan Penambahan Hari':detailSppd?.current_type})</small>
         </ModalHeader>
         <ModalBody className="p-5">
           {detailSppd ? (
@@ -133,6 +134,41 @@ const ModalReview = ({ modalR, toggleR, sppdDetail, refetchNumber, refetchSubmit
               ) : (
                 ''
               )}
+
+              {detailSppd?.current_type === 'extend' ? (
+                <Box
+                  className="mb-3"
+                  sx={{ p: 1, borderRadius: 2, padding: 2, border: '0.5px solid #C4C4C4' }}
+                >
+                  {Array.isArray(detailSppd?.ekstend) && detailSppd.ekstend.length > 0 ? (
+                    detailSppd.ekstend.map((item, idx) => (
+                      <Box key={item.id || idx} sx={{ mb: 2, p: 1, border: '1px solid #eee', borderRadius: 1 }}>
+                        <div style={{ display: 'flex' }}>
+                          <b style={{ minWidth: 110, display: 'inline-block' }}>Tujuan</b>
+                          <span style={{ minWidth: 10, display: 'inline-block' }}>:</span>
+                          <span>{item.detail_tujuan}</span>
+                        </div>
+                         <div style={{ display: 'flex' }}>
+                          <b style={{ minWidth: 110, display: 'inline-block' }}>Mulai</b>
+                          <span style={{ minWidth: 10, display: 'inline-block' }}>:</span>
+                          <span>{item.start}</span>
+                        </div>
+                        <div style={{ display: 'flex' }}>
+                          <b style={{ minWidth: 110, display: 'inline-block' }}>Hingga</b>
+                          <span style={{ minWidth: 10, display: 'inline-block' }}>:</span>
+                          <span>{item.end}</span>
+                        </div>
+                        <div style={{ display: 'flex' }}>
+                          <b style={{ minWidth: 110, display: 'inline-block' }}>Alasan</b>
+                          <span style={{ minWidth: 10, display: 'inline-block' }}>:</span>
+                          <span>{item.alasan}</span>
+                        </div>
+                       
+                      </Box>
+                    ))
+                  ) : ''}
+                </Box>
+              ):''}
 
               {detailSppd?.current_type === 'verif_realisasi' ? (
                 <Box

@@ -16,6 +16,7 @@ const ListPengajuan = ({
   toggleDoc,
   toggleRe,
   done,
+  extend, // Tambahkan prop extend
 }) => {
   const [search, setSearch] = React.useState('');
   const [listP, setListP] = React.useState([]);
@@ -44,7 +45,7 @@ const ListPengajuan = ({
 
   const update = (row) => {
     if (row.current_status === 'signed') {
-      alert('success', 'Fitur ini dalam proses pengembangan');
+      extend(row); // Panggil extend di sini
     } else {
       updateForm(row);
     }
@@ -269,7 +270,8 @@ ListPengajuan.propTypes = {
   toggleR: PropTypes.func,
   toggleDoc: PropTypes.func,
   toggleRe: PropTypes.func,
-  done:PropTypes.func
+  done:PropTypes.func,
+  extend: PropTypes.func, // Tambahkan propTypes extend
 };
 
 export default ListPengajuan;
