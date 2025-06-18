@@ -134,7 +134,7 @@ const PengajuanBiaya = () => {
       if (item.taxes && Array.isArray(item.taxes)) {
         taxes = item.taxes.map((tax) => ({
           name: tax.name,
-          percentage: Number(tax.percentage),
+          percentage: tax.percentage,
           type: tax.type,
         }));
       }
@@ -258,7 +258,7 @@ const PengajuanBiaya = () => {
       if (item.taxes && Array.isArray(item.taxes)) {
         taxes = item.taxes.map((tax) => ({
           name: tax.name,
-          percentage: Number(tax.percentage),
+          percentage: tax.percentage,
           type: tax.type,
         }));
       }
