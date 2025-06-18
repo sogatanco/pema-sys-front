@@ -881,7 +881,26 @@ const PengajuanBiaya = () => {
                                     {(taxesPerItem[index] || []).map((tax, taxIndex) => (
                                       <div className="row mb-2" key={tax.id}>
                                         <div className="col-md-4">
-                                          <input
+                                          <select
+                                            className={`form-control ${
+                                              errors?.items?.[index]?.taxes?.[taxIndex]?.name
+                                                ? 'is-invalid'
+                                                : ''
+                                            }`}
+                                            // register pajak
+                                            {...register(`items.${index}.taxes.${taxIndex}.name`, {
+                                              required: 'Jenis Pajak wajib diisi',
+                                              onChange: (e) =>
+                                                updateTax(index, taxIndex, 'name', e.target.value),
+                                            })}
+                                            value={tax.name}
+                                          >
+                                            <option value="">Pilih Jenis Pajak</option>
+                                            <option value="PPN">PPN</option>
+                                            <option value="PPh 21">PPh 21</option>
+                                            <option value="PPh 23">PPh 23</option>
+                                          </select>
+                                          {/* <input
                                             className={`form-control ${
                                               errors?.items?.[index]?.taxes?.[taxIndex]?.name
                                                 ? 'is-invalid'
@@ -895,7 +914,7 @@ const PengajuanBiaya = () => {
                                                 updateTax(index, taxIndex, 'name', e.target.value),
                                             })}
                                             value={tax.name}
-                                          />
+                                          /> */}
                                           {errors?.items?.[index]?.taxes?.[taxIndex]?.name && (
                                             <div className="invalid-feedback">
                                               {errors.items[index].taxes[taxIndex].name.message}
