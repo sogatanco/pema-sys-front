@@ -45,10 +45,10 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
   });
 
   useEffect(() => {
-    setDataPengajuan(data || []);
+    setDataPengajuan(data);
     // Kirim jumlah data ke komponen Pengajuan
     if (data) {
-      setBadgeCount(data.length); // Update badge count di Pengajuan
+      setBadgeCount(data?.length); // Update badge count di Pengajuan
       queryClient.invalidateQueries(['dashboard-pengajuan']);
     }
   }, [data, setBadgeCount]);
@@ -56,14 +56,21 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
   useEffect(() => {
     if (searchText) {
       setDataPengajuan(
-        data?.filter((item) =>
-          item.sub_pengajuan[0].nama_item.toLowerCase().includes(searchText.toLowerCase()),
-        ),
+        Array.isArray(data)
+          ? data.filter(
+              (item) =>
+                item?.sub_pengajuan &&
+                Array.isArray(item.sub_pengajuan) &&
+                item?.sub_pengajuan[0]?.nama_item
+                  ?.toLowerCase()
+                  ?.includes(searchText.toLowerCase()),
+            )
+          : [],
       );
     } else {
-      setDataPengajuan(data);
+      setDataPengajuan(Array.isArray(data) ? data : []);
     }
-  }, [searchText]);
+  }, [searchText, data]);
 
   const handleApprove = async () => {
     if (!modalContent?.row) return;
@@ -298,7 +305,7 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
     {
       name: 'Tanggal Pengajuan',
       selector: (row) =>
-        new Date(row.created_at).toLocaleDateString('id-ID', {
+        new Date(row?.created_at).toLocaleDateString('id-ID', {
           year: 'numeric',
           month: 'long',
           day: 'numeric',
@@ -309,32 +316,32 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
     },
     {
       name: 'Jenis Permohonan',
-      selector: (row) => row.pengajuan,
+      selector: (row) => row?.pengajuan,
       width: '250px',
     },
     {
       name: 'No Dokumen',
-      selector: (row) => row.no_dokumen,
+      selector: (row) => row?.no_dokumen,
       width: '200px',
     },
     {
       name: 'Nama Barang/Jasa',
-      selector: (row) => row.sub_pengajuan[0].nama_item,
+      selector: (row) => row?.sub_pengajuan[0]?.nama_item,
     },
     {
       name: 'Jumlah Barang/Jasa',
-      selector: (row) => row.sub_pengajuan[0].jumlah,
+      selector: (row) => row?.sub_pengajuan[0]?.jumlah,
     },
     {
       name: 'Satuan',
-      selector: (row) => row.sub_pengajuan[0].satuan,
+      selector: (row) => row?.sub_pengajuan[0]?.satuan,
     },
     {
       name: 'Biaya Satuan',
       selector: (row) => (
         <div>
           {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(
-            row.sub_pengajuan[0].biaya_satuan,
+            row?.sub_pengajuan[0]?.biaya_satuan,
           )}
         </div>
       ),
@@ -361,6 +368,8 @@ const ApprovalPengajuan = ({ setBadgeCount }) => {
             </div>
           ) : error ? (
             <div className="text-center">Something went wrong</div>
+          ) : dataPengajuan?.length === 0 ? (
+            <div className="text-center">Tidak ada data pengajuan</div>
           ) : (
             <DataTable columns={columns} data={dataPengajuan} pagination highlightOnHover />
           )}
