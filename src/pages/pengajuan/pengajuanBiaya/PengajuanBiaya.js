@@ -213,10 +213,10 @@ const PengajuanBiaya = () => {
     if (row.sub_pengajuan && row.sub_pengajuan.length > 0) {
       row.sub_pengajuan.forEach((item, idx) => {
         append({
-          itemName: item.nama_item,
-          quantity: item.jumlah,
-          unit: item.satuan,
-          price: formatRupiah(item.biaya_satuan),
+          itemName: item?.nama_item,
+          quantity: item?.jumlah,
+          unit: item?.satuan,
+          price: formatRupiah(item?.biaya_satuan),
           description: item.keterangan,
           taxes:
             item.taxes && Array.isArray(item.taxes)
@@ -375,7 +375,7 @@ const PengajuanBiaya = () => {
                     {row.sub_pengajuan.map((item, index) => {
                       // Pajak array, support pajak di field pajak atau taxes
                       const pajakArr = item.pajak || item.taxes || [];
-                      const hargaSatuan = item.biaya_satuan;
+                      const hargaSatuan = item?.biaya_satuan;
                       const pajakDetail = [];
                       let hargaSetelahPajak = hargaSatuan;
 
@@ -413,10 +413,10 @@ const PengajuanBiaya = () => {
                       return (
                         <tr key={item.id}>
                           <td className="text-center">{index + 1}</td>
-                          <td style={{ whiteSpace: 'pre-wrap' }}>{item.nama_item}</td>
-                          <td>{item.jumlah}</td>
-                          <td>{item.satuan}</td>
-                          <td>{formatRupiahNoComma(item.biaya_satuan)}</td>
+                          <td style={{ whiteSpace: 'pre-wrap' }}>{item?.nama_item}</td>
+                          <td>{item?.jumlah}</td>
+                          <td>{item?.satuan}</td>
+                          <td>{formatRupiahNoComma(item?.biaya_satuan)}</td>
                           <td>
                             {pajakArr.length > 0 ? (
                               <div>
@@ -460,7 +460,7 @@ const PengajuanBiaya = () => {
                         {formatRupiahNoComma(
                           row.sub_pengajuan.reduce((total, item) => {
                             const pajakArr = item.pajak || item.taxes || [];
-                            const hargaSatuan = item.biaya_satuan;
+                            const hargaSatuan = item?.biaya_satuan;
                             let hargaSetelahPajak = hargaSatuan;
                             pajakArr.forEach((pajak) => {
                               const persentase = Number(pajak.persentase || pajak.percentage || 0);
@@ -566,22 +566,22 @@ const PengajuanBiaya = () => {
     },
     {
       name: 'Nama Barang/Jasa',
-      selector: (row) => row.sub_pengajuan[0].nama_item,
+      selector: (row) => row.sub_pengajuan[0]?.nama_item,
     },
     {
       name: 'Jumlah Barang/Jasa',
-      selector: (row) => row.sub_pengajuan[0].jumlah,
+      selector: (row) => row?.sub_pengajuan[0]?.jumlah,
     },
     {
       name: 'Satuan',
-      selector: (row) => row.sub_pengajuan[0].satuan,
+      selector: (row) => row?.sub_pengajuan[0]?.satuan,
     },
     {
       name: 'Biaya Satuan',
       selector: (row) => (
         <div>
           {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(
-            row.sub_pengajuan[0].biaya_satuan,
+            row.sub_pengajuan[0]?.biaya_satuan,
           )}
         </div>
       ),

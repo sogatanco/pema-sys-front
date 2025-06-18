@@ -1,47 +1,68 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Timeline from 'react-calendar-timeline';
 // make sure you include the timeline stylesheet or the timeline will not be styled
 import './CarUsage.scss';
 import moment from 'moment';
 import "moment/locale/id";
+import useAxios from '../../hooks/useAxios';
 
 
 const CarUsage = () => {
     moment.locale("id");
-    const groups = [{ id: 1, title: 'Avanza BL 123 AT' },
-         { id: 2, title: 'INNOVA 23 BB' },
-         { id: 3, title: 'INNOVA 23 BB' },
-         { id: 4, title: 'INNOVA 23 BB' },
-         { id: 5, title: 'INNOVA 23 BB' }
-        
-        ];
+    const api = useAxios();
+    const [groups, setGroups] = useState([]);
+    const [items, setItems] = useState([]);
 
-    const items = [
-        {
-            id: 1,
-            group: 1,
-            title: 'Wahyudin',
-            start_time: moment("2023-09-14 16:34:11", "YYYY-MM-DD HH:mm:ss"),
-            end_time: moment("2023-09-14 17:34:11", "YYYY-MM-DD HH:mm:ss"),
-            bgColor: 'rgba(225, 166, 244, 0.6)',
-        },
-        {
-            id: 2,
-            group: 2,
-            title: 'Safrian',
-            start_time: moment("2023-09-14 15:30:00", "YYYY-MM-DD HH:mm:ss"),
-            end_time: moment("2023-09-14 16:30:00", "YYYY-MM-DD HH:mm:ss"),
-            bgColor: 'rgba(100, 200, 100, 0.6)',
-        },
-        {
-            id: 3,
-            group: 1,
-            title: 'Syahrial',
-            start_time: moment("2023-09-14 18:00:00", "YYYY-MM-DD HH:mm:ss"),
-            end_time: moment("2025-02-27 19:00:00", "YYYY-MM-DD HH:mm:ss"),
-            bgColor: 'rgba(225, 166, 244, 0.6)',
-        },
-    ];
+    useEffect(() => {
+        api.get('dapi/mobil/get')
+            .then((response) => {
+                if (response.data.success) {
+                    const newGroups = response.data.data.map((car) => ({
+                        id: car.id,
+                        title: `${car.brand} ${car.plat}`
+                    }));
+                    setGroups(newGroups);
+                    console.log('Available cars:', newGroups);
+
+                    // Setelah groups sudah ada, baru get pengambilan-calendar
+                    api.get('dapi/mobil/pengambilan-calendar')
+                        .then((calendarResponse) => {
+                            if (calendarResponse.data.success) {
+                                // Buat mapping group title ke id
+                                const groupMap = {};
+                                newGroups.forEach(g => {
+                                    groupMap[g.title] = g.id;
+                                });
+
+                                const newItems = calendarResponse.data.data.map((item, idx) => {
+                                    let groupId = item.group || item.group_id;
+                                    if (!groupId && item.brand && item.plat) {
+                                        const key = `${item.brand} ${item.plat}`;
+                                        groupId = groupMap[key] || 1;
+                                    }
+                                    return {
+                                        id: item.id || idx + 1,
+                                        group: groupId || 1,
+                                        title: item.title || item.user || '-',
+                                        start_time: moment(item.start_time),
+                                        end_time: moment(item.end_time),
+                                        bgColor: item.bgColor || 'rgba(225, 166, 244, 0.6)'
+                                    };
+                                });
+                                setItems(newItems);
+
+                                console.log('Pengambilan calendar:', newItems);
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error fetching pengambilan calendar:', error);
+                        });
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching available cars:', error);
+            });
+    }, []);
 
 
 

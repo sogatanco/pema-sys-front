@@ -14,7 +14,7 @@ import {
 } from 'reactstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useNavigate, Navigate, Link } from 'react-router-dom';
+import { useNavigate, Navigate, Link, useLocation } from 'react-router-dom';
 import { ReactComponent as LeftBg } from '../../assets/images/bg/login-bgleft.svg';
 import { ReactComponent as RightBg } from '../../assets/images/bg/login-bg-right.svg';
 import { AuthContext } from '../../context/AuthContext';
@@ -28,6 +28,7 @@ const Login = () => {
   const { loading, error, dispatch } = useContext(AuthContext);
   const [errStatus, setErrStatus] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const initialValues = {
     email: '',
@@ -47,7 +48,7 @@ const Login = () => {
     await api
       .post('api/auth/login', data)
       .then((res) => {
-        navigate('/');
+        navigate(location.state?.from || '/');
         dispatch({ type: 'LOGIN_SUCCESS', payload: res.data.auth });
       })
       .catch((err) => {
@@ -58,6 +59,10 @@ const Login = () => {
         setErrStatus(true);
       });
   };
+
+  useEffect(()=>{
+    console.log(location.state?.from)
+  },[])
 
   useEffect(() => {
     setTimeout(() => {

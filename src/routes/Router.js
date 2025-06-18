@@ -3,7 +3,8 @@ import Loadable from '../layouts/loader/Loadable';
 import RequireAuth from '../components/RequireAuth';
 import Login from '../pages/auth/Login';
 import PemaReport from '../pages/PemaReport';
-import Lalin from '../pages/Lalin';
+import Lalin from '../pages/layar/Lalin';
+import MasuinPage from '../pages/layar/Masuin';
 /****Layouts*****/
 
 const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
@@ -104,6 +105,7 @@ const NewPassword = Loadable(lazy(() => import('../pages/auth/NewPassword')));
 /***** CASL Access Control ****/
 
 // Report
+
 // const PemaReport= Loadable(lazy(() => import('../pages/PemaReport')));
 
 // const CASL = Loadable(lazy(() => import('../views/apps/accessControlCASL/AccessControl')));
@@ -136,6 +138,7 @@ const assetAllowedRoles = ['Employee'];
 const inProgressTaskAllowedRoles = ['Director'];
 const ApprovalTenderAllowedRoles = ['Manager'];
 const PengajuanAllowedRoles = ['AdminPengajuan', 'ManagerUmum', 'DirekturUmumKeuangan', 'Presdir'];
+const LayarRoles = ['AdminLayar'];
 
 /*****Routes******/
 const ThemeRoutes = [
@@ -330,6 +333,11 @@ const ThemeRoutes = [
             name: 'Pengajuan',
             element: <Pengajuan allowedRoles={PengajuanAllowedRoles} />,
           },
+          {
+            path: 'insert-image',
+            name: 'Masuin',
+            element: <MasuinPage allowedRoles={LayarRoles}  />,
+          },
         ],
       },
       {
@@ -402,7 +410,7 @@ const ThemeRoutes = [
     element: <PemaReport />,
   },
   {
-    path: '/lalin',
+    path: '/abs',
     element: <Lalin />,
   },
   {
