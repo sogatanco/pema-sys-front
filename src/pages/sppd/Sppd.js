@@ -29,6 +29,7 @@ import ModalDocs from './ModalDocs';
 import ModalRealisasi from './ModalRealisasi';
 import ListApproved from './ListApproved';
 import DashboardDirek from './DashboardDirek';
+import ModalExtend from './ModalExtend';
 
 const Sppd = () => {
   const [doc, setDoc] = useState('');
@@ -84,6 +85,10 @@ const Sppd = () => {
   const toggleProses = () => {
     setModalProses(!modalProses);
   };
+
+  // modalExtend
+  const [modalExtend, setModalExtend] = useState(false);
+  const [sppdExtend, setSppdExtend] = useState();
 
   const api = useAxios();
 
@@ -392,6 +397,30 @@ const Sppd = () => {
       ],
     });
   };
+
+  // Tambahkan fungsi extend
+  const extend = (row) => {
+    setSppdExtend(row);
+    setModalExtend(true);
+  };
+
+  const toggleExtend = () => {
+    setModalExtend(!modalExtend);
+    if (!modalExtend) setSppdExtend(null);
+  };
+
+  // Handler submit extend
+  const handleSubmitExtend = async(data) => {
+    
+   await api.post(`dapi/sppd/ekstend`, { id_tujuan: data.tujuan, alasan: data.alasan, start:data.mulai ,end:data.hingga }).then((res) => {
+      if (res.status === 200) {
+        alert('success', 'Penambahan Hari Berhasil diajukan');
+        toggleExtend();
+        refetchSubmitted();
+      }
+    });
+  };
+
   return (
     <>
       <TabContext value={value}>
@@ -578,6 +607,7 @@ const Sppd = () => {
                   toggleR,
                   toggleDoc,
                   toggleRe,
+                  extend,
                 }}
               ></ListPengajuan>
             </CardBody>
@@ -598,6 +628,7 @@ const Sppd = () => {
                   toggleR,
                   toggleDoc,
                   approved,
+                  extend,
                 }}
               ></ListPengajuan>
             </CardBody>
@@ -616,6 +647,7 @@ const Sppd = () => {
                   value,
                   toggleR,
                   toggleDoc,
+                  extend,
                 }}
               ></ListPengajuan>
             </CardBody>
@@ -654,6 +686,7 @@ const Sppd = () => {
                   toggleR,
                   toggleDoc,
                   done,
+                  extend,
                 }}
               ></ListPengajuan>
             </CardBody>
@@ -674,7 +707,12 @@ const Sppd = () => {
       <ModalReview {...{ modalR, toggleR, sppdDetail, refetchNumber, refetchSubmitted }} />
       <ModalDocs {...{ modalDoc, toggleDoc, sppdDetail }} />
       <ModalRealisasi {...{ modalRe, toggleRe, sppdDetail }} />
-
+      <ModalExtend
+        modalExtend={modalExtend}
+        toggleExtend={toggleExtend}
+        sppdDetail={sppdExtend}
+        onSubmit={handleSubmitExtend}
+      />
       <Modal isOpen={modalProses} toggle={toggleProses}>
         <ModalHeader toggle={toggleProses}>Lembar Proses</ModalHeader>
         <ModalBody>

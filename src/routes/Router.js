@@ -3,7 +3,8 @@ import Loadable from '../layouts/loader/Loadable';
 import RequireAuth from '../components/RequireAuth';
 import Login from '../pages/auth/Login';
 import PemaReport from '../pages/PemaReport';
-import Lalin from '../pages/Lalin';
+import Lalin from '../pages/layar/Lalin';
+import MasuinPage from '../pages/layar/Masuin';
 /****Layouts*****/
 
 const FullLayout = Loadable(lazy(() => import('../layouts/FullLayout')));
@@ -43,6 +44,9 @@ const AdmPage = Loadable(lazy(() => import('../pages/adm')));
 const MobilPage = Loadable(lazy(() => import('../pages/mobil')));
 /***** abse****/
 const AbsenPage = Loadable(lazy(() => import('../pages/absen')));
+
+/***** Pengajuan ****/
+const Pengajuan = Loadable(lazy(() => import('../pages/pengajuan/Pengajuan')));
 
 /***** Asset ****/
 
@@ -102,6 +106,7 @@ const NewPassword = Loadable(lazy(() => import('../pages/auth/NewPassword')));
 /***** CASL Access Control ****/
 
 // Report
+
 // const PemaReport= Loadable(lazy(() => import('../pages/PemaReport')));
 
 // const CASL = Loadable(lazy(() => import('../views/apps/accessControlCASL/AccessControl')));
@@ -122,6 +127,9 @@ const ROLES = {
   Supervisor: 'Supervisor',
   Staff: 'Staff',
   Employee: 'Employee',
+  AdminPengajuan: 'AdminPengajuan',
+  ManagerUmum: 'ManagerUmum',
+  DirekturUmumKeuangan: 'DirekturUmumKeuangan',
 };
 
 const formAllowedRoles = ['Picpentry', 'Picatk'];
@@ -130,6 +138,8 @@ const reportAllowedRoles = ['Picpentry', 'Picatk'];
 const assetAllowedRoles = ['Employee'];
 const inProgressTaskAllowedRoles = ['Director'];
 const ApprovalTenderAllowedRoles = ['Manager'];
+const PengajuanAllowedRoles = ['AdminPengajuan', 'ManagerUmum', 'DirekturUmumKeuangan', 'Presdir'];
+const LayarRoles = ['AdminLayar'];
 
 /*****Routes******/
 const ThemeRoutes = [
@@ -324,6 +334,16 @@ const ThemeRoutes = [
             name: 'Change Password',
             element: <ChangePassword />,
           },
+          {
+            path: 'pengajuan',
+            name: 'Pengajuan',
+            element: <Pengajuan allowedRoles={PengajuanAllowedRoles} />,
+          },
+          {
+            path: 'insert-image',
+            name: 'Masuin',
+            element: <MasuinPage allowedRoles={LayarRoles}  />,
+          },
         ],
       },
       {
@@ -396,7 +416,7 @@ const ThemeRoutes = [
     element: <PemaReport />,
   },
   {
-    path: '/lalin',
+    path: '/abs',
     element: <Lalin />,
   },
   {
