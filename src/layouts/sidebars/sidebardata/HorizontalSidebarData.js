@@ -128,20 +128,40 @@ const SidebarData = [
     // ddType: '-column',
     allowedRoles: ['Employee'],
   },
-  // {
-  //   title: 'Mobil',
-  //   href: '/mobil-operational',
-  //   id: 8,
-  //   icon: <MaterialIcon icon="directions_car" />,
-  //   // ddType: '-column',
-  //   allowedRoles: ['Employee'],
-  // },
+  { caption: 'Kendaraan' },
+  {
+    title: 'Kendaraan',
+    href: '/mobil-operational',
+    id: 8,
+    icon: <MaterialIcon icon="directions_car" />,
+    // ddType: '-column',
+    allowedRoles: ['Employee'],
+  },
+
+  
+  { caption: 'Pengajuan' },
+  {
+    title: 'Pengajuan',
+    href: '/pengajuan',
+    id: 9,
+    icon: <MaterialIcon icon="assignment" />,
+    allowedRoles: ['AdminPengajuan', 'ManagerUmum', 'DirekturUmumKeuangan', 'Presdir'],
+  },
+
+  { caption: 'Report' },
+  {
+    title: 'Report',
+    href: '/insert-image',
+    id: 10,
+    icon: <MaterialIcon icon="assignment" />,
+    allowedRoles: ['AdminLayar'],
+  },
 
   { caption: 'Manual Book' },
   {
     title: 'Manual Book',
     href: '',
-    id: 9,
+    id: 11,
     icon: <MaterialIcon icon="menu_book" />,
     // ddType: 'two-column',
     collapisble: true,

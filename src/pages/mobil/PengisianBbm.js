@@ -17,7 +17,10 @@ import {
 } from '@mui/material';
 import { Card, CardBody } from 'reactstrap';
 import PropTypes from 'prop-types';
+import dayjs from 'dayjs'; // Tambahkan import untuk dayjs
+import { alert } from '../../components/atoms/Toast'; 
 import useAxios from '../../hooks/useAxios';
+import ListBbm from './ListBbm'; // Import ListBbm
 
 // Define the PengisianBbm functional component
 const PengisianBbm = () => {
@@ -26,22 +29,14 @@ const PengisianBbm = () => {
     const [unitMobil, setUnitMobil] = useState('');
     const [jenisBbm, setJenisBbm] = useState('');
     const [jumlahBiaya, setJumlahBiaya] = useState('');
-    const [jumlahLiter, setJumlahLiter] = useState('');
     const [tanggal, setTanggal] = useState(null);
     const [employe, setEmploye] = useState(null);
     const [employes, setEmployes] = useState([]);
+    const [unitMobilOptions, setUnitMobilOptions] = useState([]); // State untuk unit mobil
+    const [bbmRefreshKey, setBbmRefreshKey] = useState(0); // Tambahkan state untuk trigger refresh ListBbm
 
     // State hook for form validation
     const [errors, setErrors] = useState({});
-
-    // Dummy options for Unit Mobil dropdown
-    const unitMobilOptions = [
-        'Toyota Avanza',
-        'Honda Brio',
-        'Daihatsu Xenia',
-        'Suzuki Ertiga',
-        'Mitsubishi Xpander',
-    ];
 
     // Options for Jenis BBM dropdown with RON and jenis in lowercase
     const jenisBbmOptions = [
@@ -65,9 +60,8 @@ const PengisianBbm = () => {
         if (!jumlahBiaya || Number.isNaN(Number(jumlahBiaya)) || Number(jumlahBiaya) <= 0) {
             validationErrors.jumlahBiaya = 'Jumlah Biaya must be a positive number';
         }
-        if (!jumlahLiter || Number.isNaN(Number(jumlahLiter)) || Number(jumlahLiter) <= 0) {
-            validationErrors.jumlahLiter = 'Jumlah Liter must be a positive number';
-        }
+        if (!tanggal) validationErrors.tanggal = 'Tanggal Pengisian is required';
+        if (!employe) validationErrors.employe = 'Pengisian oleh is required';
 
         // If there are validation errors, set them and return
         if (Object.keys(validationErrors).length > 0) {
@@ -75,20 +69,39 @@ const PengisianBbm = () => {
             return;
         }
 
-        // Log form data to console if validation passes
-        console.log('Form Data Submitted:', {
-            unitMobil,
-            jenisBbm,
-            jumlahBiaya,
-            jumlahLiter,
-        });
+        // Format tanggal sesuai MySQL datetime format
+        const formattedTanggal = dayjs(tanggal).format('YYYY-MM-DD HH:mm:ss');
 
-        // Optionally, reset form fields after submission
-        setUnitMobil('');
-        setJenisBbm('');
-        setJumlahBiaya('');
-        setJumlahLiter('');
-        setErrors({});
+        // Prepare data for submission
+        const requestData = {
+            id_mobil: unitMobil,
+            jenis_bbm: jenisBbm,
+            jumlah: jumlahBiaya,
+            w_pengisian: formattedTanggal, // Gunakan format MySQL
+            oleh: employe?.value,
+        };
+
+        // Submit data to backend
+        api.post('dapi/mobil/insert-bbm', requestData)
+            .then((response) => {
+                if (response.data.success) {
+                    alert('success', 'Data pengisian BBM berhasil disimpan.');
+                    // Reset form fields
+                    setUnitMobil('');
+                    setJenisBbm('');
+                    setJumlahBiaya('');
+                    setTanggal(null);
+                    setEmploye(null);
+                    setErrors({});
+                    setBbmRefreshKey(prev => prev + 1); // Trigger refresh ListBbm
+                } else {
+                    alert('error', 'Gagal menyimpan data pengisian BBM.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error submitting data:', error);
+                alert('error', 'Terjadi kesalahan saat menyimpan data pengisian BBM.');
+            });
     };
 
     const getKaryawan = () => {
@@ -98,8 +111,23 @@ const PengisianBbm = () => {
         })
     }
 
+    const getUnitMobil = () => {
+        api.get('dapi/mobil/get').then(res => {
+            if (res.data.success) {
+                const options = res.data.data.map(unit => ({
+                    value: unit.id, // Gunakan id sebagai value
+                    label: `${unit.brand} - ${unit.plat}`, // Tampilkan brand - plat
+                }));
+                setUnitMobilOptions(options);
+            }
+        }).catch(err => {
+            console.error('Error fetching unit mobil:', err);
+        });
+    };
+
     useEffect(() => {
         getKaryawan();
+        getUnitMobil(); // Panggil API untuk unit mobil
     }, []);
 
 
@@ -123,17 +151,17 @@ const PengisianBbm = () => {
 
                     {/* Unit Mobil Dropdown */}
                     <FormControl fullWidth error={Boolean(errors.unitMobil)}>
-                        <InputLabel id="unit-mobil-label">Unit Mobil</InputLabel>
+                        <InputLabel id="unit-mobil-label">Unit Kendaraan</InputLabel>
                         <Select
                             labelId="unit-mobil-label"
                             id="unit-mobil"
                             value={unitMobil}
                             onChange={(e) => setUnitMobil(e.target.value)}
-                            label="Unit Mobil"
+                            label="Unit Kendaraan"
                         >
                             {unitMobilOptions.map((option) => (
-                                <MenuItem key={option} value={option}>
-                                    {option}
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -168,18 +196,6 @@ const PengisianBbm = () => {
                         onChange={(e) => setJumlahBiaya(e.target.value)}
                         error={Boolean(errors.jumlahBiaya)}
                         helperText={errors.jumlahBiaya}
-                        fullWidth
-                    />
-
-                    {/* Jumlah Liter Numeric Input */}
-                    <TextField
-                        label="Jumlah Liter"
-                        variant="outlined"
-                        type="number"
-                        value={jumlahLiter}
-                        onChange={(e) => setJumlahLiter(e.target.value)}
-                        error={Boolean(errors.jumlahLiter)}
-                        helperText={errors.jumlahLiter}
                         fullWidth
                     />
 
@@ -236,6 +252,11 @@ const PengisianBbm = () => {
                     <Button type="submit" variant="contained" color="primary">
                         Submit
                     </Button>
+                </Box>
+
+                {/* List BBM */}
+                <Box mt={4}>
+                    <ListBbm key={bbmRefreshKey} />
                 </Box>
             </CardBody>
         </Card>

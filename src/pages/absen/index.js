@@ -18,6 +18,7 @@ const Index = () => {
   return (
     <>
       <AlertProvider template={AlertTemplate} {...options}>
+      <link rel="icon" href="https://api.ptpema.co.id/adm/dokumentasi/absen.ico" />
         <Absen />
       </AlertProvider>
 

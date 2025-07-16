@@ -7,7 +7,11 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import DataTable from 'react-data-table-component';
 import PropTypes from 'prop-types';
+import dayjs from 'dayjs'; // Import dayjs untuk date formatting
+import { confirmAlert } from "react-confirm-alert";
 import useAxios from "../../hooks/useAxios";
+import { alert } from '../../components/atoms/Toast'; // Import alert
+import "react-confirm-alert/src/react-confirm-alert.css"; // Tambahkan CSS untuk react-confirm-alert
 
 const TakeNBack = () => {
     const api = useAxios();
@@ -18,24 +22,152 @@ const TakeNBack = () => {
     const [book, setBook] = useState('booking');
     const [nobook, setNobook] = useState('');
     const [keperluan, setKeperluan] = useState('');
+    const [bookings, setBookings] = useState([]); // State untuk booking data
+    const [mobils, setMobils] = useState([]); // State untuk mobil data
+    const [pengambilan, setPengambilan] = useState([]); // State untuk data pengambilan
 
     const getKaryawan = () => {
         api.get('api/employe/assignment-list?search=all').then(res => {
             setEmployes(res.data.data);
-            console.log(res.data.data)
-        })
-    }
+            console.log(res.data.data);
+        });
+    };
+
+    const getBookings = () => {
+        api.get('dapi/mobil/get-permintaan-by-status').then(res => {
+            if (res.data.success) {
+                console.log(res);
+                setBookings(res.data.data);
+            }
+        }).catch(err => {
+            console.error('Error fetching bookings:', err);
+        });
+    };
+
+    const getMobils = () => {
+        api.get('dapi/mobil/get').then(res => {
+            if (res.data.success) {
+                setMobils(res.data.data);
+            }
+        }).catch(err => {
+            console.error('Error fetching mobils:', err);
+        });
+    };
+
+    const getPengambilan = () => {
+        api.get('dapi/mobil/get-pengambilan').then(res => {
+            if (res.data.success) {
+                setPengambilan(res.data.data);
+            }
+        }).catch(err => {
+            console.error('Error fetching pengambilan:', err);
+        });
+    };
+
+    const handleSave = (event) => {
+        event.preventDefault();
+
+        if (book === 'booking' && (!mobil )) {
+            alert('error', 'Harap isi semua field (Mobil dan Perkiraan Pengembalian) sebelum menyimpan.');
+            return;
+        }
+
+        if (book !== 'booking' && (!mobil || !employe || !keperluan || !sampai)) {
+            alert('error', 'Harap isi semua field sebelum menyimpan.');
+            return;
+        }
+console.log(employe)
+        const data = {
+            id_mobil: mobil,
+            booked: book === 'booking' ? nobook : null,
+            employe_id: book !== 'booking' ? employe?.value : null,
+            keperluan: book !== 'booking' ? keperluan : null,
+            sampai: dayjs(sampai).format('YYYY-MM-DD HH:mm:ss'),
+            book, // Include Booking/No Booking in the data
+        };
+
+        api.post('dapi/mobil/insert-pengambilan', data)
+            .then((response) => {
+                if (response.data.success) {
+                    alert('success', 'Data pengambilan berhasil disimpan.');
+                    setMobil('');
+                    setNobook('');
+                    setEmploye(null);
+                    setKeperluan('');
+                    setSampai(null);
+                    setBook('booking'); // Reset Booking/No Booking to default
+                } else {
+                    alert('error', 'Gagal menyimpan data pengambilan.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error saving data:', error);
+                alert('error', 'Terjadi kesalahan saat menyimpan data.');
+            });
+    };
+
+    // Fungsi untuk menangani pengembalian
+    const handleDort = (id) => {
+        let latestKm = null;
+
+        confirmAlert({
+            title: "Konfirmasi Pengembalian",
+            message: "Cek apakah kilometer dan minyak sesuai?",
+            customUI: ({ onClose }) => (
+                <div className="custom-ui">
+                    <h1>Konfirmasi Pengembalian</h1>
+                    <p>Cek apakah kilometer dan minyak sesuai?</p>
+                    <TextField
+                        label="Kilometer Terakhir"
+                        type="number"
+                        fullWidth
+                        onChange={(e) => {
+                            latestKm = e.target.value; // Pisahkan assignment
+                        }}
+                    />
+                    <div style={{ marginTop: "20px" }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                                if (!latestKm) {
+                                    alert('error', 'Harap masukkan kilometer terbaru.');
+                                    return;
+                                }
+                                api.post(`dapi/mobil/pengembalian/${id}`, { last_km: latestKm })
+                                    .then((response) => {
+                                        if (response.data.success) {
+                                            alert('success', 'Mobil berhasil dikembalikan.');
+                                            getPengambilan(); // Refresh data pengambilan
+                                        } else {
+                                            alert('error', 'Gagal mengembalikan mobil.');
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error during return:', error);
+                                        alert('error', 'Terjadi kesalahan saat mengembalikan mobil.');
+                                    });
+                                onClose();
+                            }}
+                        >
+                            Ya
+                        </Button>
+                        <Button variant="outlined" color="secondary" onClick={onClose} style={{ marginLeft: "10px" }}>
+                            Tidak
+                        </Button>
+                    </div>
+                </div>
+            ),
+        });
+    };
 
     useEffect(() => {
         getKaryawan();
+        getBookings();
+        getMobils();
+        getPengambilan(); // Panggil fetch pengambilan di useEffect
     }, []);
 
-
-    const data = [
-        { id: 1, namaKaryawan: 'John Doe', perjanjianPengembalian: '2023-12-01', namaMobil: 'Toyota Camry' },
-        { id: 2, namaKaryawan: 'Jane Smith', perjanjianPengembalian: '2023-11-15', namaMobil: 'Honda Civic' },
-        { id: 3, namaKaryawan: 'Alice Johnson', perjanjianPengembalian: '2023-12-10', namaMobil: 'Ford Mustang' },
-    ];
 
     // Gaya tombol
     const buttonStyle = {
@@ -50,9 +182,14 @@ const TakeNBack = () => {
     // Kolom tabel
     const columns = [
         {
-            name: '',
-            cell: () => (
-                <button type="button" style={buttonStyle}>Pengambalian</button>
+            name: 'Pengembalian',
+            cell: row => (
+                row.real_pengembalian 
+                    ? <span>{dayjs(row.real_pengembalian).format('YYYY-MM-DD HH:mm')}</span> 
+                    : <button 
+                        type="button" 
+                        style={buttonStyle} 
+                        onClick={() => handleDort(row.id)}>Pengembalian</button>
             ),
             width: '150px',
             button: true,
@@ -60,17 +197,22 @@ const TakeNBack = () => {
         },
         {
             name: 'Nama Karyawan',
-            selector: row => row.namaKaryawan,
+            selector: row => row.employe_name || row.employe_name,
+            sortable: true,
+        },
+        {
+            name: 'Pengambilan',
+            selector: row => row.taken_time || row.taken_time,
             sortable: true,
         },
         {
             name: 'Perjanjian Pengembalian',
-            selector: row => row.perjanjianPengembalian,
+            selector: row => row.pengembalian || row.pengembalian,
             sortable: true,
         },
         {
             name: 'Nama Mobil',
-            selector: row => row.namaMobil,
+            selector: row => `${row.brand} - ${row.plat}`, // Gunakan template literals
             sortable: true,
         },
     ];
@@ -106,6 +248,7 @@ const TakeNBack = () => {
                         }}
                         noValidate
                         autoComplete="off"
+                        onSubmit={handleSave}
                     >
 
                         <TextField
@@ -135,13 +278,11 @@ const TakeNBack = () => {
                                     select
                                     label="Nomor Booking"
                                 >
-                                    <MenuItem value="booking">
-                                        B123B - WAHYUDIN - 17/02 08:00 s/d 17/02 10:00
-                                    </MenuItem>
-                                    <MenuItem value="no-booking">
-                                        B143B - SAFRIAN - 17/02 08:00 s/d 17/02 10:00
-                                    </MenuItem>
-
+                                    {bookings.map((booking) => (
+                                        <MenuItem key={booking.id} value={booking.id}>
+                                            {`${booking.created_by_name} - ${dayjs(booking.mulai).format('YYYY-MM-DD HH:mm')} s/d ${dayjs(booking.hingga).format('YYYY-MM-DD HH:mm')}`}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
 
                                 <TextField
@@ -152,11 +293,11 @@ const TakeNBack = () => {
                                     select
                                     label="Unit Mobil"
                                 >
-
-                                    <MenuItem value="bl1357at">
-                                        Toyota Avanza BL 1357 AT
-                                    </MenuItem>
-
+                                    {mobils.map((unit) => (
+                                        <MenuItem key={unit.id} value={unit.id}>
+                                            {`${unit.brand} - ${unit.plat}`}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </>
                         )}
@@ -169,11 +310,11 @@ const TakeNBack = () => {
                             select
                             label="Unit Mobil"
                         >
-
-                            <MenuItem value="bl1357at">
-                                Toyota Avanza BL 1357 AT
-                            </MenuItem>
-
+                            {mobils.map((unit) => (
+                                <MenuItem key={unit.id} value={unit.id}>
+                                    {`${unit.brand} - ${unit.plat}`}
+                                </MenuItem>
+                            ))}
                         </TextField>
 
                             {employes.length > 0 && (
@@ -250,10 +391,11 @@ const TakeNBack = () => {
                 <CardBody>
                     <DataTable
                         columns={columns}
-                        data={data}
+                        data={pengambilan} // Ganti data dummy dengan data dari API
                         noDataComponent={noDataComponent}
                         pagination
                         fixedHeader
+                        sortable
                         fixedHeaderScrollHeight="300px"
                     />
                 </CardBody>
