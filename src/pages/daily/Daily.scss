@@ -1,0 +1,191 @@
+.daily-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .daily-header {
+    display: flex;
+    gap: 20px;
+    top: 6.8rem;
+    position: sticky;
+    background-color: #eef6fa;
+    z-index: 1;
+    padding: 30px 0 15px 0;
+    margin-top: -50px;
+
+    .header-card {
+      background-color: white;
+      min-width: 10%;
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    .header-card:first-child {
+      width: 80%;
+    }
+
+    .card-person {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 150ms ease;
+      border-radius: 12px;
+      background-color: #f9f9f9;
+      padding: 4px;
+
+      &:hover {
+        background-color: #f2f2f2;
+      }
+
+      .person-info {
+        h6 {
+          color: #707070;
+          font-weight: 500;
+        }
+
+        span {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .card-total {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      justify-content: space-between;
+
+      h6 {
+        font-size: 20px;
+        font-weight: 500;
+        color: #707070;
+      }
+
+      span {
+        font-size: 14px;
+        font-weight: 400;
+        color: #a2a2a2;
+      }
+    }
+  }
+
+  .daily-body {
+    display: flex;
+    gap: 20px;
+
+    .daily-filter {
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      padding: 20px;
+      border-radius: 14px;
+      height: fit-content;
+      top: 13.8rem;
+      position: sticky;
+
+      .filter-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .filter-group {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          align-items: start;
+
+          .filter-title {
+            span {
+              font-size: 14px;
+              font-weight: 500;
+              color: #a2a2a2;
+            }
+          }
+
+          .filter-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #b1b1b1;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .daily-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .daily-card {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-radius: 12px;
+        background-color: white;
+
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .header-title {
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+
+            h4 {
+              font-size: 14px;
+              font-weight: 500;
+              color: #404040;
+              line-height: 1;
+            }
+
+            .title-attribute {
+              display: flex;
+              gap: 10px;
+              align-items: center;
+
+              .attribute-item {
+                display: flex;
+                gap: 5px;
+                align-items: center;
+
+                i {
+                  font-size: 20px;
+                  color: #a3a3a3;
+                }
+
+                span {
+                  font-size: 12px;
+                  font-weight: 500;
+                  color: #a3a3a3;
+                }
+              }
+            }
+          }
+
+          .header-action {
+            display: flex;
+            gap: 10px;
+          }
+        }
+
+        .card-body {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+      }
+
+      .daily-card.project {
+        border: 2px solid #f0f0f0;
+        padding: 16px;
+        border-radius: 16px;
+      }
+    }
+  }
+}

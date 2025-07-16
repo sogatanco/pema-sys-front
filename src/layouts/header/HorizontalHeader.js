@@ -9,15 +9,14 @@ import {
   // DropdownItem,
   Button,
   Container,
+  // import { Bell } from 'react-feather';
 } from 'reactstrap';
-// import { Bell } from 'react-feather';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 // import SimpleBar from 'simplebar-react';
 // import { useQuery } from '@tanstack/react-query';
 // import NotificationDD from './NotificationDD';
 import MegaDD from './MegaDD';
-import user1 from '../../assets/images/users/user1.jpg';
 
 // import MessageDD from './MessageDD';
 import { ToggleMobileSidebar } from '../../store/customizer/CustomizerSlice';
@@ -31,6 +30,7 @@ import { Toast } from '../../components/atoms/Toast';
 
 const HR_URL = process.env.REACT_APP_HR_URL;
 const SYS_URL = process.env.REACT_APP_SYS_URL;
+const HCIS_URL = process.env.REACT_APP_HCIS_BE;
 
 const HorizontalHeader = () => {
   const isDarkMode = useSelector((state) => state.customizer.isDark);
@@ -236,7 +236,12 @@ const HorizontalHeader = () => {
 
             <UncontrolledDropdown>
               <DropdownToggle tag="span" className="p-2 cursor-pointer ">
-                <img src={user1} alt="profile" className="rounded-circle" width="30" />
+                <img
+                  src={`${HCIS_URL}employee/file?f=photo-profil&id=${auth.user.employe_id}`}
+                  alt="profile"
+                  className="rounded-circle"
+                  width="30"
+                />
               </DropdownToggle>
               <DropdownMenu className="account-view">
                 <ProfileDD />
