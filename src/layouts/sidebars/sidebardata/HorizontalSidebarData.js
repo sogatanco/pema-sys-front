@@ -40,6 +40,12 @@ const SidebarData = [
         allowedRoles: ['Employee'],
         icon: <MaterialIcon icon="event" />,
       },
+      //   {
+      //     title: 'Daily Old',
+      //     href: '/daily-old',
+      //     allowedRoles: ['Employee'],
+      //     icon: <MaterialIcon icon="event" />,
+      //   },
     ],
   },
 
