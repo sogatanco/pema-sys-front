@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
-  Alert,
   Button,
   Card,
   CardBody,
@@ -17,13 +16,14 @@ import { useQuery } from '@tanstack/react-query';
 import MaterialIcon from '@material/react-material-icon';
 import useAxios from '../../hooks/useAxios';
 import useAuth from '../../hooks/useAuth';
-import user1 from '../../assets/images/users/user1.jpg';
 import './Project.scss';
 import EditProjectModal from './EditProjectModal';
 import { alert } from '../../components/atoms/Toast';
 
 const allowedRolesForReview = ['Manager', 'Director'];
 const allowedRolesForBastReview = ['Director'];
+
+const HCIS_URL = process.env.REACT_APP_HCIS_BE;
 
 const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) => {
   const [currentTotalReview, setCurrentTotalReview] = useState('');
@@ -350,7 +350,13 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
                       </span>
                     )} */}
                   </div>
-                  <img src={user1} className="rounded-circle" alt="avatar" width="35" height="35" />
+                  <img
+                    src={`${HCIS_URL}employee/file?f=photo-profil&id=${data?.pic_active?.employe_id}`}
+                    className="rounded-circle"
+                    alt="avatar"
+                    width="35"
+                    height="35"
+                  />
                   {auth?.user.first_name === data?.created_by ? (
                     <div className="action-table">
                       <button
@@ -407,7 +413,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
           )}
         </CardBody>
       </Card>
-      <Col lg="12">
+      {/* <Col lg="12">
         <Alert color="primary" className="rounded-3" style={{ fontSize: '14px' }}>
           <div className="d-flex justify-content-between">
             <div>
@@ -423,7 +429,7 @@ const ProjectNav = ({ navActive, setNavActive, totalReview, totalBastReview }) =
             <MaterialIcon icon="info" />
           </div>
         </Alert>
-      </Col>
+      </Col> */}
     </>
   );
 };

@@ -1,0 +1,37 @@
+.check-box {
+  position: relative;
+  height: 18px;
+  width: 18px;
+  border-radius: 5px;
+  border: 2px solid #dbdbdb;
+  background-color: #f4eef8;
+  cursor: pointer;
+  user-select: none;
+
+  .check-icon {
+    position: absolute;
+    font-size: 22px;
+    top: -6px;
+    left: 0px;
+  }
+
+  &:hover {
+    border: 2px solid #c182e9;
+  }
+}
+
+.check-box.checked {
+  border: 2px solid #c182e9;
+}
+
+.check-box.disabled {
+  cursor: not-allowed;
+
+  .check-icon {
+    display: none;
+  }
+
+  &:hover {
+    border: 2px solid #dbdbdb;
+  }
+}
