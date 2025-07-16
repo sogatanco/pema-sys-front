@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Button, Card, CardBody, CardTitle, Col, Input, Row } from 'reactstrap';
 import useAxios from '../../hooks/useAxios';
 import CircularPercentage from '../../components/atoms/circularPercentage/CircularPercentage';
-import user1 from '../../assets/images/users/user1.jpg';
 import useAuth from '../../hooks/useAuth';
 import IndoDate from '../../utils/IndoDate';
 import isExpired from '../../utils/isExpired';
@@ -12,6 +11,8 @@ import FilterYear from '../../components/filterYear/FilterYear';
 import SkeletonProjectList from '../../components/skeleton/projectList/SkeletonProjectList';
 import NoDataYet from '../../components/noDataYet/NoDataYet';
 import FailedInformation from '../../components/failedInformation/FailedInformation';
+
+const HCIS_URL = process.env.REACT_APP_HCIS_BE;
 
 const ProjectList = () => {
   const { auth } = useAuth();
@@ -259,7 +260,7 @@ const ProjectList = () => {
                           <Col lg="1" className="my-auto d-flex justify-content-start px-2">
                             <div className="p-2">
                               <img
-                                src={user1}
+                                src={`${HCIS_URL}employee/file?f=photo-profil&id=${p.pic_active.employe_id}`}
                                 className="rounded-circle"
                                 alt="avatar"
                                 width="40"

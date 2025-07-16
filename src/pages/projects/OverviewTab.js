@@ -21,7 +21,6 @@ import MaterialIcon from '@material/react-material-icon';
 import { Link, useParams } from 'react-router-dom';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import user1 from '../../assets/images/users/user1.jpg';
 import useAxios from '../../hooks/useAxios';
 import newDate from '../../utils/formatDate';
 import useAuth from '../../hooks/useAuth';
@@ -31,6 +30,8 @@ import IndoDate from '../../utils/IndoDate';
 import rupiah from '../../utils/rupiah';
 
 const animatedComponents = makeAnimated();
+
+const HCIS_URL = process.env.REACT_APP_HCIS_BE;
 
 const remaininDays = (endDate) => {
   const todayDate = new Date();
@@ -264,7 +265,7 @@ const OverviewTab = () => {
                 >
                   <div className="d-flex gap-3 align-items-center">
                     <img
-                      src={user1}
+                      src={`${HCIS_URL}employee/file?f=photo-profil&id=${data.pic_active.employe_id}`}
                       className="rounded-circle"
                       alt="avatar"
                       width="45"
@@ -340,7 +341,7 @@ const OverviewTab = () => {
                           <div className="col-md-1 d-flex justify-content-end">
                             <img
                               id={`tooltip-${h.history_id}`}
-                              src={h.img || user1}
+                              src={`${HCIS_URL}employee/file?f=photo-profil&id=${h.employe_id}`}
                               className="rounded-circle"
                               alt="avatar"
                               width="35"

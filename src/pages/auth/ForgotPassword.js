@@ -70,7 +70,7 @@ const ForgotPassword = () => {
                       <Form>
                         <FormGroup>
                           <Label htmlFor="email" className="text-center">
-                            Masukkan alamat email @ptpema.co.id sistem akan mengirimkan instruksi
+                            Masukkan alamat email @pema.co.id sistem akan mengirimkan instruksi
                             untuk mengatur ulang kata sandi.
                           </Label>
                           <Field

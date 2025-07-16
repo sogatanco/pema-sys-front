@@ -19,7 +19,8 @@ const NotificationPage = Loadable(lazy(() => import('../pages/notification')));
 /***** Notification ****/
 
 /***** Daily ****/
-const DailyPage = Loadable(lazy(() => import('../pages/daily')));
+const DailyPageOld = Loadable(lazy(() => import('../pages/daily_old/Daily')));
+// const DailyPage = Loadable(lazy(() => import('../pages/daily/Daily')));
 /***** Daily ****/
 
 /***** Asset ****/
@@ -188,9 +189,14 @@ const ThemeRoutes = [
             element: <TimelinePage />,
           },
           {
+            path: 'daily-old',
+            name: 'Daily Old',
+            element: <DailyPageOld />,
+          },
+          {
             path: 'daily',
             name: 'Daily',
-            element: <DailyPage />,
+            element: <DailyPageOld />,
           },
           {
             path: 'asset',
