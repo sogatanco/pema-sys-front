@@ -263,7 +263,7 @@ const ProjectList = () => {
                               <img
                                 src={
                                   p.pic_active?.employe_id
-                                    ? `${HCIS_URL}employee/file?f=photo-profil&id=${p.pic_active.employe_id}`
+                                    ? `${HCIS_URL}employee/file?f=photo-profil&id=${p.pic_active?.employe_id}`
                                     : user1
                                 }
                                 className="rounded-circle"
