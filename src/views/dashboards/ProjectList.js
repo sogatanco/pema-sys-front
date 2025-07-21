@@ -11,6 +11,7 @@ import FilterYear from '../../components/filterYear/FilterYear';
 import SkeletonProjectList from '../../components/skeleton/projectList/SkeletonProjectList';
 import NoDataYet from '../../components/noDataYet/NoDataYet';
 import FailedInformation from '../../components/failedInformation/FailedInformation';
+import user1 from '../../assets/images/users/user1.jpg';
 
 const HCIS_URL = process.env.REACT_APP_HCIS_BE;
 
@@ -260,7 +261,11 @@ const ProjectList = () => {
                           <Col lg="1" className="my-auto d-flex justify-content-start px-2">
                             <div className="p-2">
                               <img
-                                src={`${HCIS_URL}employee/file?f=photo-profil&id=${p.pic_active.employe_id}`}
+                                src={
+                                  p.pic_active?.employe_id
+                                    ? `${HCIS_URL}employee/file?f=photo-profil&id=${p.pic_active.employe_id}`
+                                    : user1
+                                }
                                 className="rounded-circle"
                                 alt="avatar"
                                 width="40"
