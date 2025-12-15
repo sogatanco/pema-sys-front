@@ -1,0 +1,129 @@
+/* ==================================== */
+/* === Gaya Umum / Desktop (ASLI) === */
+/* ==================================== */
+.daily-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 12px;
+  background-color: white;
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .header-title {
+      /* Gaya Desktop Asli: Title di atas Attribute/Timeline */
+      display: flex;
+      flex-direction: column;
+      gap: 0px;
+
+      h4 {
+        font-size: 14px;
+        font-weight: 500;
+        color: #404040;
+        line-height: 1;
+      }
+
+      .title-attribute {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+
+        /* Targetting Timeline component */
+        .timeline {
+          font-size: 12px;
+          font-weight: 500;
+          color: #a3a3a3;
+        }
+
+        .attribute-item {
+          display: flex;
+          gap: 5px;
+          align-items: center;
+
+          span {
+            font-size: 12px;
+            font-weight: 500;
+            color: #a3a3a3;
+          }
+        }
+      }
+    }
+
+    .header-action {
+      display: flex;
+      gap: 10px;
+
+      /* Sembunyikan Search Icon di desktop */
+      .search-mobile-icon {
+        display: none;
+      }
+    }
+  }
+
+  /* Styling untuk container search yang muncul di mobile (Disembunyikan di Desktop) */
+  .mobile-search-bar {
+    padding: 0;
+    display: none;
+  }
+}
+
+.daily-card.project {
+  border: 2px solid #f0f0f0;
+  padding: 16px; /* Padding Desktop */
+  border-radius: 16px;
+}
+
+/* ==================================== */
+/* === Media Query Mobile (RESPONSIVE) === */
+/* ==================================== */
+@media (max-width: 767px) {
+  .daily-card {
+    padding: 12px; /* Padding Card di Mobile */
+
+    .card-header {
+      .header-title {
+        /* Pertahankan gaya column di mobile */
+        flex-direction: column;
+
+        .title-attribute {
+          gap: 8px;
+
+          .timeline {
+            font-size: 11px; /* Ukuran font lebih kecil di mobile */
+          }
+        }
+      }
+
+      .header-action {
+        gap: 5px;
+
+        /* FIX: Sembunyikan Search Component (Desktop) dan tampilkan Search Icon (Mobile) */
+        .search-desktop {
+          display: none;
+        }
+        .search-mobile-icon {
+          display: block;
+        }
+      }
+    }
+
+    /* FIX: Tampilkan Mobile Search Bar dengan lebar penuh kartu */
+    .mobile-search-bar {
+      display: flex;
+
+      /* Menggunakan negative margin untuk membentangkan search bar selebar kartu */
+      width: calc(100% + 24px); /* Lebar kartu (100%) + (12px kiri + 12px kanan padding mobile) */
+      margin-left: -12px;
+      margin-right: -12px;
+
+      /* Berikan padding di dalam search bar agar input tidak menempel tepi */
+      padding: 10px 12px 10px 12px;
+
+      margin-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+  }
+}

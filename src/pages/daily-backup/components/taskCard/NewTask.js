@@ -31,27 +31,37 @@ const NewTask = ({ taskId, setIsNewTaskOpen, isNewTaskOpen, category, refetch })
         </td>
       ) : (
         <>
-          <td colSpan="4">
+          <td colSpan="6">
             <div className="new-task">
               {taskForms.map((form, index) => (
                 <div className="task-form" key={index}>
                   <span>{index === 0 ? 'Task Baru' : `Tersalin ${index}`}</span>
                   <div className="task-form-input">
-                    <textarea
-                      rows="1"
-                      value={form.activityName}
-                      onChange={(e) => handleChange(index, 'activityName', e.target.value)}
-                    />
-                    <input
-                      type="datetime-local"
-                      value={form.startDate}
-                      onChange={(e) => handleChange(index, 'startDate', e.target.value)}
-                    />
-                    <input
-                      type="datetime-local"
-                      value={form.endDate}
-                      onChange={(e) => handleChange(index, 'endDate', e.target.value)}
-                    />
+                    <div className="d-flex flex-column flex-grow-1" style={{ width: '100%' }}>
+                      <span>Activity Name</span>
+                      <textarea
+                        rows="1"
+                        value={form.activityName}
+                        onChange={(e) => handleChange(index, 'activityName', e.target.value)}
+                        style={{ width: '100%' }}
+                      />
+                    </div>
+                    <div className="d-flex flex-column flex-grow-1">
+                      <span>Tanggal Mulai</span>
+                      <input
+                        type="datetime-local"
+                        value={form.startDate}
+                        onChange={(e) => handleChange(index, 'startDate', e.target.value)}
+                      />
+                    </div>
+                    <div className="d-flex flex-column flex-grow-1">
+                      <span>Tanggal Berakhir</span>
+                      <input
+                        type="datetime-local"
+                        value={form.endDate}
+                        onChange={(e) => handleChange(index, 'endDate', e.target.value)}
+                      />
+                    </div>
                   </div>
                   {index !== 0 && (
                     <div className="task-form-action">
