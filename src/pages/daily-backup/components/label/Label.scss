@@ -1,0 +1,35 @@
+.label-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  width: 80px;
+  padding: 2px;
+
+  .label-text {
+    font-size: 11px;
+    font-weight: 500;
+    // color: #898989;
+  }
+}
+
+.label-container.blue {
+  background-color: #8ed4fc;
+  color: #666edd;
+}
+.label-container.green {
+  background-color: #98efa1;
+  color: #6edc8e;
+}
+.label-container.yellow {
+  background-color: #fce68e;
+  color: #ebc118;
+}
+.label-container.orange {
+  background-color: #fcc58e;
+  color: #fb9128;
+}
+.label-container.red {
+  background-color: #ef9898;
+  color: #eb5757;
+}

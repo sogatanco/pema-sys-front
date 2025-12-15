@@ -49,6 +49,16 @@
     z-index: 2;
     box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.5);
 
+    // --- Adaptasi Mobile: Posisikan menempel di kiri tombol ---
+    @media (max-width: 767.98px) {
+      bottom: 30px;
+      right: auto; // Hapus aturan right: 90px
+      left: 0; // Menu muncul menempel tepat di sisi kiri tombol pemicu
+
+      // Opsional: Atur lebar max agar tidak terlalu besar (meskipun width: 160px sudah cukup kecil)
+      max-width: 160px;
+    }
+
     .item {
       padding: 5px 10px;
       cursor: pointer;

@@ -15,7 +15,7 @@
   .members-popup {
     position: absolute;
     top: 0px;
-    right: 110%;
+    right: 90%;
     width: 440px;
     background-color: #f2f2f2;
     border-radius: 12px;
@@ -173,6 +173,49 @@
 
     .ava-pic:nth-child(3) {
       left: 0px;
+    }
+  }
+}
+
+/* --- Mobile View Styles --- */
+@media (max-width: 768px) {
+  .members-container {
+    /* Set position:relative pada container untuk penempatan absolute pop-up */
+    /* Ini sudah ada di CSS utama, tapi memastikan */
+
+    .members-popup-overlay {
+      /* Biarkan transparan atau sedikit gelap, tapi Z-index harus tinggi */
+      background-color: transparent;
+      z-index: 1;
+    }
+
+    .members-popup {
+      /* Mengubah posisi menjadi fixed agar tidak terpengaruh scrolling konten utama, 
+         tapi kita posisikan relatif terhadap elemen members-container (yang relatif) */
+      position: absolute;
+      top: 40px; /* Jarak 40px di bawah .members-item (tinggi 30px) */
+      left: 8%; /* Mulai dari tengah horizontal members-container */
+      transform: translateX(-60%); /* Geser ke kiri setengah lebar pop-up agar centering */
+      right: initial; /* Reset properti right */
+
+      /* Penyesuaian lebar untuk mobile */
+      width: 95vw; /* Mengambil 95% dari viewport width */
+      max-width: 300px; /* Batasi lebar maksimum */
+      z-index: 1;
+
+      /* Agar terlihat seperti "melayang" dari bawah pemicu */
+      border-radius: 12px;
+    }
+
+    .members-popup .members-popup-body .members-popup-content .members-list .members-list-item {
+      padding: 10px;
+
+      .members-person .members-info {
+        width: auto;
+        flex-grow: 1;
+        white-space: normal;
+        overflow: visible;
+      }
     }
   }
 }

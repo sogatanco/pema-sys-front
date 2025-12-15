@@ -1,0 +1,105 @@
+// .task-item {
+//   display: table-row;
+//   border-bottom: 1px solid #eee;
+//   .mobile-view-card {
+//     display: none;
+//   }
+// }
+
+// .desktop-view {
+//   vertical-align: middle;
+//   padding: 8px;
+// }
+
+// ===================================
+// Mobile View
+// ===================================
+// @media (max-width: 768px) {
+//   .desktop-view {
+//     display: none !important;
+//   }
+
+//   .mobile-view-card {
+//     display: block !important;
+
+//     .task-item-wrapper {
+//       background-color: aqua;
+//     }
+//   }
+// }
+
+.desktop-view {
+  td {
+    border-top: 1px solid #d8d8d8;
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+.mobile-view {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-view {
+    display: none;
+  }
+  .mobile-view {
+    display: table-row;
+    padding: 10px;
+
+    .task-item-wrapper {
+      padding: 8px;
+      border: 1px solid #bbbbbb;
+      border-radius: 12px;
+    }
+    .task-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .task-item-title-group {
+      display: flex;
+      flex-direction: row;
+      gap: 8px;
+      margin-bottom: 8px;
+      .task-item-check {
+        font-size: 12px;
+      }
+      .task-item-activity-name {
+        font-size: 12px;
+      }
+    }
+
+    .task-item-actions-group {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+      align-items: center;
+      justify-content: space-between;
+
+      .task-item-status-group {
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+        align-items: center;
+      }
+    }
+
+    .task-item-secondary-actions {
+      display: flex;
+      flex-direction: row;
+      justify-content: end;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #cccccc; /* Garis pemisah tambahan */
+
+      // Pastikan tombol-tombol di dalamnya teratur
+      & > * {
+        flex-grow: 0;
+        flex-shrink: 0;
+      }
+    }
+  }
+}

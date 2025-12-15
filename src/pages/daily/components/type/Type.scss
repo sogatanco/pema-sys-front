@@ -1,0 +1,109 @@
+.type-container {
+  position: relative;
+
+  .type-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 16px;
+    width: 80px;
+    border-radius: 10px;
+    // color: #000;
+    font-size: 12px;
+    // font-weight: 600;
+    text-transform: capitalize;
+    transition: all 300ms ease;
+    padding: 10px;
+
+    // &.blue {
+    //   background-color: #98c2ef;
+    // }
+
+    // &.gray {
+    //   background-color: #c2c2c2;
+    // }
+
+    // &.green {
+    //   background-color: #98efa1;
+    // }
+    // &.yellow {
+    //   background-color: #efec98;
+    // }
+    // &.info {
+    //   background-color: #98e8ef;
+    // }
+
+    // &.red {
+    //   background-color: #ef9898;
+    // }
+  }
+
+  .type-body.change {
+    cursor: pointer;
+    transition: all 300ms ease;
+
+    &:hover {
+      box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .type-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+  }
+
+  .type-popup {
+    position: absolute;
+    z-index: 2;
+    bottom: 33px;
+    left: -80px;
+
+    @media (max-width: 767.98px) {
+      // Posisikan horizontal di tengah relatif terhadap type-container
+      left: 50%;
+      transform: translateX(-30%);
+    }
+
+    .type-popup-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      width: 260px;
+      background-color: white;
+      box-shadow: 1px 3px 8px 0px rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+
+      .input {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+
+        label {
+          font-size: 12px;
+          font-weight: 500;
+          margin-bottom: 5px;
+        }
+
+        select {
+          width: 100%;
+          border: none;
+          outline: 1px solid #c2c2c2;
+          font-size: 14px;
+          border-radius: 8px;
+          padding: 8px;
+          transition: all 100ms ease;
+          color: #636363;
+          z-index: 1;
+          background-color: white;
+        }
+      }
+    }
+  }
+}

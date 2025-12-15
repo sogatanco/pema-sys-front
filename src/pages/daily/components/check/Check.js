@@ -4,6 +4,9 @@ import MaterialIcon from '@material/react-material-icon';
 import PropTypes from 'prop-types';
 
 const Check = ({ checked, action, disabled }) => {
+  console.log('Check', checked);
+  console.log('action', action);
+  console.log('disabled', disabled);
   return (
     <div
       className={`check-box ${checked && !disabled ? 'checked' : ''} ${disabled ? 'disabled' : ''}`}

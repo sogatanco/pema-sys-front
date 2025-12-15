@@ -16,6 +16,10 @@ const notify = (type, msg) =>
     ? toast('Horeee, task done!', {
         icon: '👏',
       })
+    : type === 'info'
+    ? toast(msg, {
+        icon: '💡',
+      })
     : toast.error(msg);
 
 export const Toast = () => {

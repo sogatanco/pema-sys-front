@@ -1,0 +1,51 @@
+// customFilterDropdown.scss
+
+// ----------------------------------------------------
+// 1. Styling untuk Dropdown Container
+// ----------------------------------------------------
+.filter-dropdown {
+  // Styling dasar untuk memastikan dropdown terpisah dan terbaca
+  padding: 0.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.3rem;
+  background-color: #ffffff;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 10;
+  min-width: 180px;
+
+  .text-sm {
+    font-size: 0.85rem;
+  }
+}
+
+// ----------------------------------------------------
+// 2. Custom Styling untuk Tombol (Button)
+// ----------------------------------------------------
+
+// Style untuk tombol ketika TIDAK AKTIF (Inactive State)
+// Mengimplementasikan background: #d8d8d8 dan teks gelap
+.btn-sm.btn-inactive {
+  // Menggunakan !important untuk menimpa gaya Bootstrap standar (misalnya btn-light)
+  background-color: #d8d8d8 !important;
+  border-color: #d8d8d8 !important;
+  color: #333333 !important;
+  text-align: left;
+  transition: background-color 0.15s ease-in-out;
+
+  &:hover,
+  &:focus {
+    background-color: #c9c9c9 !important; // Sedikit lebih gelap saat hover
+    border-color: #c9c9c9 !important;
+    color: #333333 !important;
+  }
+}
+
+// Style umum untuk semua tombol di dalam dropdown
+.d-grid button {
+  text-align: left;
+  padding: 0.25rem 0.5rem;
+}
