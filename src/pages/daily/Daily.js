@@ -126,7 +126,7 @@ const Daily = () => {
                   type="button"
                   onClick={() => handleTabChange(Tabs.dailies)}
                 >
-                  Dailies
+                  My Dailies
                 </button>
                 <button
                   className={`tab-button ${activeTab === Tabs.review ? 'active' : ''}`}
@@ -183,7 +183,7 @@ const Daily = () => {
                   type="button"
                   onClick={() => handleTabChange(Tabs.dailies)}
                 >
-                  Dailies
+                  My Dailies
                 </button>
                 <button
                   className={`tab-button ${activeTab === Tabs.review ? 'active' : ''}`}
