@@ -368,6 +368,7 @@ const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive 
                     {...{ projectId, setAddSubtaskOpen, refetch, type }}
                     title="Add new target.."
                     taskId={td.task_id}
+                    name="all"
                   />
                 </div>
               )}
