@@ -26,7 +26,7 @@ const HorizontalSidebar = () => {
       className={`horizontalNav shadow bg-${activeBg}  ${isFixed ? 'fixedSidebar' : ''} ${
         isMobileSidebar ? 'showSidebar' : ''
       }`}
-      style={{ zIndex: 10 }}
+      style={{ zIndex: 4 }}
     >
       <Container>
         <Nav className={activeBg === 'white' ? '' : 'lightText'}>
