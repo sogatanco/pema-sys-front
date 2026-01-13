@@ -1,0 +1,16 @@
+.timeline-container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+
+  i {
+    font-size: 20px;
+    color: #a3a3a3;
+  }
+
+  span {
+    font-size: 12px;
+    font-weight: 500;
+    color: #a3a3a3;
+  }
+}

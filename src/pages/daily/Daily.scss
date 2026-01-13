@@ -1,191 +1,315 @@
 .daily-container {
   display: flex;
+
   flex-direction: column;
+
   gap: 20px;
 
   .daily-header {
     display: flex;
+
     gap: 20px;
+
     top: 6.8rem;
+
     position: sticky;
+
     background-color: #eef6fa;
-    z-index: 1;
+
+    z-index: 3;
+
     padding: 30px 0 15px 0;
+
     margin-top: -50px;
+
+    flex-wrap: wrap;
+
+    .staff-dropdown-wrapper {
+      width: 65%;
+    }
 
     .header-card {
       background-color: white;
-      min-width: 10%;
+
+      width: 10%;
+
       border-radius: 14px;
+
       padding: 10px;
-    }
-
-    .header-card:first-child {
-      width: 80%;
-    }
-
-    .card-person {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      transition: all 150ms ease;
-      border-radius: 12px;
-      background-color: #f9f9f9;
-      padding: 4px;
-
-      &:hover {
-        background-color: #f2f2f2;
-      }
-
-      .person-info {
-        h6 {
-          color: #707070;
-          font-weight: 500;
-        }
-
-        span {
-          font-size: 14px;
-        }
-      }
     }
 
     .card-total {
       display: flex;
+
       flex-direction: column;
+
       align-items: start;
+
       justify-content: space-between;
 
       h6 {
         font-size: 20px;
+
         font-weight: 500;
+
         color: #707070;
       }
 
       span {
         font-size: 14px;
+
         font-weight: 400;
+
         color: #a2a2a2;
+      }
+    }
+
+    @media (max-width: 991.98px) {
+      .staff-dropdown-wrapper {
+        width: 40%;
+
+        order: 1;
+      }
+
+      .header-card {
+        flex-grow: 1;
+
+        flex-basis: calc(10% - 13.33px);
+
+        min-width: unset;
+
+        order: 2;
+      }
+    }
+
+    // Penyesuaian untuk Mobile (< 768px)
+
+    @media (max-width: 767.98px) {
+      top: 3rem;
+
+      .staff-dropdown-wrapper {
+        width: 100%;
+
+        order: 1;
+      }
+
+      .header-card {
+        flex-grow: 1;
+
+        flex-basis: calc(33.33% - 13.33px);
+
+        min-width: unset;
+
+        order: 2;
       }
     }
   }
 
   .daily-body {
     display: flex;
+
     gap: 20px;
 
-    .daily-filter {
+    $primary-color: #2196f3; // Biru yang cerah
+
+    $text-active: #ffffff;
+
+    $text-inactive: #6c757d;
+
+    $background-inactive: #e9ecef;
+
+    $border-color: #dee2e6;
+
+    .tab-container {
       display: flex;
-      flex-direction: column;
-      background-color: white;
-      padding: 20px;
-      border-radius: 14px;
-      height: fit-content;
-      top: 13.8rem;
-      position: sticky;
 
-      .filter-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
+      background-color: #ffffff;
 
-        .filter-group {
-          display: flex;
-          flex-direction: column;
-          gap: 5px;
-          align-items: start;
+      padding: 8px;
 
-          .filter-title {
-            span {
-              font-size: 14px;
-              font-weight: 500;
-              color: #a2a2a2;
-            }
-          }
+      border-radius: 12px;
 
-          .filter-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            color: #b1b1b1;
-            font-size: 14px;
-          }
-        }
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      max-width: fit-content;
+
+      gap: 8px;
+    }
+
+    .tab-button {
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      padding: 5px 10px;
+
+      border: none;
+
+      cursor: pointer;
+
+      font-size: 12px;
+
+      font-weight: 500;
+
+      transition: all 0.3s ease;
+
+      white-space: nowrap;
+
+      // Gaya Default (Inactive)
+
+      background-color: transparent;
+
+      color: $text-inactive;
+
+      border-radius: 8px; // Corner radius pada tombol
+
+      &:hover {
+        background-color: $background-inactive;
+
+        color: darken($text-inactive, 10%);
       }
+
+      // Gaya untuk Tab Aktif (Tombol Biru)
+
+      &.active {
+        background-color: $primary-color;
+
+        color: $text-active;
+
+        font-weight: 600;
+
+        // Menambahkan shadow hanya pada tombol aktif untuk efek "menonjol"
+
+        box-shadow: 0 4px 8px rgba($primary-color, 0.4);
+      }
+
+      /* Styling untuk Ikon */
+
+      .material-icons {
+        font-size: 18px;
+      }
+
+      @media (max-width: 767.98px) {
+        font-size: 11px;
+        padding: 4px 5px;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      gap: 10px;
+
+      flex-direction: column;
     }
 
     .daily-cards {
       display: flex;
+
       flex-direction: column;
+
       gap: 20px;
 
-      .daily-card {
+      width: 100%;
+
+      $primary-color: #2196f3; // Biru yang cerah
+
+      $text-active: #ffffff;
+
+      $text-inactive: #6c757d;
+
+      $background-inactive: #e9ecef;
+
+      $border-color: #dee2e6;
+
+      @media (min-width: 991.98px) and (max-width: 1199.98px) {
+        margin-top: 50px;
+      }
+
+      .tab-container {
         display: flex;
-        flex-direction: column;
-        gap: 10px;
+
+        background-color: #ffffff;
+
+        padding: 8px;
+
         border-radius: 12px;
-        background-color: white;
 
-        .card-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 
-          .header-title {
-            display: flex;
-            flex-direction: column;
-            gap: 0px;
+        max-width: fit-content;
 
-            h4 {
-              font-size: 14px;
-              font-weight: 500;
-              color: #404040;
-              line-height: 1;
-            }
-
-            .title-attribute {
-              display: flex;
-              gap: 10px;
-              align-items: center;
-
-              .attribute-item {
-                display: flex;
-                gap: 5px;
-                align-items: center;
-
-                i {
-                  font-size: 20px;
-                  color: #a3a3a3;
-                }
-
-                span {
-                  font-size: 12px;
-                  font-weight: 500;
-                  color: #a3a3a3;
-                }
-              }
-            }
-          }
-
-          .header-action {
-            display: flex;
-            gap: 10px;
-          }
-        }
-
-        .card-body {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        }
+        gap: 8px;
       }
 
-      .daily-card.project {
-        border: 2px solid #f0f0f0;
-        padding: 16px;
-        border-radius: 16px;
+      .tab-button {
+        display: flex;
+
+        align-items: center;
+
+        gap: 8px;
+
+        padding: 5px 10px;
+
+        border: none;
+
+        cursor: pointer;
+
+        font-size: 12px;
+
+        font-weight: 500;
+
+        transition: all 0.3s ease;
+
+        white-space: nowrap;
+
+        // Gaya Default (Inactive)
+
+        background-color: transparent;
+
+        color: $text-inactive;
+
+        border-radius: 8px; // Corner radius pada tombol
+
+        &:hover {
+          background-color: $background-inactive;
+
+          color: darken($text-inactive, 10%);
+        }
+
+        // Gaya untuk Tab Aktif (Tombol Biru)
+
+        &.active {
+          background-color: $primary-color;
+
+          color: $text-active;
+
+          font-weight: 600;
+
+          // Menambahkan shadow hanya pada tombol aktif untuk efek "menonjol"
+
+          box-shadow: 0 4px 8px rgba($primary-color, 0.4);
+        }
+
+        /* Styling untuk Ikon */
+
+        .material-icons {
+          font-size: 18px;
+        }
       }
+    }
+
+    .daily-cards > .d-md-flex {
+      position: sticky;
+
+      top: 13.7rem;
+
+      z-index: 2;
+
+      // padding-top: px;
+      padding-bottom: 10px;
+
+      background-color: #eef6fa;
     }
   }
 }

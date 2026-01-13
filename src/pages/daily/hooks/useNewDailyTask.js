@@ -59,13 +59,13 @@ export const useNewDailyTask = ({ taskId, category, refetch, setIsNewTaskOpen })
     setIsLoading(true);
     try {
       const res = await storeNewDailies(api, taskForms);
-      refetch();
       toggleNewTask();
       alert('success', res.data.message);
     } catch (err) {
       toggleNewTask();
       alert('error', 'Something went wrong');
     } finally {
+      refetch();
       setIsLoading(false);
     }
   };

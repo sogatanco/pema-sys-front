@@ -201,11 +201,11 @@ const ThemeRoutes = [
             name: 'Timeline',
             element: <TimelinePage />,
           },
-          {
-            path: 'daily-old',
-            name: 'Daily Old',
-            element: <DailyPageOld />,
-          },
+          // {
+          //   path: 'daily-old',
+          //   name: 'Daily Old',
+          //   element: <DailyPageOld />,
+          // },
           {
             path: 'daily',
             name: 'Daily',
@@ -350,7 +350,7 @@ const ThemeRoutes = [
           {
             path: 'insert-image',
             name: 'Masuin',
-            element: <MasuinPage allowedRoles={LayarRoles}  />,
+            element: <MasuinPage allowedRoles={LayarRoles} />,
           },
         ],
       },

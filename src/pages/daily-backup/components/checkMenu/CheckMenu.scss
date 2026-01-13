@@ -1,0 +1,22 @@
+.check-menu-container {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+
+  .menu-title {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .menu-body {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  }
+}

@@ -1,0 +1,92 @@
+.task-card-container {
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 100%;
+
+  .task-card {
+    width: 100%;
+    border: 1px solid #bbbbbb;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+
+    transition: all 300ms ease;
+
+    td {
+      padding: 4px 10px 4px 0px;
+      // border: 1px solid #d8d8d8;
+    }
+
+    td:first-child {
+      padding-left: 10px;
+    }
+
+    .task-parent {
+      height: 50px;
+      font-size: 14px;
+      font-weight: 500;
+
+      .task-card-title {
+        width: 38%;
+        @media (max-width: 767px) {
+          font-size: 13px;
+        }
+      }
+
+      .button-add {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+      }
+
+      @media (max-width: 767px) {
+        td:nth-child(2) {
+          display: none;
+        }
+        td:nth-child(3) {
+          display: none;
+        }
+        td:nth-child(4) {
+          display: none;
+        }
+      }
+    }
+
+    .task-column > td,
+    .task-item > td {
+      border-top: 1px solid #d8d8d8;
+    }
+
+    .task-column {
+      background-color: #ececec;
+      height: 38px;
+      td {
+        font-size: 12px;
+        font-weight: 500;
+      }
+    }
+
+    .mobile-display {
+      display: none;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .task-card {
+      .task-parent {
+        height: auto;
+
+        .task-card-title {
+          width: 100%;
+        }
+      }
+
+      /* 3. Tampilkan baris progress mobile */
+      .mobile-display {
+        display: table-row;
+      }
+    }
+  }
+}

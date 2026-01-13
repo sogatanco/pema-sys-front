@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Spinner } from 'reactstrap';
+import { Label, Spinner } from 'reactstrap';
 import Button from '../button/Button';
 import { useUpdateDailyTask } from '../../hooks/useUpdateDailyTask';
 
@@ -28,30 +28,43 @@ const EditTask = ({ task, setIsEditTaskOpen, isEditTaskOpen, refetch }) => {
         </td>
       ) : (
         <>
-          <td colSpan="6">
+          <td colSpan="8">
             <div className="d-flex gap-3">
               <div className="new-task">
                 <div className="task-form">
                   <span>Edit Task </span>
                   <div className="task-form-input">
-                    <textarea
-                      name="activity_name"
-                      rows="1"
-                      defaultValue={task.activity_name}
-                      onChange={(e) => handleChange(e)}
-                    />
-                    <input
-                      name="start_date"
-                      type="datetime-local"
-                      defaultValue={`${task.start_date.date}T${task.start_date.time}`}
-                      onChange={(e) => handleChange(e)}
-                    />
-                    <input
-                      name="end_date"
-                      type="datetime-local"
-                      defaultValue={`${task.end_date.date}T${task.end_date.time}`}
-                      onChange={(e) => handleChange(e)}
-                    />
+                    <div className="d-flex flex-column flex-grow-1">
+                      <Label>Nama Aktivitas</Label>
+                      <textarea
+                        name="activity_name"
+                        rows="1"
+                        defaultValue={task.activity_name}
+                        onChange={(e) => handleChange(e)}
+                      />
+                    </div>
+                    <div className="d-flex flex-column">
+                      <Label>Tanggal Mulai</Label>
+                      <input
+                        name="start_date"
+                        type="datetime-local"
+                        defaultValue={`${task.start_date.date.split('-').reverse().join('-')}T${
+                          task.start_date.time
+                        }`}
+                        onChange={(e) => handleChange(e)}
+                      />
+                    </div>
+                    <div className="d-flex flex-column">
+                      <Label>Tanggal Berakhir</Label>
+                      <input
+                        name="end_date"
+                        type="datetime-local"
+                        defaultValue={`${task.end_date.date.split('-').reverse().join('-')}T${
+                          task.end_date.time
+                        }`}
+                        onChange={(e) => handleChange(e)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

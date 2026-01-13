@@ -29,6 +29,13 @@
     min-width: 500px;
     z-index: 52;
 
+    @media (max-width: 767.98px) {
+      width: 90vw;
+      max-width: 500px;
+      min-width: unset;
+      padding: 15px;
+    }
+
     .popup-close {
       position: absolute;
       top: 10px;

@@ -21,7 +21,7 @@ import TaskFormAddSub from './TaskFormAddSub';
 //   );\
 
 const addTargetAllowedRoles = ['Manager'];
-const addActivityAllowedRoles = ['Supervisor', 'Manager'];
+const addActivityAllowedRoles = ['Supervisor', 'Manager', 'Staff'];
 const addSubActivityAllowedRoles = ['Staff', 'Supervisor', 'Manager'];
 
 const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive }) => {
@@ -368,6 +368,7 @@ const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive 
                     {...{ projectId, setAddSubtaskOpen, refetch, type }}
                     title="Add new target.."
                     taskId={td.task_id}
+                    name="all"
                   />
                 </div>
               )}
@@ -385,7 +386,10 @@ const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive 
                     {/* <div className="task-title" onClick={() => openPopup(l2)}> */}
                     <div
                       className="task-title"
-                      onClick={() => openPopup(l2)}
+                      onClick={() => {
+                        openPopup(l2);
+                        setLevelTaskClicked('activity');
+                      }}
                       id={l2.task_id.toString() === idTaskParams ? idTaskParams : ''}
                     >
                       {l2.task_title}
@@ -400,6 +404,8 @@ const BoardTask = ({ directSupervisor, data, projectId, refetch, isMemberActive 
                               type="button"
                               className="add-child"
                               onClick={() => setAddSubtaskOpen(l2.task_id)}
+                              disabled
+                              style={{ display: 'none' }}
                             >
                               <MaterialIcon icon="add_circle" />
                             </button>

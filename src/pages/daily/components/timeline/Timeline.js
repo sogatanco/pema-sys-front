@@ -3,17 +3,18 @@ import React from 'react';
 import './Timeline.scss';
 import PropTypes from 'prop-types';
 
-const Timeline = ({ dateRange }) => {
+const Timeline = ({ dateRange, isLate = false }) => {
   return (
     <div className="timeline-container">
       <MaterialIcon icon="event"></MaterialIcon>
-      <span>{dateRange}</span>
+      <span className={isLate ? 'text-danger' : ''}>{dateRange}</span>
     </div>
   );
 };
 
 Timeline.propTypes = {
   dateRange: PropTypes.string,
+  isLate: PropTypes.bool,
 };
 
 export default Timeline;

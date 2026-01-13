@@ -21,8 +21,10 @@ export const useUpdateDailyTask = ({ task, refetch, setIsEditTaskOpen }) => {
         id: task.id,
         activity_name: task.activity_name || '',
         category: task.category || 'non-rutin',
-        start_date: `${task.start_date.date}T${task.start_date.time}`,
-        end_date: `${task.start_date.date}T${task.end_date.time}`,
+        start_date: `${task.start_date.date.split('-').reverse().join('-')}T${
+          task.start_date.time
+        }`,
+        end_date: `${task.end_date.date.split('-').reverse().join('-')}T${task.end_date.time}`,
       });
     }
   }, [task]);

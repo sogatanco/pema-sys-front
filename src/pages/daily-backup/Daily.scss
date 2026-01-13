@@ -1,0 +1,323 @@
+.daily-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .daily-header {
+    display: flex;
+    gap: 20px;
+    top: 6.8rem;
+    position: sticky;
+    background-color: #eef6fa;
+    z-index: 2;
+    padding: 30px 0 15px 0;
+    margin-top: -50px;
+
+    .header-card {
+      background-color: white;
+      min-width: 10%;
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    .header-card:first-child {
+      width: 80%;
+    }
+
+    .card-person {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 150ms ease;
+      border-radius: 12px;
+      background-color: #f9f9f9;
+      padding: 4px;
+
+      &:hover {
+        background-color: #f2f2f2;
+      }
+
+      .person-info {
+        h6 {
+          color: #707070;
+          font-weight: 500;
+        }
+
+        span {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .custom-dropdown {
+      position: absolute;
+      margin-top: 10px;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      margin-top: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 8px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      animation: fadeIn 0.15s ease-in-out;
+
+      .dropdown-person-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 10px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        background-color: #ffffff;
+
+        &:hover {
+          background-color: #f3f8fc;
+          transform: translateX(2px);
+        }
+
+        &.active {
+          background-color: #e5f2ff;
+          border: 1px solid #bcdfff;
+        }
+
+        img {
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        .person-info {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          margin-left: 10px;
+          line-height: 1.2;
+
+          h6 {
+            font-size: 14px;
+            color: #404040;
+            font-weight: 600;
+            margin-bottom: 2px;
+          }
+
+          span {
+            font-size: 13px;
+            color: #9a9a9a;
+          }
+        }
+      }
+
+      .self-item {
+        background-color: #f9f9f9;
+        font-weight: 600;
+      }
+
+      .self-item .self-label {
+        font-size: 12px;
+        color: #007bff;
+        margin-left: 4px;
+      }
+
+      .dropdown-divider {
+        height: 1px;
+        background-color: #e0e0e0;
+        margin: 6px 0;
+      }
+    }
+
+    .dropdown-search {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .dropdown-search input {
+      width: 100%;
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-total {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      justify-content: space-between;
+
+      h6 {
+        font-size: 20px;
+        font-weight: 500;
+        color: #707070;
+      }
+
+      span {
+        font-size: 14px;
+        font-weight: 400;
+        color: #a2a2a2;
+      }
+    }
+  }
+
+  .daily-body {
+    display: flex;
+    gap: 20px;
+
+    .daily-filter {
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      padding: 20px;
+      border-radius: 14px;
+      height: fit-content;
+      top: 13.8rem;
+      position: sticky;
+
+      .filter-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 60vh;
+        overflow-y: auto;
+        padding-right: 6px;
+        padding-bottom: 10px;
+
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: #c8c8c8;
+          border-radius: 3px;
+        }
+
+        .filter-group {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          align-items: start;
+
+          .filter-title {
+            span {
+              font-size: 14px;
+              font-weight: 500;
+              color: #a2a2a2;
+            }
+          }
+
+          .filter-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #b1b1b1;
+            font-size: 14px;
+          }
+
+          .filter-select {
+            width: 80%;
+
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 12px;
+            margin-top: 6px;
+          }
+        }
+      }
+    }
+
+    .daily-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+
+      .daily-card {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-radius: 12px;
+        background-color: white;
+
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .header-title {
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+
+            h4 {
+              font-size: 14px;
+              font-weight: 500;
+              color: #404040;
+              line-height: 1;
+            }
+
+            .title-attribute {
+              display: flex;
+              gap: 10px;
+              align-items: center;
+
+              .attribute-item {
+                display: flex;
+                gap: 5px;
+                align-items: center;
+
+                i {
+                  font-size: 20px;
+                  color: #a3a3a3;
+                }
+
+                span {
+                  font-size: 12px;
+                  font-weight: 500;
+                  color: #a3a3a3;
+                }
+              }
+            }
+          }
+
+          .header-action {
+            display: flex;
+            gap: 10px;
+          }
+        }
+
+        .card-body {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+      }
+
+      .daily-card.project {
+        border: 2px solid #f0f0f0;
+        padding: 16px;
+        border-radius: 16px;
+      }
+    }
+  }
+}
