@@ -11,19 +11,51 @@ const styles = StyleSheet.create({
   },
   text: {
     margin: 10,
-    fontSize: 10,
+    fontSize: 8,
     textAlign: "justify",
   },
   image: {
-    width: 50,
-    height: 50,
+    width: 30,
+    height: 30,
+  },
+  item: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    border: "1px solid #000",
+    padding: 1,
+    width: "33.33%",
+    boxSizing: "border-box",
+    minHeight: 25,
+  },
+  info: {
+    display: "flex",
+    flexDirection: "column",
+    marginLeft: 3,
+    justifyContent: "center",    // vertical center
+    // alignItems: "center",        // horizontal center
+    height: 30,                  // pastikan tinggi cukup untuk centering
+  },
+  wrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: "100%",
   },
 });
 
 // Fungsi untuk generate QR Code menjadi base64
 const generateQRCode = async (text) => {
   try {
-    return await QRCode.toDataURL(text);
+    return await QRCode.toDataURL(text, {
+      type: 'image/png',
+      rendererOpts: {
+        quality: 1
+      },
+      dotsOptions: {
+        type: 'dots', // gunakan tipe dots jika library mendukung
+        color: '#1582dbff'
+      }
+    });
   } catch (err) {
     console.error("Error generating QR Code:", err);
     return null;
@@ -59,26 +91,17 @@ const PrintNumber = ({ acet }) => {
   return (
     <Document>
       <Page style={{ ...styles.body, backgroundColor: "#fff" }}>
-        <View style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+        <View style={styles.wrap}>
           {acet?.map((ast) => (
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                gap: "2px",
-                width: "50%",
-                border: "1px solid #000",
-              }}
-              key={ast.id}
-            >
+            <View style={styles.item} key={ast.id}>
               {qrCodes[ast.id] ? (
                 <Image style={styles.image} src={qrCodes[ast.id]} />
               ) : (
                 <Text>Loading QR...</Text>
               )}
-              <View style={{ display: "flex", flexDirection: "column", gap: "5px", marginVertical: 7 }}>
-                <Text style={{ fontSize: "13px", fontWeight: "bold" }}>{ast?.number}</Text>
-                <Text style={{ fontSize: "10px", overflow: "hidden", textOverflow: "ellipsis", width: "170px", height: "18px" }}>
+              <View style={styles.info}>
+                <Text style={{ fontSize: 8, fontWeight: "extrabold", overflow: "hidden", marginBottom:1 }}>{ast?.number}</Text>
+                <Text style={{ fontSize: 7, width: 150, height: 12, overflow: "hidden" }}>
                   {ast?.name}
                 </Text>
               </View>

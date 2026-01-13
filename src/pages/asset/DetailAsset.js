@@ -32,6 +32,7 @@ const DetailAsset = () => {
   const { auth } = useAuth();
 
   const inputRef = useRef(null);
+  const detailRef = useRef(null);
   // const baseURL = process.env.REACT_APP_BASEURL;
   const { assetId } = useParams();
   const [modal, setModal] = useState(false);
@@ -48,6 +49,7 @@ const DetailAsset = () => {
   const [inAcquisition, setInAcquisition] = useState('');
   const [inLocation, setInLocation] = useState('');
   const [ setSesImg] = useState(new Date());
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const api = useAxios();
 
@@ -241,6 +243,7 @@ const DetailAsset = () => {
         if (res?.data?.success) {
           alert('success', `${res?.data?.message}`);
           refetch();
+          sessionStorage.removeItem('assetData')
         } else {
           alert('error', `${res?.data?.message}`);
         }
@@ -287,110 +290,123 @@ const DetailAsset = () => {
 
   return (
     <>
-      <Card>
-        <CardBody>
-          <Row className="content">
-           
-              <Col
-                sm="12"
-                lg="5"
-                className=" py-4 image"
-                style={{
-                  backgroundPosition: `center`,
-                  backgroundSize: `cover`,
-                  backgroundRepeat: `no-repeat`,
-                  backgroundImage: `url(${result[0]?.data?.file_image})`,
-                }}
+      <Card>        <CardBody>
+          <Row className="content flex-column flex-lg-row">              <Col
+                xs="12"
+                className="py-4 image position-relative order-1"
+                lg={{ size: 5, order: 1 }}
+                style={{ minHeight: '1px' }}
               >
+                {!imgLoaded && (
+                  <div className="d-flex align-items-center justify-content-center w-100 h-100" style={{height: '100%', background: '#f0f0f0'}}>
+                    <MaterialIcon icon="image" style={{fontSize: 64, color: '#ccc'}} />
+                  </div>
+                )}
+                <img 
+                  src={result[0]?.data?.file_image} 
+                  alt={result[0]?.data?.name || 'Asset Image'}
+                  className="img-fluid rounded w-100 h-100"
+                  style={{
+                    objectFit: 'cover',
+                    height: '100%',
+                    minHeight: '250px',
+                    display: imgLoaded ? 'block' : 'none',
+                  }}
+                  onLoad={() => setImgLoaded(true)}
+                  onError={() => setImgLoaded(false)}
+                />
                 {auth.user.roles.includes('PicAsset') ? (
-                  <div className="d-flex justify-content-end">
+                  <div className="position-absolute top-50 start-50 translate-middle" style={{zIndex:2}}>
                     <Button
-                      color="dark"
-                      outline
-                      className="pb-0"
-                      size="sm"
+                      color="link"
+                      className="p-0 border-0 bg-transparent"
+                      style={{boxShadow:'none'}}
                       onClick={() => openFile()}
                     >
-                      <MaterialIcon icon="photo_camera" />
+                      <MaterialIcon icon="photo_camera" style={{fontSize:40, color:'#222'}} />
                     </Button>
                   </div>
                 ) : ''}
               </Col>
-          
-            <Col sm="12" lg="7" className="py-4 text">
-              <div className="d-flex justify-content-between">
-                <h2 className="text-bold mb-0">{result[0].data?.name}</h2>
-                {auth.user.roles.includes('PicAsset') ? (
-                  <Button color="dark" size="sm" outline className="pb-0" onClick={toggle2}>
-                    <MaterialIcon icon="mode_edit" />
-                  </Button>
-                ) : ''}
-              </div>
+              <Col
+                xs="12"
+                className="py-4 text order-2"
+                lg={{ size: 7, order: 2 }}
+                ref={detailRef}
+              >
+                <div className="d-flex justify-content-between">
+                  <h2 className="text-bold mb-0">{result[0].data?.name}</h2>
+                  {auth.user.roles.includes('PicAsset') ? (
+                    <Button color="dark" size="sm" outline className="pb-0" onClick={toggle2}>
+                      <MaterialIcon icon="mode_edit" />
+                    </Button>
+                  ) : ''}
+                </div>
 
-              <hr />
+                <hr />
 
-              <table className="w-100">
-                <tbody>
-                  <tr>
-                    <td>Parent Asset Number</td>
-                    <td className="text-end">{result[0].data?.asset_number}</td>
-                  </tr>
-                  <tr>
-                    <td>Type</td>
-                    <td className="text-end">{result[0].data?.type_name}</td>
-                  </tr>
-                  <tr>
-                    <td>Acquisition Price</td>
-                    <td className="text-end">{rupiah(result[0].data?.price)}</td>
-                  </tr>
-                  <tr>
-                    <td>Current Asset Value</td>
-                    <td className="text-end">{rupiah(result[0].data?.current)}</td>
-                  </tr>
+                <table className="w-100">
+                  <tbody>
+                    <tr>
+                      <td>Parent Asset Number</td>
+                      <td className="text-end">{result[0].data?.asset_number}</td>
+                    </tr>
+                    <tr>
+                      <td>Type</td>
+                      <td className="text-end">{result[0].data?.type_name}</td>
+                    </tr>
+                    <tr>
+                      <td>Acquisition Price</td>
+                      <td className="text-end">{rupiah(result[0].data?.price)}</td>
+                    </tr>
+                    <tr>
+                      <td>Current Asset Value</td>
+                      <td className="text-end">{rupiah(result[0].data?.current)}</td>
+                    </tr>
 
-                  <tr>
-                    <td>Vendor</td>
-                    <td className="text-end">{result[0].data?.vendor}</td>
-                  </tr>
-                  <tr>
-                    <td>Acquisition Time</td>
-                    <td className="text-end">{result[0].data?.acquisition}</td>
-                  </tr>
-                  <tr>
-                    <td>Age </td>
-                    <td className="text-end">{result[0].data?.old}</td>
-                  </tr>
+                    <tr>
+                      <td>Vendor</td>
+                      <td className="text-end">{result[0].data?.vendor}</td>
+                    </tr>
+                    <tr>
+                      <td>Acquisition Time</td>
+                      <td className="text-end">{result[0].data?.acquisition}</td>
+                    </tr>
+                    <tr>
+                      <td>Age </td>
+                      <td className="text-end">{result[0].data?.old}</td>
+                    </tr>
 
-                  <tr>
-                    <td>Amount </td>
-                    <td className="text-end">{result[0].data?.amount} items</td>
-                  </tr>
-                  <tr>
-                    <td>Location </td>
-                    <td className="text-end">{result[0].data?.location}</td>
-                  </tr>
-                  <tr>
-                    <td>Last Update</td>
-                    <td className="text-end">
-                      {`${new Date(result[0].data?.updated_at).toLocaleDateString(
-                        'en-us',
-                        options,
-                      )} ${new Date(result[0].data?.updated_at).toLocaleTimeString()}`}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Responsible </td>
-                    <td className="text-end">
-                      {result[0].data?.responsible_list?.map((r) => (
-                        <Badge color="primary" key={r?.employe_id} className="ms-2">
-                          {r?.first_name}
-                        </Badge>
-                      ))}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </Col>
+                    <tr>
+                      <td>Amount </td>
+                      <td className="text-end">{result[0].data?.amount} items</td>
+                    </tr>
+                    <tr>
+                      <td>Location </td>
+                      <td className="text-end">{result[0].data?.location}</td>
+                    </tr>
+                    <tr>
+                      <td>Last Update</td>
+                      <td className="text-end">
+                        {`${new Date(result[0].data?.updated_at).toLocaleDateString(
+                          'en-us',
+                          options,
+                        )} ${new Date(result[0].data?.updated_at).toLocaleTimeString()}`}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Responsible </td>
+                      <td className="text-end">
+                        {result[0].data?.responsible_list?.map((r) => (
+                          <Badge color="primary" key={r?.employe_id} className="ms-2">
+                            {r?.first_name}
+                          </Badge>
+                        ))}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </Col>
           </Row>
           <DataTable
             className="mt-0"

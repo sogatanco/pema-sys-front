@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import DataTable from 'react-data-table-component';
-import { Badge, Button, Input } from 'reactstrap';  
+import { Badge, Button, Input } from 'reactstrap';
 import { alert } from '../../components/atoms/Toast';
 import './style.scss';
 
@@ -16,19 +16,20 @@ const ListPengajuan = ({
   toggleDoc,
   toggleRe,
   done,
-  extend, // Tambahkan prop extend
+  extend,
+  toggle3 // Tambahkan prop extend
 }) => {
   const [search, setSearch] = React.useState('');
   const [listP, setListP] = React.useState([]);
   const [hCol, setHCol] = React.useState(false);
-  const [hPro,setHPro]=React.useState(false);
+  const [hPro, setHPro] = React.useState(false);
 
   useEffect(() => {
     setListP(submitted);
     if (value === '3') {
       setHCol(true);
     }
-    if(value === '4'){
+    if (value === '4') {
       setHPro(true);
     }
   }, [submitted, value]);
@@ -41,7 +42,7 @@ const ListPengajuan = ({
     console.log(search);
   }, [search]);
 
- 
+
 
   const update = (row) => {
     if (row.current_status === 'signed') {
@@ -53,7 +54,7 @@ const ListPengajuan = ({
   const columns = [
     {
       name: 'Actions',
-      width: `${value === '1' ? '455px' : '380px'}`,
+      width: `${value === '1' ? '565px' : '380px'}`,
       selector: (row) => (
         <>
           {value === '1' ? (
@@ -70,6 +71,18 @@ const ListPengajuan = ({
           ) : (
             ''
           )}
+
+          {row.current_status === 'signed' && value === '1' ? ( <Button
+            size="sm"
+            className="me-2"
+            outline
+            color="dark"
+            tag="input"
+            type="reset"
+            value="Hotel 30%"
+            onClick={() => toggle3(row)}
+          />) : ('')}
+
           <Button
             size="sm"
             className="me-2"
@@ -187,12 +200,12 @@ const ListPengajuan = ({
     {
       name: 'Jenis Proses',
       selector: (row) =>
-         (
-          <Badge color="info" style={{ width: '100px' }}>
-            {row.type_proses}
-          </Badge>
-        ) ,
-        omit:!hPro
+      (
+        <Badge color="info" style={{ width: '100px' }}>
+          {row.type_proses}
+        </Badge>
+      ),
+      omit: !hPro
     },
     {
       name: 'Jenis Persetujuan',
@@ -221,7 +234,7 @@ const ListPengajuan = ({
         ),
       omit: hCol,
     },
-    
+
     {
       name: 'Status Realisasi',
       selector: (row) =>
@@ -240,7 +253,7 @@ const ListPengajuan = ({
   return (
     <>
       <DataTable
-        keyField={value==='4'?'id_unique':'id'}
+        keyField={value === '4' ? 'id_unique' : 'id'}
         columns={columns}
         data={listP}
         pagination
@@ -270,8 +283,9 @@ ListPengajuan.propTypes = {
   toggleR: PropTypes.func,
   toggleDoc: PropTypes.func,
   toggleRe: PropTypes.func,
-  done:PropTypes.func,
-  extend: PropTypes.func, // Tambahkan propTypes extend
+  done: PropTypes.func,
+  extend: PropTypes.func, 
+  toggle3:PropTypes.func,// Tambahkan propTypes extend
 };
 
 export default ListPengajuan;

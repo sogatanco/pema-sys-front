@@ -200,7 +200,7 @@ const Adm = () => {
               value="1"
             />)}
 
-            {auth?.user.roles.includes('Manager') || auth?.user.roles.includes('Director') || auth?.user.roles.includes('Supervisor') ? (<Tab
+            {auth?.user.roles.includes('Manager') || auth?.user.roles.includes('Director') || auth?.user.roles.includes('Supervisor') || auth?.user.roles.includes('Staff') ? (<Tab
               label={
                 <Badge
                   badgeContent={cReview}

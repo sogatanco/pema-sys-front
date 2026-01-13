@@ -20,8 +20,27 @@
 }
 .image {
   flex: 1;
-  min-height: 300px;
+  min-height: 250px;
+  width: 100%;
+  border-radius: 8px;
+}
+@media (max-width: 768px) {
+  .image {
+    min-height: 180px;
+  }
 }
 .text {
   flex: 2;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+.data-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
 }

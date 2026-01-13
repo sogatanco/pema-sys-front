@@ -14,6 +14,7 @@ import useAxios from '../../hooks/useAxios';
 import image from '../../assets/image';
 import rupiah from '../../utils/rupiah';
 
+
 const pdfFonts = require('../../assets/vfs_fonts');
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -35,9 +36,13 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
   const [detailSppd, setDetailSppd] = useState();
   const [typeSign, setTypeSign] = useState('');
 
+  const [typeSign2, setTypeSign2] = useState('');
+
   dayjs.locale('id');
   const api = useAxios();
   const qrCodeRef = useRef();
+  const qrCodeRef2 = useRef();
+
   useEffect(() => {
     if (sppdDetail) {
       api.get(`dapi/sppd/pengajuan/${sppdDetail?.id}`).then((res) => {
@@ -166,6 +171,116 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
     pdfMake.createPdf(docDefinition).open();
   };
 
+  const print2 = (html, orientationPage, head, foot, lebar, l, t, r, b, ts, ts2) => {
+    setLoading(false);
+    let qrcode = ``;
+    if (qrCodeRef.current) {
+      const canvas = qrCodeRef.current.querySelector('canvas');
+      if (canvas) qrcode = canvas.toDataURL();
+    }
+
+    let qrcode2 = ``;
+    if (qrCodeRef2.current) {
+      const canvas = qrCodeRef2.current.querySelector('canvas');
+      if (canvas) qrcode2 = canvas.toDataURL();
+    }
+    // determine approval info for the given ts (fallback to first approval)
+    const appro = (ts && detailSppd?.approval?.find((a) => a.type === ts)) || detailSppd?.approval?.[0] || {};
+    const topText = `Banda Aceh, ${appro?.updated_at ? dayjs(appro.updated_at).locale('id').format('DD MMMM YYYY') : ' . . . . . . . . '}`;
+
+    const pdfContent = htmlToPdfmake(html, {
+      defaultStyles: {
+        p: { margin: [0, 3, 0, -3] },
+        columnGap: 0,
+        td: { verticalAlign: 'top', marginBottom: -4 },
+        ol: { margin: [0, 0, 0, 0], padding: [0, 0, 0, 0] },
+        li: { marginBottom: 2 },
+        tr: { margin: [-5, 0, 0, 0] },
+        table: { margin: [0, 0, 0, 0], width: '100%' },
+        br: { margin: [0, 2, 0, 0] },
+      },
+      tableAutoSize: true,
+    });
+
+    const docDefinition = {
+      pageOrientation: orientationPage,
+      pageSize: 'A4',
+      pageMargins: [l, t, r, b],
+      content: [
+        pdfContent,
+        { text: topText, style: 'normal', alignment: 'left', margin: [0, 0, 0, 6] },
+        {
+          columns: [
+            {
+              stack: [
+                { text: 'Pemohon,', style: 'normal', alignment: 'left', marginBottom: 5 },
+                {
+                  image: `${detailSppd?.approval.filter((a) => a.type === ts)[0]?.status === 'approve'
+                    ? qrcode
+                    : image.placeholder
+                    }`, width: 60, alignment: 'left'
+                },
+                {
+                  text: `${detailSppd?.approval.filter((a) => a.type === ts)[0]?.first_name}`,
+                  style: 'boldText'
+                }
+                , {
+                  text: `${detailSppd?.approval.filter((a) => a.type === ts)[0]?.position_name}`,
+                  style: 'normal',
+                }
+              ],
+              width: 100,
+              alignment: 'left',
+            },
+
+            { width: '*', text: '' },
+            {
+              stack: [
+                { text: 'Disetujui Oleh,', style: 'normal', alignment: 'left', marginBottom: 5 },
+                {
+                  image: `${detailSppd?.approval.filter((a) => a.type === ts2)[0]?.status === 'approve'
+                    ? qrcode2
+                    : image.placeholder
+                    }`, width: 60, alignment: 'left'
+                },
+                {
+                  text: `${detailSppd?.approval.filter((a) => a.type === ts2)[0]?.first_name}`,
+                  style: 'boldText',alignment: 'left'
+                }
+                , {
+                  text: `${detailSppd?.approval.filter((a) => a.type === ts2)[0]?.position_name}`,
+                  style: 'normal',alignment: 'left',
+                }
+              ],
+              width: 100,
+              alignment: 'right',
+            },
+          ],
+          unbreakable: true,
+          margin: [0, 1],
+        },
+      ],
+      styles: { boldText: { bold: true } },
+      images: html.images,
+      header: (page) => {
+        if (page !== 1) return { text: '' };
+        return { image: head, width: lebar };
+      },
+      footer: (currentPage, pageCount) => {
+        if (currentPage !== pageCount) return { text: '' };
+        return { image: foot, width: lebar };
+      },
+      defaultStyle: {
+        font: 'Archivo',
+        fontSize: 10,
+        color: '#000',
+        ol: { margin: [0, 0, 0, 0], padding: [0, 0, 0, 0] },
+      },
+    };
+
+    pdfMake.createPdf(docDefinition).open();
+  };
+
   const printST = () => {
     setLoading(true);
     setTypeSign('sign');
@@ -234,7 +349,9 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
           </tr>
         </tbody>
       </table>
-      <br>${tujuans} `;
+      <br>${tujuans} 
+      
+     `;
     setTimeout(() => {
       print(html, 'potrait', image.headSurat, image.footSurat, '595', 60, 100, 60, 80, 'sign');
     }, 2000);
@@ -422,6 +539,17 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
           </tr>
         </tbody>
        </table>
+
+        <small><i>Untuk keperluan klaim biaya perjalanan dinas (SPPD), mohon agar melampirkan dokumen pendukung sebagai berikut: :
+      <ul>
+      <li>Invoice atau bukti pembayaran hotel</li>
+    <li>E-tiket perjalanan</li>
+    <li>Boarding pass</li>
+    <li>Kwitansi transportasi lokal (jika ada)</li>
+    <li>Kwitansi transportasi umum (jika ada)</li>
+    <li>Foto Kegiatan</li>
+    <li>Laporan Kegiatan</li>
+      </ul></i></small><br>
     `;
 
     setTimeout(() => {
@@ -607,9 +735,9 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
     console.log(detailSppd);
     setLoading(true);
     setTypeSign('extend');
-    const ekstenddata= detailSppd?.approval?.find((f) => f.type === 'extend');
+    const ekstenddata = detailSppd?.approval?.find((f) => f.type === 'extend');
     console.log(ekstenddata);
-    const detailektend= detailSppd?.ekstend?.find((f) => f.id_tujuan === id);
+    const detailektend = detailSppd?.ekstend?.find((f) => f.id_tujuan === id);
 
     const html = `<p style="text-align:center;"><strong style="text-decoration:underline">SURAT PERNYATAAN PENAMBAHAN HARI</strong><br>Nomor SPPD : ${detailSppd?.nomor_sppd.replaceAll(
       'ST',
@@ -955,6 +1083,58 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
     }, 2000);
   };
 
+  const printHotelTigap = (id) => {
+    setLoading(true);
+    const tjn = detailSppd?.tujuan_sppd?.filter((f) => f.id === id)[0];
+    console.log(id);
+    setTypeSign('pemohon');
+    setTypeSign2('approval_hotel');
+    const html = `<p style="text-align:center;"><strong style="text-decoration:underline">SURAT KETERANGAN</strong></p>
+    <p>Yang bertanda tangan di bawah ini :</p>
+    <table cellpadding="5" cellspacing="0" width="100%">
+        <tbody>
+        <tr style="border:none">
+          <td style="width: 30%; text-align: left; height:15px; vertical-align:middle!important">Nama</td>
+          <td style="width: 70%; text-align: left;height:15px; vertical-align:middle!important">: ${detailSppd?.nama
+      }</td>
+        </tr>
+        <tr style="border:none">
+          <td style="width: 30%; text-align: left; height:15px; vertical-align:middle!important">Jabatan</td>
+          <td style="width: 70%; text-align: left;height:15px; vertical-align:middle!important">: ${detailSppd?.jabatan
+      }</td>
+        </tr>
+        </tbody>
+      </table>
+
+    <p>Bahwa dalam melaksanakan Surat Tugas Nomor : ${detailSppd?.nomor_sppd} tanggal ${dayjs(
+        detailSppd?.mulai_tugas,
+      )
+        .locale('id')
+        .format('DD MMMM YYYY')} benar adanya tidak menginap di Hotel/Tempat Penginapan pada tanggal ${dayjs(
+          tjn?.tigapuluh?.mulai,
+        )
+          .locale('id')
+          .format('DD')} - ${dayjs(tjn?.tigapuluh?.selesai).locale('id').format('DD MMMM YYYY')}, memohon untuk persetujuan pembayaran sebesar 30% dari standar anggaran penginapan yang sudah ditetapkan oleh perusahaan.</p>
+    <p>Demikian surat keterangan ini kami buat dengan sebenarnya untuk disetujui sebagaimana mestinya.</p>
+    
+      `;
+    setTimeout(() => {
+      print2(
+        html,
+        'potrait',
+        image.headSurat,
+        image.footSurat,
+        '595',
+        60,
+        80,
+        60,
+        80,
+        'pemohon',
+        'approval_hotel',
+      );
+    }, 2000);
+  };
+
   return (
     <Modal isOpen={modalDoc} toggle={toggleDoc} size="xl" className="modal1" centered>
       <ModalBody className="p-3 ">
@@ -964,6 +1144,19 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
         <div ref={qrCodeRef} style={{ display: 'none' }}>
           <QRCode
             value={`${baseURL}verification/${detailSppd?.nomor_dokumen}?type=${typeSign}`}
+            size={400}
+            qrStyle="dots"
+            logoImage={logo} // Ganti dengan URL logo kamu
+            logoWidth={100}
+            logoHeight={100}
+            eyeRadius={20}
+            fgColor="#0F52BA"
+          />
+        </div>
+
+        <div ref={qrCodeRef2} style={{ display: 'none' }}>
+          <QRCode
+            value={`${baseURL}verification/${detailSppd?.nomor_dokumen}?type=${typeSign2}`}
             size={400}
             qrStyle="dots"
             logoImage={logo} // Ganti dengan URL logo kamu
@@ -1148,24 +1341,41 @@ const ModalDocs = ({ modalDoc, toggleDoc, sppdDetail }) => {
 
           {detailSppd?.ekstend?.length > 0 ? (
             <>
-             {detailSppd?.ekstend?.map((i) => (
-                 <Col md={3} className="mt-3" onClick={detailSppd ? ()=>printekstend(i.id_tujuan) : null}>
+              {detailSppd?.ekstend?.map((i) => (
+                <Col md={3} className="mt-3" onClick={detailSppd ? () => printekstend(i.id_tujuan) : null}>
 
-                <Card
-                  className="  mx-sm-1 p-3 col-card border border-success"
-                >
-                  <Card className=" bg-success my-card border shadow text-light p-3">
-                    <MaterialIcon icon="description" />
+                  <Card
+                    className="  mx-sm-1 p-3 col-card border border-success"
+                  >
+                    <Card className=" bg-success my-card border shadow text-light p-3">
+                      <MaterialIcon icon="description" />
+                    </Card>
+                    <div className="text-center mt-3">
+                      <h4 className="text-success">Ekstend </h4>
+                      <small>({i.detail_tujuan})</small>
+                    </div>
+                  </Card>
+                </Col>
+              ))}
+            </>
+          ) : null}
+
+          {detailSppd?.tigap === true ? (
+            detailSppd?.tujuan_sppd?.map((i) => (
+              <Col md={3} key={i.id} className="mt-3">
+                <Card className="mx-sm-1 p-3 col-card border border-secondary" on onClick={() => printHotelTigap(i.id)}>
+                  <Card className="bg-secondary my-card border shadow text-light p-3">
+                    <MaterialIcon icon="room" />
                   </Card>
                   <div className="text-center mt-3">
-                    <h4 className="text-success">Ekstend </h4>
-                    <small>({i.detail_tujuan})</small>
+                    <h6 className="text-secondary">Biaya Hotel 30%</h6>
+                    <small>{i?.detail_tujuan}</small>
                   </div>
                 </Card>
               </Col>
-             ))}
-            </>
+            ))
           ) : null}
+
         </Row>
       </ModalBody>
     </Modal>

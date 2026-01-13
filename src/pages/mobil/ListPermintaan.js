@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle, useCallback } from 'react';
 import DataTable from 'react-data-table-component';
-import { Button, TextField } from '@mui/material';
+import { Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import CSS for react-confirm-alert
 import PropTypes from 'prop-types';
@@ -11,8 +11,9 @@ import useAuth from '../../hooks/useAuth'; // Import your authentication hook
 const ListPermintaan = forwardRef((props, ref) => {
   const api = useAxios();
   const [data, setData] = useState([]);
-  // const { auth } = useAuth(); // Hapus jika tidak digunakan di bawah
   const {auth} = useAuth(); // Gunakan langsung jika hanya butuh auth.user
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   // Tambahkan validasi props.afterReviewRef agar tidak ada warning
   const afterReviewRef = props.afterReviewRef || null;
@@ -142,6 +143,18 @@ const ListPermintaan = forwardRef((props, ref) => {
     });
   };
 
+  // Fungsi untuk membuka modal detail
+  const handleRowClick = (row) => {
+    setSelectedRow(row);
+    setModalOpen(true);
+  };
+
+  // Fungsi untuk menutup modal
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedRow(null);
+  };
+
   useEffect(() => {
     fetchData(); // Fetch data only once when the component mounts
   }, []);
@@ -206,11 +219,11 @@ const ListPermintaan = forwardRef((props, ref) => {
         selector: row => row?.keperluan,
         sortable: true,
     },
-    {
-        name: 'Mobil',
-        selector: row => row?.displayMobil || '-',
-        sortable: true,
-    },
+    // {
+    //     name: 'Mobil',
+    //     selector: row => row?.displayMobil || '-',
+    //     sortable: true,
+    // },
     {
         name: 'Dari',
         selector: row => new Date(row?.mulai).toLocaleString(),
@@ -244,14 +257,77 @@ const ListPermintaan = forwardRef((props, ref) => {
   ];
 
   return (
-    <DataTable
-      title="List Permintaan Kendaraan"
-      columns={columns}
-      data={data}
-      pagination
-      highlightOnHover
-      striped
-    />
+    <>
+      <DataTable
+        title="List Permintaan Kendaraan"
+        columns={columns}
+        data={data}
+        pagination
+        highlightOnHover
+        striped
+        onRowClicked={handleRowClick}
+        pointerOnHover
+      />
+      <Dialog open={modalOpen} onClose={handleCloseModal} maxWidth="sm" fullWidth>
+        <DialogTitle>Detail Pengajuan</DialogTitle>
+        <DialogContent dividers>
+          {selectedRow && (
+            <table style={{ width: '100%', fontSize: 15 }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: 140, verticalAlign: 'top', fontWeight: 500 }}>Tgl Pengajuan</td>
+                  <td style={{ width: 10, verticalAlign: 'top' }}>:</td>
+                  <td>{selectedRow.created_at ? new Date(selectedRow.created_at).toLocaleString() : '-'}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 500 }}>Keperluan</td>
+                  <td>:</td>
+                  <td>{selectedRow.keperluan}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 500 }}>Dari</td>
+                  <td>:</td>
+                  <td>{selectedRow.mulai ? new Date(selectedRow.mulai).toLocaleString() : '-'}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 500 }}>Sampai</td>
+                  <td>:</td>
+                  <td>{selectedRow.hingga ? new Date(selectedRow.hingga).toLocaleString() : '-'}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 500 }}>Perlu Sopir</td>
+                  <td>:</td>
+                  <td>{selectedRow.sopir === 1 ? 'Ya' : 'Tidak'}</td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 500 }}>Status</td>
+                  <td>:</td>
+                  <td>
+                    {selectedRow.status === null
+                      ? 'Under Review'
+                      : selectedRow.status === 0
+                      ? 'Reject'
+                      : selectedRow.status === 1
+                      ? 'Approve'
+                      : 'Unknown'}
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ fontWeight: 500 }}>Keterangan</td>
+                  <td>:</td>
+                  <td>{selectedRow.ket || '-'}</td>
+                </tr>
+              </tbody>
+            </table>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="primary" variant="contained">
+            Tutup
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 });
 

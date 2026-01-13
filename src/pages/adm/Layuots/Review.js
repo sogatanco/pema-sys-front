@@ -47,8 +47,8 @@ const Review = ({ data, refresh , closeModal}) => {
     
     return (
         <>
-            <h5 className="text-capitalize">{data?.current_type} Dokumen</h5>
-            <hr style={{ marginTop: -2 }} />
+            {/* <h5 className="text-capitalize">{data?.current_type} Dokumen</h5>
+            <hr style={{ marginTop: -2 }} /> */}
 
 
             <Box

@@ -197,6 +197,7 @@ const Setting = () => {
                             value={plat}
                             onChange={(e) => setPlat(e.target.value)}
                             error={Boolean(errors.plat)}
+                            
                             helperText={errors.plat}
                             fullWidth
                         />

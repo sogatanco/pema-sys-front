@@ -30,6 +30,7 @@ import ModalRealisasi from './ModalRealisasi';
 import ListApproved from './ListApproved';
 import DashboardDirek from './DashboardDirek';
 import ModalExtend from './ModalExtend';
+import Modal30 from './Modal30';
 
 const Sppd = () => {
   const [doc, setDoc] = useState('');
@@ -90,7 +91,19 @@ const Sppd = () => {
   const [modalExtend, setModalExtend] = useState(false);
   const [sppdExtend, setSppdExtend] = useState();
 
+  // modal
+  const [modal3, setModal3] = useState(false);
+
   const api = useAxios();
+
+  const toggle3 = (row) => {
+    if (modal3 === false) {
+      setSppdDetail(row);
+    } else {
+      setSppdDetail(null);
+    }
+    setModal3(!modal3);
+  };
 
   const getBase64 = (file) => {
     return new Promise((resolve) => {
@@ -608,6 +621,7 @@ const Sppd = () => {
                   toggleDoc,
                   toggleRe,
                   extend,
+                  toggle3
                 }}
               ></ListPengajuan>
             </CardBody>
@@ -629,6 +643,7 @@ const Sppd = () => {
                   toggleDoc,
                   approved,
                   extend,
+                  toggle3
                 }}
               ></ListPengajuan>
             </CardBody>
@@ -648,6 +663,7 @@ const Sppd = () => {
                   toggleR,
                   toggleDoc,
                   extend,
+                  toggle3
                 }}
               ></ListPengajuan>
             </CardBody>
@@ -687,6 +703,7 @@ const Sppd = () => {
                   toggleDoc,
                   done,
                   extend,
+                  toggle3
                 }}
               ></ListPengajuan>
             </CardBody>
@@ -707,6 +724,7 @@ const Sppd = () => {
       <ModalReview {...{ modalR, toggleR, sppdDetail, refetchNumber, refetchSubmitted }} />
       <ModalDocs {...{ modalDoc, toggleDoc, sppdDetail }} />
       <ModalRealisasi {...{ modalRe, toggleRe, sppdDetail }} />
+       <Modal30 {...{ modal3, toggle3, sppdDetail }} />
       <ModalExtend
         modalExtend={modalExtend}
         toggleExtend={toggleExtend}

@@ -21,7 +21,7 @@ const NotificationPage = Loadable(lazy(() => import('../pages/notification')));
 
 /***** Daily ****/
 const DailyPageOld = Loadable(lazy(() => import('../pages/daily_old/Daily')));
-// const DailyPage = Loadable(lazy(() => import('../pages/daily/Daily')));
+const DailyPage = Loadable(lazy(() => import('../pages/daily/Daily')));
 /***** Daily ****/
 
 /***** Asset ****/
@@ -40,6 +40,9 @@ const SppdPage = Loadable(lazy(() => import('../pages/sppd')));
 
 /***** Adm****/
 const AdmPage = Loadable(lazy(() => import('../pages/adm')));
+
+/***** Kontrak****/
+const KontrakPage = Loadable(lazy(() => import('../pages/kontrak')));
 /***** Mobilo****/
 const MobilPage = Loadable(lazy(() => import('../pages/mobil')));
 /***** abse****/
@@ -206,7 +209,7 @@ const ThemeRoutes = [
           {
             path: 'daily',
             name: 'Daily',
-            element: <DailyPageOld />,
+            element: <DailyPage />,
           },
           {
             path: 'asset',
@@ -232,6 +235,11 @@ const ThemeRoutes = [
             path: 'mobil-operational',
             name: 'Mobil Operasional',
             element: <MobilPage />,
+          },
+          {
+            path: 'kontrak',
+            name: 'Kontrak',
+            element: <KontrakPage />,
           },
           {
             path: 'projects/details/:projectId',

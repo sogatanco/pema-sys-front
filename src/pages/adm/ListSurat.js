@@ -38,6 +38,7 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
     const [detail, setDetail] = React.useState();
     const [isiModal, setIsiModal] = useState('');
     const [dataIsi, setDataIsi] = useState();
+    const [pdfmerge, setPdfmerge] = useState();
 
     const [modal, setModal] = useState(false);
 
@@ -121,16 +122,76 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
     const startReview = (id) => {
         const dt = listSurat?.find((p) => p.id === id);
         console.log(dt);
+        console.log(dt);
         toggleModal();
         setDataIsi(dt);
         setIsiModal('review');
     }
+
+    const lihatparaf = async (id) => {
+        setLoadingView(id);
+        try {
+            const res = await api.get(`dapi/adm/surat/detail/${id}`);
+            const dt = listSurat?.find((p) => p.id === id);
+            const deta = res.data.data;
+            console.log(deta);
+            const pdf = await GenerateSurat(deta, qrCodeRef);
+            const merged = await FMerge(pdf, deta?.fileLampiran);
+            setDataIsi(dt);
+            setPdfmerge(merged);
+            setIsiModal('paraf');
+            toggleModal();
+        } catch (err) {
+            console.error(err);
+            alert('error', err?.message || 'Gagal membuka surat');
+        } finally {
+            setLoadingView('');
+        }
+        return null;
+    }
+
+    // const handleParaf = async () => {
+    //     if (!dataIsi?.detail?.no_document) return alert('error', 'No document tidak tersedia');
+    //     try {
+    //         const no = dataIsi.detail.no_document;
+    //         const res = await api.post(`dapi/eSign/paraf/${no}`);
+    //         if (res?.data?.success) {
+    //             alert('success', res.data.message || 'Berhasil paraf');
+    //             toggleModal();
+    //             refresh();
+    //         } else {
+    //             alert('error', res?.data?.message || 'Gagal paraf');
+    //         }
+    //     } catch (err) {
+    //         alert('error', err?.message || 'Gagal paraf');
+    //     }
+    //     return null;
+    // };
+
+    // const handleReject = async () => {
+    //     if (!dataIsi?.detail?.no_document) return alert('error', 'No document tidak tersedia');
+    //     try {
+    //         const no = dataIsi.detail.no_document;
+    //         const res = await api.post(`dapi/eSign/reject/${no}`);
+    //         if (res?.data?.success) {
+    //             alert('success', res.data.message || 'Berhasil reject');
+    //             toggleModal();
+    //             refresh();
+    //         } else {
+    //             alert('error', res?.data?.message || 'Gagal reject');
+    //         }
+    //     } catch (err) {
+    //         alert('error', err?.message || 'Gagal reject');
+    //     }
+    //     return null;
+    // };
 
     const updateSurat = async (id) => {
         setLoadingUpdate(id);
         await update(id).then(() => {
             setLoadingUpdate('');
         });
+        return null;
     }
 
     const detailSm = async (id) => {
@@ -158,8 +219,8 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
             });
 
         })
+        return null;
     }
-
 
     const dispoSurat = (id) => {
         const dt = listP.find((p) => p.id === id);
@@ -236,6 +297,7 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
         }).catch((err) => {
             alert('error', `${err.message}`);
         })
+        return null;
     }
 
     const columsMasuk = [
@@ -426,7 +488,7 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
     const columns = [
         {
             name: 'Actions',
-            width: `${valueNow === '3' || type === 'approved' ? '270px' : '350px'}`,
+            width: `${valueNow === '3' || type === 'approved' ? '270px' : '450px'}`,
             selector: (row) => (
                 <>
                     {valueNow === '1' && <Button
@@ -471,7 +533,8 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
                             openLog(row.id)
                         }
                     />
-                    {valueNow === `2` && type === 'review' && <Button
+                    {valueNow === `2` && type === 'review' && 
+                    <><Button
                         className="me-2"
                         size="sm"
                         outline
@@ -480,7 +543,20 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
                         type="button"
                         value={row.current_type}
                         onClick={() => startReview(row.id)}
-                    />}
+                    />
+
+                    <Button
+                        className="me-2"
+                        size="sm"
+                        outline
+                        color="info"
+                        tag="input"
+                        type="button"
+                        value={loadingView === row.id ? 'Loading . . .' : `Lihat & ${row.current_type}`}
+                        onClick={() => lihatparaf(row.id)}
+                    />
+                    
+                    </>}
 
                 </>
 
@@ -593,7 +669,26 @@ const ListSurat = ({ listSurat, valueNow, refresh, type, update, status }) => {
 
             <Modal isOpen={modal} toggle={toggleModal} size="xl">
                 <ModalBody >
-                    {isiModal === 'log' ? <ViewLogs type={typeLog} data={dataIsi} func1={openLembarDispo} /> : isiModal === 'approval' ? <Approval data={dataIsi} /> : isiModal === 'review' ? <Review data={dataIsi} refresh={refresh} closeModal={toggleModal} /> : isiModal === 'dispo' ? <Disposisi data={dataIsi} refresh={refresh} closeModal={toggleModal} /> : 'te'}
+                    {isiModal === 'log' ? (
+                        <ViewLogs type={typeLog} data={dataIsi} func1={openLembarDispo} />
+                    ) : isiModal === 'approval' ? (
+                        <Approval data={dataIsi} />
+                    ) : isiModal === 'review' ? (
+                        <Review data={dataIsi} refresh={refresh} closeModal={toggleModal} />
+                    ) : isiModal === 'dispo' ? (
+                        <Disposisi data={dataIsi} refresh={refresh} closeModal={toggleModal} />
+                    ) : isiModal === 'paraf' ? (
+                        <div>
+                            <div style={{ height: '60vh' }}>
+                                <iframe src={`${pdfmerge}#toolbar=0&navpanes=0`} title="Surat" width="100%" height="100%" style={{ border: 'none' }} />
+                            </div>
+                             <Review data={dataIsi} className="mt-3" refresh={refresh} closeModal={toggleModal} />
+                           
+                           
+                        </div>
+                    ) : (
+                        'te'
+                    )}
                 </ModalBody>
             </Modal>
         </>
