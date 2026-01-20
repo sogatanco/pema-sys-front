@@ -20,7 +20,7 @@ const NotificationPage = Loadable(lazy(() => import('../pages/notification')));
 /***** Notification ****/
 
 /***** Daily ****/
-const DailyPageOld = Loadable(lazy(() => import('../pages/daily_old/Daily')));
+// const DailyPageOld = Loadable(lazy(() => import('../pages/daily_old/Daily')));
 const DailyPage = Loadable(lazy(() => import('../pages/daily/Daily')));
 /***** Daily ****/
 
